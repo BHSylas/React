@@ -1,0 +1,24 @@
+const getter = url => {
+fetch(`/api/${url}`, {
+  headers: {
+    Authorization: "Bearer " + localStorage.getItem("token")
+  }
+})
+  .then(res => res.json())
+  .then(console.log);
+}
+
+const poster = url => {
+fetch(`/api/${url}`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + localStorage.getItem("token")
+  },
+  body: JSON.stringify({
+      matchId: 1,
+      predictedResult: "HOME_WIN",
+      bet: 30,
+  })
+}).then(res => res.json()).then(console.log);
+}

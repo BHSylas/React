@@ -1,0 +1,16 @@
+<svg width="342" height="342" xmlns="http://www.w3.org/2000/svg">
+  <title>Layer 1</title>
+  <g fill="none">
+    <circle fill="#EEE" r="10.7rem" cy="50%" cx="50%"/>
+    <g fill="none" stroke="#000" stroke-width="9.5">
+      <circle stroke="#0078d0" r="49.25" cy="154" cx="54"/>
+      <circle r="49.25" cy="154" cx="171"/>
+      <circle stroke="#f0282d" r="49.25" cy="154" cx="288"/>
+      <circle stroke="#ffb114" r="49.25" cy="204" cx="112.5"/>
+      <circle stroke="#00a651" r="49.25" cy="204" cx="229.5"/>
+      <path stroke="#0078d0" d="M93.4 124.45a49.25 49.25 0 0 1 0 59.1"/>
+      <path d="M210.4 124.45a49.25 49.25 0 0 1 0 59.1m-39.4 19.7a49.25 49.25 0 0 1-29.55-9.85"/>
+      <path stroke="#f0282d" d="M288 203.25a49.25 49.25 0 0 1-29.55-9.85"/>
+    </g>
+  </g>
+</svg>
