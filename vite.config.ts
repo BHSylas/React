@@ -6,9 +6,8 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://underminingly-semineutral-natacha.ngrok-free.dev",
+        target: "http://localhost:8080",
         changeOrigin: true,
-        secure: false,
       },
     },
   },

@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+//import DetailDropdown from "./DetailDropdown";
 
 interface DropdownProps {
   isOpen?: boolean;
@@ -14,52 +15,28 @@ export function MenuDropdown({ isOpen, close }: DropdownProps) {
     return(
       <div
         className={`
-          absolute left-0 z-50 flex-col shadow-xl w-44
+          absolute left-0 z-50 flex-col shadow-xl w-60
           bg-base-100 text-base-content rounded-xl
           ${isOpen ? "flex" : "hidden"}
-          lg:group-hover:flex lg:hidden
         `}
       >
           <button
-            className="px-4 py-3 text-left rounded-t-xl transition-all hover:bg-blue-800"
-            onClick={() => handleNavigate("/players")}
+            className="px-3 py-4 text-left rounded-t-xl transition-all hover:bg-blue-50 hover:text-blue-800 text-lg font-bold"
+            onClick={() => handleNavigate("/")}
           >
-            선수 목록
+            홈
           </button>
-
           <button
-            className="px-4 py-3 text-left transition-all hover:bg-blue-800"
-            onClick={() => handleNavigate("/predictions")}
+            className="px-3 py-4 text-left transition-all hover:bg-blue-50 hover:text-blue-800 text-lg font-bold"
+            onClick={() => handleNavigate("/class")}
           >
-            승부예측
+            강좌 목록
           </button>
-
           <button
-            className="px-4 py-3 text-left transition-all hover:bg-blue-800"
-            onClick={() => handleNavigate("/posts")}
+            className="px-3 py-4 text-left rounded-b-xl transition-all hover:bg-blue-50 hover:text-blue-800 text-lg font-bold flex"
+            onClick={() => handleNavigate("/board")}
           >
             게시판
-          </button>
-
-          <button
-            className="px-4 py-3 text-left transition-all hover:bg-blue-800"
-            onClick={() => handleNavigate("/videos")}
-          >
-            동영상
-          </button>
-
-          <button
-            className="px-4 py-3 text-left transition-all hover:bg-blue-800"
-            onClick={() => handleNavigate("/live")}
-          >
-            라이브
-          </button>
-          
-          <button
-            className="px-4 py-3 text-left rounded-b-xl transition-all hover:bg-blue-800"
-            onClick={() => handleNavigate("/news")}
-          >
-            뉴스
           </button>
         </div>)
 }

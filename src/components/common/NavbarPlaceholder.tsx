@@ -4,8 +4,9 @@ export function NavPlace() {
   return (
     <div
       className={`
-        navbar shadow relative gradation
-        bg-base-100`}
+        gradation bg-gradient-to-l
+        bg-base-100
+        navbar relative`}
     >
       <div className="flex flex-1">
       </div>

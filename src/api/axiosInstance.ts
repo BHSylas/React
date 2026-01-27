@@ -14,7 +14,6 @@ api.interceptors.request.use((config) => {
     // 요청 전에 직접 만료 체크
     if (isTokenExpired(token)) {
       localStorage.removeItem("token");
-      window.location.href = "/login";
       return Promise.reject("Token expired before request.");
     }
 

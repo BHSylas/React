@@ -1,84 +1,58 @@
-import { useEffect, useRef, useState } from "react";
-import { api } from "../../api/axiosInstance";
-import AnchorBar from "../../components/Home/Anchor";
-import type { FeedDto } from "../../types/FeedDto";
-import { HEADER_IMAGES } from "../../../public/para/headerImages";
-import FeedList from "../../components/Home/FeedList";
+import worldimg from "../../assets/worldMap.png";
 
 export default function Home() {
-  const init = useRef(true);
-  const [feedItems, setFeedItems] = useState<FeedDto[]>([]);
-  const [index, setIndex] = useState(0);
-  const [isFading, setIsFading] = useState(false);
-  useEffect(() => {
-    const interval = setInterval(() => {
-      requestAnimationFrame(() => {
-        setIsFading(true);
-      });
-      setTimeout(() => {
-        setIndex((prev) => (prev + 1) % HEADER_IMAGES.length);
-        setIsFading(false);
-      }, 500);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
-  const nextIndex = (index + 1) % HEADER_IMAGES.length;
-
-  useEffect(() => { // On Initial Load
-    api.get('/feed').then(res => {
-      setFeedItems(res.data);
-    }).catch((err : any) => {
-      console.error(err);
-    }).finally(() => {
-      init.current = false;
-    });
-  }, []);
-
-  if(feedItems.length === 0) {
-    return <div className="text-center py-10">로딩 중...</div>;
-  }
   return (
-    <div className="max-w-5xl mx-auto space-y-4">
-        <div className="bg-base-200 rounded-xl shadow text-base-content/60">
-            <div className="flex flex-col">
-                <div className="relative w-full h-80 overflow-hidden rounded-t-xl">
-                  <img
-                    src={HEADER_IMAGES[nextIndex].src}
-                    className="absolute inset-0 w-full h-full object-cover"
-                    style={{ transform: "scale(1.1)", objectPosition: HEADER_IMAGES[nextIndex].pos }}
-                  />
-
-                  {/* Foreground (이번 이미지, 애니메이션 담당) */}
-                  <img
-                    key={index}
-                    src={HEADER_IMAGES[index].src}
-                    className={`
-                      absolute inset-0 w-full h-full object-cover
-                      will-change-opacity
-                      transition-opacity duration-500 ease-in-out
-                      ${isFading ? "opacity-0" : "opacity-100"}
-                    `}
-                    style={{ transform: "scale(1.1)", objectPosition: HEADER_IMAGES[index].pos }}
-                    />
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-black/30" />
-                    
-                  {/* Title */}
-                  <div className="absolute inset-0 flex flex-col items-center justify-end">
-                    <h1 className="text-3xl md:text-5xl lg:text-7xl font-bold text-gray-200 drop-shadow-lg">
-                      Paralympic Studio
-                    </h1>
-                    <div className="flex p-2 mt-2 bg-transparent">
-                      <AnchorBar/>
+    <div className="p-7 rounded-xl">
+      <header className="text-center">
+        <h1 className="text-7xl text-blue-800 font-bold m-10">LMS</h1>
+        <p>프로토타입 페이지</p>
+      </header>
+      <div className="divider"/>
+      <div className='mainboard'>
+          <section>
+              <div className="flex justify-center align-center bg-[#d2f7ff] rounded-xl p-3 mb-3">
+                  <img src={worldimg} alt='worldimg'></img>
+              </div>
+          </section>
+          <section className='flex flex-col gap-5 mt-5'>
+              <h3 className="text-lg font-bold pl-2">추천 강좌</h3>
+              <div className="flex justify-start text-start align-center">
+                  <div className='bg-cyan-200 rounded-xl pt-4'>
+                    <div className="py-5 pl-4 pr-36 flex flex-col gap-1">
+                      <h3 className="text-lg font-bold">모두에게 추천받는 <br/>인기 강좌 신청하기</h3>
+                      <button className="bg-sky-800 rounded-xl font-bold text-slate-100 px-8 py-2 my-2 hover:shadow">전체 보기</button>
                     </div>
                   </div>
-                </div>
-            </div>
-            <div className="divider" />
-            <div className="rounded-xl shadow p-6">
-                <FeedList feedItems={feedItems} />
-            </div>
-        </div>
+                  <div className='topPickClassList'>
+                      <div>
+                        {/*Placeholder of list*/}
+                      </div>
+                  </div>
+              </div>
+              <h3 className="text-lg font-bold pl-2">최신 강좌</h3>
+              <div className="flex justify-start text-start align-center">
+                  <div className='bg-cyan-100 rounded-xl pt-4'>
+                    <div className="py-5 pl-4 pr-36 flex flex-col gap-1">
+                      <h3 className="text-lg font-bold">따끈따끈 새 강좌 <br/>가장 먼저 신청하기</h3>
+                      <button className="bg-sky-800 rounded-xl font-bold text-slate-100 px-8 py-2 my-2 hover:shadow">전체 보기</button>
+                    </div>
+                  </div>
+                  <div className='topPickClassList'>
+                      <div>
+                        {/*Placeholder of list*/}
+                      </div>
+                  </div>
+              </div>
+          </section>
+          <section>
+              <h3 className="text-lg font-bold mt-5 pl-2">커뮤니티</h3>
+              <div className="divider bg-blue-950 h-0.5 rounded-xl" />
+              <div className="p-3 mx-2">
+                <p>목록 없음</p>
+                  {/*Placeholder of list*/}
+              </div>
+          </section>
+      </div>
     </div>
   );
 }

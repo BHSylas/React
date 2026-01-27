@@ -1,22 +1,25 @@
+// context/AuthContext.ts
 import { createContext } from "react";
 
 export interface AuthContextType {
   isLoggedIn: boolean;
-  loginToken: string | null;
-  username: string | null;
-  email: string | null;
-  point: number | null;
+  token: string | null;
+  name: string | null;
+  nickname: string | null;
   isAuthReady: boolean;
-  login: (token: string, username: string, email: string | null, point: number | null) => void;
+  login: (payload: {
+    token: string;
+    name: string;
+    nickname: string;
+  }) => void;
   logout: () => void;
 }
 
 export const AuthContext = createContext<AuthContextType>({
   isLoggedIn: false,
-  loginToken: null,
-  username: null,
-  email: null,
-  point: null,
+  token: null,
+  name: null,
+  nickname: null,
   isAuthReady: false,
   login: () => {},
   logout: () => {},

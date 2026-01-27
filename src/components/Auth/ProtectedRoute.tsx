@@ -11,7 +11,7 @@ export default function ProtectedRoute({ children }: { children: JSX.Element }) 
 
   if (!isLoggedIn) {
     localStorage.setItem("requireLogin", "yes");
-    return <Navigate to="/feed" replace/>;
+    return <Navigate to="/" replace/>;
   }
 
   return children;
