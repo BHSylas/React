@@ -1,4 +1,4 @@
-import worldimg from "../../assets/worldMap.png";
+import worldimg from "/worldMap.png";
 
 export default function Home() {
   return (

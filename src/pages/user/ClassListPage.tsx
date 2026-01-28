@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import ClassBoardSidebar from "../../components/class/list/ClassBoardSidebar";
 import ClassList from "../../components/class/list/ClassList";
 import { type ClassItem } from "../../types/ClassItem";
-import { api } from "../../api/axiosInstance";
+//import { api } from "../../api/axiosInstance";
 
 /* =========================
   테스트용 더미 데이터
@@ -22,7 +22,7 @@ const MOCK_CLASSES: ClassItem[] = [
     title: "Words for Cafe",
     professor: "James J. Johnson",
     level: "초급",
-    description: "This is apple",
+    description: "This is apple.",
     categoryId: "en",
   },
   {
@@ -38,7 +38,7 @@ const MOCK_CLASSES: ClassItem[] = [
     title: "Einführung in die deutsche Sprachwissenschaft",
     professor: "Friedrich Müller",
     level: "초급",
-    description: "Schweinhund",
+    description: "Schweinhund...",
     categoryId: "de",
   },
   {
@@ -57,6 +57,14 @@ const MOCK_CLASSES: ClassItem[] = [
     description: "我爱北京天安门。",
     categoryId: "cn",
   },
+  {
+    id: "7",
+    title: "日常会話達人",
+    professor: "竜田 二郞",
+    level: "상급",
+    description: "暗黒空手イヤーッ！",
+    categoryId: "jp",
+  },
 ];
 
 async function fetchClasses(params: {
@@ -66,13 +74,13 @@ async function fetchClasses(params: {
   // 실제 API 요청 (백엔드 준비 후)
   // =========================
   console.log(params); //params가 사용되지 않는 문제 방지
-  const response = await api.get(
-    `/lecture/list`
-  );
-  if (response.data.length === 0) {
-    return MOCK_CLASSES;
-  }
-  return await response.data;
+  //const response = await api.get(`/lecture/list`);
+  //if (response.data.length === 0) {
+  //  throw new Error("No classes found");
+  //}
+  if(params.categoryId === "ALL") return MOCK_CLASSES;
+  else return MOCK_CLASSES.filter(c => c.categoryId === params.categoryId.toLowerCase());
+  //return await response.data;
 }
 
 
@@ -131,7 +139,7 @@ export function ClassListPage() {
   ========================= */
 
   return (
-    <div className="flex max-w-7xl mx-auto gap-6 py-6">
+    <div className="flex mx-auto gap-6 py-6">
       {/* Sidebar */}
       <ClassBoardSidebar
         selectedCategoryId={selectedCategoryId}

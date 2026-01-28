@@ -28,8 +28,8 @@ export function BoardListPage() {
     return null;
   }
   return (
-    <section className="max-w-7xl mx-auto px-6 py-8 space-y-6">
-      <div className="text-7xl text-center font-bold text-blue-800">Board</div>
+    <section className="mx-auto px-6 py-8 space-y-6">
+      <div className="text-7xl text-center font-bold text-blue-800">상단이 너무 심심해 보임</div>
       {/* 목록 */}
       <BoardListBlock boards={boards} />
       {/* 상단 액션 */}

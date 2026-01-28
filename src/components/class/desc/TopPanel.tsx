@@ -46,13 +46,18 @@ export default function TopPanel({
             </div>
           </div>
 
-          <div className="mt-6">
-            <p className="text-sm"></p>
+          <div className="mt-6 flex gap-3">
             <button
               type="button"
               className="px-6 py-3 rounded-md bg-blue-600 hover:bg-blue-700 transition-colors text-sm font-semibold"
             >
               수강 신청하기
+            </button>
+            <button
+              type="button"
+              className="px-6 py-3 rounded-md bg-blue-600 hover:bg-blue-700 transition-colors text-sm font-semibold"
+            >
+              Q&A 바로가기(수강 중인 경우에만 표시)
             </button>
           </div>
         </div>

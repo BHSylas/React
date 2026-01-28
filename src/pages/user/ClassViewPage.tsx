@@ -1,9 +1,9 @@
 import { useParams } from "react-router-dom";
 import Overview from "../../components/class/desc/Overview";
 import TopPanel from "../../components/class/desc/TopPanel";
-import ReviewBlock from "../../components/review/ReviewBlock";
+import ReviewBlock from "../../components/class/review/ReviewBlock";
 
-export default function ClassViewPage() {
+export default function ClassViewPage() { //현재 테스트 데이터 삽입 중
     const classId = useParams().classId;
   return (
     <main>

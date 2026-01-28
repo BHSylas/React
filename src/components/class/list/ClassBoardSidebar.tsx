@@ -14,7 +14,7 @@ interface SidebarCategory {
 
 const CATEGORIES: SidebarCategory[] = [
   {
-    id: "all",
+    id: "ALL",
     title: "전체 강의",
     children: [
       { id: "en", title: "영어" },
