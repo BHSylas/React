@@ -15,7 +15,9 @@ export default function ClassList({ classList, dimmed }: ClassListProps) {
       }`}
     >
       {classList.map((item) => (
-        <ClassListItem key={item.id} item={item} />
+        <div className="block" key={item.lectureId}>
+          <ClassListItem key={item.lectureId} item={item} />
+        </div>
       ))}
     </div>
   );
@@ -24,12 +26,12 @@ export default function ClassList({ classList, dimmed }: ClassListProps) {
 function ClassListItem({ item }: { item: ClassItem }) {
   const navigate = useNavigate();
   return (
-    <div className="flex gap-4 p-3 border rounded-lg cursor-pointer hover:shadow-lg transition-shadow" onClick={() => {navigate(`/class/${item.id}`)}}>
+    <div className="flex gap-4 p-3 border rounded-lg cursor-pointer hover:shadow-lg transition-shadow" onClick={() => {navigate(`/class/${item.lectureId}`)}}>
       <div className="w-40 h-24 bg-gray-300 rounded" />
       <div>
         <h3 className="font-bold">{item.title}</h3>
         <p className="text-sm text-gray-600">
-          {item.professor} · {item.level}
+          {item.professorNickname} · {item.country}
         </p>
         <p className="text-sm mt-2 text-gray-700">
           {item.description}

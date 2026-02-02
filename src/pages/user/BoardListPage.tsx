@@ -28,15 +28,13 @@ const MOCK_BOARDS: Board[] = [
 
 export function BoardListPage() {
   const [boards, setBoards] = useState<Board[]>(MOCK_BOARDS);
+  const [activeTab, setActiveTab] = useState<Category>('공지사항');
+  const [allBoards] = useState<Board[]>(MOCK_BOARDS);
+  const filteredBoards = allBoards.filter(board => board.category === activeTab);
   if (boards.length === 0) {
     setBoards(MOCK_BOARDS);
     return null;
   }
-
-  const [activeTab, setActiveTab] = useState<Category>('공지사항');
-  const [allBoards] = useState<Board[]>(MOCK_BOARDS);
-  const filteredBoards = allBoards.filter(board => board.category === activeTab);
-
   return (
     <section className="mx-auto px-6 py-8 space-y-6">
       {/* <div className="text-7xl text-center font-bold text-blue-800">상단이 너무 심심해 보임</div> */}

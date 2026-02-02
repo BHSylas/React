@@ -1,8 +1,8 @@
 export interface ClassItem {
-  id: string;
+  lectureId: string;
   title: string;
-  professor: string;
-  level: string;
+  professorNickname: string;
+  country: string;
   description: string;
-  categoryId: string;
+  language: string;
 }

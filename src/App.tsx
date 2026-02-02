@@ -13,6 +13,7 @@ import { BoardListPage } from "./pages/user/BoardListPage";
 import MyPage from "./pages/user/MyPage";
 import { BoardViewPage } from "./pages/user/BoardViewPage";
 import UnityTestPage from "./pages/user/UnityTestPage";
+import NewClassPage from "./pages/prof/NewClassPage";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
                 <Route path="/my" element={<MyPage />} />
                 <Route path="/class" element={<ClassListPage />} />
                 <Route path="/class/:classId" element={<ClassViewPage />} />
+                <Route path="/class/new" element={<NewClassPage />} />
                 <Route path="/board" element={<BoardListPage />} />
                 <Route path="/board/:postId" element={<BoardViewPage />} />
                 <Route path="/unity-test" element={<UnityTestPage />} />

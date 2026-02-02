@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import ClassBoardSidebar from "../../components/class/list/ClassBoardSidebar";
 import ClassList from "../../components/class/list/ClassList";
 import { type ClassItem } from "../../types/ClassItem";
+import { api } from "../../api/axiosInstance";
 // import { ta } from "date-fns/locale";
 
 //import { api } from "../../api/axiosInstance";
@@ -16,81 +17,20 @@ const LANGUAGE_MAP: Record<string, string> = {
   "Germany" : "de",
   "Italy" : "it",
   "China" : "cn",
-}
-
-const MOCK_CLASSES: ClassItem[] = [
-  {
-    id: "1",
-    title: "너도 할 수 있다! 실전 영어",
-    professor: "홍길동",
-    level: "초급",
-    description: "대중교통에서 쓸 수 있는 영어를 배워봅니다.",
-    categoryId: "en",
-  },
-  {
-    id: "2",
-    title: "Words for Cafe",
-    professor: "James J. Johnson",
-    level: "초급",
-    description: "This is apple.",
-    categoryId: "en",
-  },
-  {
-    id: "3",
-    title: "日常会話入門",
-    professor: "竜田 一郞",
-    level: "초급",
-    description: "ニンジャ何で？",
-    categoryId: "jp",
-  },
-  {
-    id: "4",
-    title: "Einführung in die deutsche Sprachwissenschaft",
-    professor: "Friedrich Müller",
-    level: "초급",
-    description: "Schweinhund...",
-    categoryId: "de",
-  },
-  {
-    id: "5",
-    title: "Imparare l'italiano facilmente",
-    professor: "Giovanni Rossi",
-    level: "초급",
-    description: "Mama mia",
-    categoryId: "it",
-  },
-  {
-    id: "6",
-    title: "基础汉语入门",
-    professor: "王伟",
-    level: "초급",
-    description: "我爱北京天安门。",
-    categoryId: "cn",
-  },
-  {
-    id: "7",
-    title: "日常会話達人",
-    professor: "竜田 二郞",
-    level: "상급",
-    description: "暗黒空手イヤーッ！",
-    categoryId: "jp",
-  },
-];
-
+};
 async function fetchClasses(params: {
   categoryId: string;
 }): Promise<ClassItem[]> {
   // =========================
   // 실제 API 요청 (백엔드 준비 후)
   // =========================
-  console.log(params); //params가 사용되지 않는 문제 방지
-  //const response = await api.get(`/lecture/list`);
-  //if (response.data.length === 0) {
-  //  throw new Error("No classes found");
-  //}
-  if(params.categoryId === "ALL") return MOCK_CLASSES;
-  else return MOCK_CLASSES.filter(c => c.categoryId === params.categoryId.toLowerCase());
-  //return await response.data;
+  const response = await api.get(`/lectures?page=0&size=5&language=${params.categoryId}&enrolling=false`);
+  if (response.data.length === 0) {
+    throw new Error("No classes found");
+  }
+  //if(params.categoryId === "ALL") return MOCK_CLASSES;
+  //else return MOCK_CLASSES.filter(c => c.categoryId === params.categoryId.toLowerCase());
+  return await response.data.content;
 }
 
 
@@ -99,7 +39,14 @@ export function ClassListPage() {
       상태 정의
   ========================= */
 
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("ALL");
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>(() => {
+    const savedLang = sessionStorage.getItem("language");
+    if (savedLang && LANGUAGE_MAP[savedLang]) {
+      sessionStorage.removeItem("language");
+      return LANGUAGE_MAP[savedLang];
+    }
+    return "ALL";
+  });
   const [classList, setClassList] = useState<ClassItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -112,7 +59,6 @@ export function ClassListPage() {
   async (categoryId: string) => {
     setIsLoading(true);
     setError(null);
-
     try {
       const result = await fetchClasses({ categoryId });
       setClassList(result);
@@ -134,16 +80,6 @@ export function ClassListPage() {
   useEffect(() => {
     requestClasses(selectedCategoryId);
   }, [selectedCategoryId, requestClasses]);
-
-  useEffect(() => {
-    const savedLang = sessionStorage.getItem("language");
-    if(savedLang) {
-      const targetId = LANGUAGE_MAP[savedLang];
-      if(targetId) {
-        setSelectedCategoryId(targetId);
-      }sessionStorage.removeItem("language");
-    }
-  })
 
   /* =========================
      Sidebar Callback

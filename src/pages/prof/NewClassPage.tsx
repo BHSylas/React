@@ -1,0 +1,97 @@
+import { useState } from "react";
+import { api } from "../../api/axiosInstance";
+
+type Language = "en" | "jp" | "de" | "it" | "cn";
+
+export default function NewClassPage() {
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [country, setCountry] = useState("");
+    const [language, setLanguage] = useState<Language>("en");
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        setError(null);
+
+        try {
+            const payload = {
+                title,
+                description,
+                country,
+                language,
+            };
+
+            const res = await api.post("/instructor/lectures", payload);
+            console.log("Create class success:", res.data);
+
+            // 테스트 단계에서는 일단 alert / console 정도로 충분
+            alert("Class created successfully");
+        } catch (err) {
+            console.error(err);
+            setError("Failed to create class");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="p-8 flex justify-center">
+            <h1>New Class</h1>
+
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label>Title</label><br />
+                    <input
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        required
+                        placeholder="Class Title"
+                    />
+                </div>
+
+                <div>
+                    <label>Description</label><br />
+                    <textarea
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        required
+                        placeholder="Class Description"
+                    />
+                </div>
+
+                <div>
+                    <label>Country</label><br />
+                    <input
+                        value={country}
+                        onChange={(e) => setCountry(e.target.value)}
+                        required
+                        placeholder="Country"
+                    />
+                </div>
+
+                <div>
+                    <label>Language</label><br />
+                    <select
+                        value={language}
+                        onChange={(e) => setLanguage(e.target.value as Language)}
+                    >
+                        <option value="en">English</option>
+                        <option value="jp">Japanese</option>
+                        <option value="de">German</option>
+                        <option value="it">Italian</option>
+                        <option value="cn">Chinese</option>
+                    </select>
+                </div>
+
+                {error && <p style={{ color: "red" }}>{error}</p>}
+
+                <button type="submit" disabled={loading}>
+                    {loading ? "Submitting..." : "Create"}
+                </button>
+            </form>
+        </div>
+    );
+}

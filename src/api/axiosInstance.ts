@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 export const api = axios.create({
   baseURL: "/api",
+  withCredentials: true,
 });
 
 // 요청 인터셉터
