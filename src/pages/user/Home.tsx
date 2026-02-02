@@ -1,11 +1,14 @@
+import { useNavigate } from "react-router-dom";
 import worldimg from "/worldMap.png";
 
 export default function Home() {
+  const navigate = useNavigate();
   return (
     <div className="p-7 rounded-xl">
       <header className="text-center">
         <h1 className="text-7xl text-blue-800 font-bold m-10">LMS</h1>
         <p>프로토타입 페이지</p>
+        <p className="cursor-pointer" onClick={() => {navigate("/unity-test")}}>🕹메타버스 한시적 넘겨주기...</p>
       </header>
       <div className="divider"/>
       <div className='mainboard'>

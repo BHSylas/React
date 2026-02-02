@@ -24,7 +24,7 @@ export function UnityCanvas() {
           streamingAssetsUrl: "/unity/StreamingAssets",
         },
         (progress: number) => console.log("Unity loading:", progress)
-      ).then((instance: any) => {
+      ).then((instance: never) => {
         // @ts-expect-error : unityInstance added to window
         window.unityInstance = instance;
       });
