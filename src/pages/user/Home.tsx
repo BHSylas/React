@@ -1,6 +1,6 @@
 // import worldimg from "/worldMap.png";
-import WorldMap from "../../components/home/WorldMap";
-import { useNavigate } from "react-router-dom";
+import WorldMapComponent from "./WorldMap";
+import { useNavigate } from "react-router";
 
 export default function Home() {
   const navigate = useNavigate();
