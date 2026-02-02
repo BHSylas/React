@@ -1,5 +1,9 @@
 # React + TypeScript + Vite
 
+이 프로젝트는 빌드 툴로 Vite를 사용합니다.
+
+npm run dev로 테스트 환경을 가동, npm run build로 코드 빌드를 시작합니다.
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
