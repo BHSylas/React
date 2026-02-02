@@ -27,6 +27,9 @@ export default function RegisterForm() {
         password,
         name,
         nickname,
+      }).then((response) => {
+        alert("회원가입이 완료되었습니다.");
+        console.log("회원가입 성공:", response.data);
       });
       navigate("/");
     } catch (err: any) {

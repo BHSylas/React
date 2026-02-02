@@ -96,7 +96,7 @@ async function fetchClasses(params: {
 
 export function ClassListPage() {
   /* =========================
-     상태 정의
+      상태 정의
   ========================= */
 
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("ALL");
@@ -105,7 +105,7 @@ export function ClassListPage() {
   const [error, setError] = useState<string | null>(null);
 
   /* =========================
-     단일 검색 메서드
+      단일 검색 메서드
   ========================= */
 
   const requestClasses = useCallback(
