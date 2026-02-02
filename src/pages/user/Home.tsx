@@ -1,5 +1,5 @@
-import { useNavigate } from "react-router-dom";
-import WorldMap from "../../components/home/WorldMap";
+// import worldimg from "/worldMap.png";
+import WorldMapComponent from "./WorldMap";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ export default function Home() {
       <div className="divider"/>
       <div className='mainboard'>
           <section>
-              <WorldMap />
+                  < WorldMapComponent />
           </section>
           <section className='flex flex-col gap-5 mt-5'>
               <h3 className="text-lg font-bold pl-2">추천 강좌</h3>
