@@ -2,11 +2,21 @@ import { useEffect, useState, useCallback } from "react";
 import ClassBoardSidebar from "../../components/class/list/ClassBoardSidebar";
 import ClassList from "../../components/class/list/ClassList";
 import { type ClassItem } from "../../types/ClassItem";
+// import { ta } from "date-fns/locale";
+
 //import { api } from "../../api/axiosInstance";
 
 /* =========================
   테스트용 더미 데이터
 ========================= */
+
+const LANGUAGE_MAP: Record<string, string> = {
+  "Japan" : "jp",
+  "USA" : "en",
+  "Germany" : "de",
+  "Italy" : "it",
+  "China" : "cn",
+}
 
 const MOCK_CLASSES: ClassItem[] = [
   {
@@ -124,6 +134,16 @@ export function ClassListPage() {
   useEffect(() => {
     requestClasses(selectedCategoryId);
   }, [selectedCategoryId, requestClasses]);
+
+  useEffect(() => {
+    const savedLang = sessionStorage.getItem("language");
+    if(savedLang) {
+      const targetId = LANGUAGE_MAP[savedLang];
+      if(targetId) {
+        setSelectedCategoryId(targetId);
+      }sessionStorage.removeItem("language");
+    }
+  })
 
   /* =========================
      Sidebar Callback

@@ -1,4 +1,5 @@
-import worldimg from "/worldMap.png";
+// import worldimg from "/worldMap.png";
+import WorldMapComponent from "./WorldMap";
 
 export default function Home() {
   return (
@@ -10,9 +11,7 @@ export default function Home() {
       <div className="divider"/>
       <div className='mainboard'>
           <section>
-              <div className="flex justify-center align-center bg-[#d2f7ff] rounded-xl p-3 mb-3">
-                  <img src={worldimg} alt='worldimg'></img>
-              </div>
+                  < WorldMapComponent />
           </section>
           <section className='flex flex-col gap-5 mt-5'>
               <h3 className="text-lg font-bold pl-2">추천 강좌</h3>
