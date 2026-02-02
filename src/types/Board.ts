@@ -4,4 +4,5 @@ export interface Board {
   author: string;
   createdAt: string;
   viewCount: number;
+  category: string;
 }

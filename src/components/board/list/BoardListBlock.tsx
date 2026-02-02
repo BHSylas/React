@@ -12,7 +12,7 @@ export function BoardListBlock({ boards }: BoardListBlockProps) {
       {boards.map((board) => (
         <div
           key={board.id}
-          className="grid grid-cols-[1fr_120px_120px_80px]
+          className="grid grid-cols-[1fr_120px_120px_120px_70px]
                      gap-4 px-3 py-3 border-b text-sm cursor-pointer"
           onClick={() => {
             navigate(`/board/${board.id}`);
@@ -22,6 +22,7 @@ export function BoardListBlock({ boards }: BoardListBlockProps) {
             {board.title}
           </div>
           <div>{board.author}</div>
+          <div>{board.category}</div>
           <div>{board.createdAt}</div>
           <div className="text-right">{board.viewCount}</div>
         </div>
