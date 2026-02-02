@@ -1,3 +1,5 @@
+import { api } from "../../../api/axiosInstance";
+
 interface TopPanelProps {
   title: string;
   instructor: string;
@@ -5,6 +7,8 @@ interface TopPanelProps {
   level: string;
   duration: string;
   thumbnailUrl?: string;
+  classId?: string;
+  isEnrolling?: boolean;
 }
 
 export default function TopPanel({
@@ -14,7 +18,18 @@ export default function TopPanel({
   level,
   duration,
   thumbnailUrl,
+  classId,
+  isEnrolling = false,
 }: TopPanelProps) {
+  const enrolling = () => {
+    api.post(`/me/enrollments/${classId}`)
+    .then((res) => {
+      console.log(res.data);
+    })
+    .catch((err : any) => {
+      console.error(err);
+    });
+  }
   return (
     <section className="bg-slate-800 text-white">
       <div className="max-w-7xl mx-auto px-6 py-8 flex gap-8">
@@ -46,19 +61,30 @@ export default function TopPanel({
             </div>
           </div>
 
-          <div className="mt-6 flex gap-3">
-            <button
+          <div className="mt-6">
+            {isEnrolling ?
+            <div className="flex gap-3">
+              <button
               type="button"
               className="px-6 py-3 rounded-md bg-blue-600 hover:bg-blue-700 transition-colors text-sm font-semibold"
+            >
+              수강하기
+            </button>
+              <button
+              type="button"
+              className="px-6 py-3 rounded-md bg-blue-600 hover:bg-blue-700 transition-colors text-sm font-semibold"
+            >
+              Q&A 바로가기
+            </button>
+            </div>
+            : <button
+              type="button"
+              className="px-6 py-3 rounded-md bg-blue-600 hover:bg-blue-700 transition-colors text-sm font-semibold"
+              onClick={enrolling}
             >
               수강 신청하기
-            </button>
-            <button
-              type="button"
-              className="px-6 py-3 rounded-md bg-blue-600 hover:bg-blue-700 transition-colors text-sm font-semibold"
-            >
-              Q&A 바로가기(수강 중인 경우에만 표시)
-            </button>
+            </button>}
+
           </div>
         </div>
       </div>

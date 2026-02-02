@@ -9,10 +9,14 @@ import type { ClassItem } from "../../types/ClassItem";
 export default function ClassViewPage() { //현재 테스트 데이터 삽입 중
     const classId = useParams().classId;
     const [page, setPage] = useState<ClassItem | null>(null);
+    const [enrolling, setEnrolling] = useState(true);
     useEffect(() => {
       api.get(`/lectures/${classId}`).then((res) => {
         setPage(res.data);
-      })
+      });
+      api.get(`/me/enrollments/${classId}`).catch(() => {
+        setEnrolling(false);
+      });
     }, []);
     if(page === null) {
     return <div>Loading...</div>;
@@ -25,6 +29,8 @@ export default function ClassViewPage() { //현재 테스트 데이터 삽입 �
         category={page.language.toUpperCase()}
         level={page.country}
         duration=""
+        classId={classId}
+        isEnrolling={enrolling}
       />
 
       <Overview
