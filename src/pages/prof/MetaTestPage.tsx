@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 // import { LABEL_MAP } from "../../components/metaverse/testConstants";
 import { useTestLogic } from "../../components/metaverse/useTestLogic";
+import { api } from "../../api/axiosInstance";
 
 interface NPCDetail {
     id: number;
@@ -23,26 +24,25 @@ const MetaTestPage = () => {
 
     useEffect(() => {
         if (id) {
-            const idParts = id.split(':');
-            const cleanId = idParts[idParts.length - 1];
-            const token = localStorage.getItem("token");
-
-            fetch(`/api/professor/npc/list/${cleanId}`, {
+            /*fetch(`/api/professor/npc/list/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
-            }).then(res => {
-                if (!res.ok) throw new Error(`서버 응답 오류: ${res.status}`);
-                return res.json() as Promise<NPCDetail>;
+            })*/
+           api.get(`/professor/npc/list/${id}`) //api는 axios 인스턴스, 토큰을 자동으로 포함하며 import가 필요합니다
+           .then(res => {
+                if (!res) throw new Error(`서버 응답 오류`);
+                setData(res.data as NPCDetail);
+                //return res.data as Promise<NPCDetail>; // setData를 즉시 적용할 수 있기 때문에 Promise를 반환하지 않아도 됩니다
             })
-                .then((data: any) => {
+                /*.then((data: any) => { // Promise를 반환하지 않기 때문에 이제 사용하지 않아도 됩니다
                     console.log("받은 데이터: ", data);
                     setData(data as NPCDetail);
-                })
-                .catch(err => {
-                    console.error("데이터 로드 실패: ", err);
-                    setData(null);
-                });
+                })*/
+            .catch(err => { //catch는 그대로 둬도 됩니다
+                console.error("데이터 로드 실패: ", err);
+                setData(null);
+            });
         }
     }, [id]);
 
