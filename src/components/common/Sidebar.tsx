@@ -39,7 +39,13 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
         `}
       >
-        <div className="px-3 py-4 text-left text-2xl font-bold">메뉴</div>
+        <div className="px-3 py-4 
+        text-left text-2xl font-bold
+        flex justify-between border-b border-gray-300
+        ">
+          <p>메뉴</p>
+          <div className="cursor-pointer px-2" onClick={onClose}>X</div>
+        </div>
         <button
           className="px-3 py-4 text-left transition-all hover:bg-blue-50 hover:text-blue-800 text-lg font-bold"
           onClick={() => handleNavigate("/")}

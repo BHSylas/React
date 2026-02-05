@@ -19,9 +19,9 @@ export function Navbar({onMenuClick} : NavbarProps) {
   useEffect(() => {
     const onScroll = () => {
       const currentY = window.scrollY;
-      if (currentY > lastScrollY.current && currentY > 50) {
+      if (currentY > lastScrollY.current + 25 && currentY > 50) {
         setVisible(false); // 아래로 스크롤
-      } else {
+      } else if (currentY < lastScrollY.current) {
         setVisible(true); // 위로 스크롤
       }
       lastScrollY.current = currentY;
