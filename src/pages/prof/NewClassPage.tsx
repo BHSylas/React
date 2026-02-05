@@ -38,13 +38,14 @@ export default function NewClassPage() {
     };
 
     return (
-        <div className="p-8 flex justify-center">
-            <h1>New Class</h1>
+        <div className="p-8 flex flex-col items-center">
+            <h1 className="text-5xl font-bold">New Class</h1>
 
-            <form onSubmit={handleSubmit}>
+            <form className="w-full max-w-lg" onSubmit={handleSubmit}>
                 <div>
-                    <label>Title</label><br />
+                    <label className="text-xl font-bold">Title</label><br />
                     <input
+                        className="w-full text-lg p-2 border rounded-xl border-gray-300"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                         required
@@ -52,9 +53,10 @@ export default function NewClassPage() {
                     />
                 </div>
 
-                <div>
-                    <label>Description</label><br />
+                <div className="h-auto">
+                    <label className="text-xl font-bold">Description</label><br />
                     <textarea
+                        className="w-full text-lg p-2 border rounded-xl border-gray-300 h-auto overflow-y-auto resize-none"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         required
@@ -63,8 +65,9 @@ export default function NewClassPage() {
                 </div>
 
                 <div>
-                    <label>Country</label><br />
+                    <label className="text-xl font-bold">Country</label><br />
                     <input
+                        className="w-full text-lg p-2 border rounded-xl border-gray-300"
                         value={country}
                         onChange={(e) => setCountry(e.target.value)}
                         required
@@ -73,8 +76,9 @@ export default function NewClassPage() {
                 </div>
 
                 <div>
-                    <label>Language</label><br />
+                    <label className="text-xl font-bold">Language</label><br />
                     <select
+                        className="w-full text-lg p-2 border rounded-xl border-gray-300"
                         value={language}
                         onChange={(e) => setLanguage(e.target.value as Language)}
                     >
@@ -88,7 +92,7 @@ export default function NewClassPage() {
 
                 {error && <p style={{ color: "red" }}>{error}</p>}
 
-                <button type="submit" disabled={loading}>
+                <button className="w-full text-lg mt-8 p-2 border rounded-xl border-gray-300" type="submit" disabled={loading}>
                     {loading ? "Submitting..." : "Create"}
                 </button>
             </form>
