@@ -15,7 +15,7 @@ export function MenuDropdown({ isOpen, close }: DropdownProps) {
     return(
       <div
         className={`
-          absolute left-0 z-50 flex-col shadow-xl w-60
+          fixed left-0 z-50 flex-col shadow-xl w-60 h-screen
           bg-base-100 text-base-content rounded-xl
           ${isOpen ? "flex" : "hidden"}
         `}

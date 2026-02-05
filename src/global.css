@@ -1,0 +1,3 @@
+.fixed-padding-adjust {
+  padding-right: var(--scrollbar-width, 0px);
+}
