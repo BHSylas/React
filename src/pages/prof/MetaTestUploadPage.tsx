@@ -15,7 +15,7 @@ const INITIAL_FORM = {
     level: 'BEGINNER',
     npcScript: '',
     question: '',
-    answers: '' as string | string[],
+    answers: [] as string[],
     options: [] as string[],
     explanation: '',
     nextConversationId: null as number | null,
@@ -42,7 +42,9 @@ export function MetaTestUpload() {
                 setFormData({
                     ...INITIAL_FORM,
                     ...editData,
-                    answers: Array.isArray(editData.answers) ? editData.answers.join(',') : editData.answers
+                    answers: Array.isArray(editData.answers)
+                        ? editData.answers              // 배열이면 그대로 사용
+                        : [editData.answers].filter(Boolean) // 문자열이면 배열로 감싸고, null/undefined 제거
                 });
                 setCurrentSavedId(Number(id));
                 fetchCandidates(Number(id));
@@ -52,7 +54,9 @@ export function MetaTestUpload() {
                     setFormData({
                         ...INITIAL_FORM,
                         ...data,
-                        answers: Array.isArray(data.answers) ? data.answers.join(',') : data.answers
+                        answers: Array.isArray(editData.answers)
+                            ? editData.answers
+                            : [editData.answers].filter(Boolean)
                     });
                     setCurrentSavedId(Number(id));
                     fetchCandidates(Number(id));
@@ -89,7 +93,7 @@ export function MetaTestUpload() {
         setFormData(prev => ({
             ...prev,
             [name]: value,
-            ...(name === 'level' ? { answers: '' } : {})
+            ...(name === 'level' ? { answers: [] } : {})
         }));
     };
 
@@ -105,29 +109,21 @@ export function MetaTestUpload() {
         }
 
         try {
-            let formattedAnswers: string[] = [];
-            if (Array.isArray(formData.answers)) {
-                formattedAnswers = formData.answers.filter(Boolean);
-            } else if (typeof formData.answers === 'string') {
-                formattedAnswers = formData.answers.split(',').map((a: string) =>
-                    a.trim()).filter(Boolean);
-            }
-
             const payload = {
                 ...formData,
                 lectureId: Number(formData.lectureId),
-                options: Array.isArray(formData.options) ? formData.options : [],
-                answers: formattedAnswers,
-                nextConversationId: null,
+                options: Array.isArray(formData.options) ? formData.options.filter(a => a.trim() !== "") : [],
+                answers: Array.isArray(formData.answers) ? formData.answers.filter(a => a.trim() !== "") : [],
+                nextConversationId: formData.nextConversationId,
             };
-
-            const token = localStorage.getItem("token");
             console.log(formData);
+            console.log("최종 서버 전송 데이터:", payload);
+            const token = localStorage.getItem("token");
 
             const config = {
                 headers: {
                     'Content-Type': 'application/json',
-                    ...({ 'Authorization': `Bearer ${token}` })
+                    'Authorization': `Bearer ${token}`
                 }, withCredentials: true
             };
 
@@ -148,7 +144,11 @@ export function MetaTestUpload() {
                     fetchCandidates(newId);
                 }
             }
-        } catch (error) {
+        } catch (error: any) {
+            if (error.response) {
+                console.log("에러 상태: ", error.response.status);
+                console.log("에러 데이터: ", error.response.data);
+            }
             console.error("업로드 중 오류: ", error);
             alert("업로드 중 오류가 발생했습니다.");
         }
@@ -231,7 +231,8 @@ export function MetaTestUpload() {
                                     formData.options.map((opt, idx) => (
                                         <label key={idx} className='flex items-center gap-2 cursor-pointer'>
                                             <input type='radio' name='answers' value={opt}
-                                                checked={formData.answers === opt} onChange={handleInputChange} />
+                                                checked={formData.answers[0] === opt}
+                                                onChange={() => setFormData(prev => ({ ...prev, answers: [opt] }))} />
                                             <span>{opt}</span>
                                         </label>
                                     ))
@@ -246,15 +247,16 @@ export function MetaTestUpload() {
                                     <label key={idx} className="flex items-center gap-2 cursor-pointer">
                                         <input
                                             type="checkbox"
-                                            checked={(formData.answers as string).split(',').includes(opt)}
+                                            checked={formData.answers.includes(opt)}
                                             onChange={(e) => {
                                                 const isChecked = e.target.checked;
                                                 setFormData(prev => {
-                                                    const currentAnswers = formData.answers ? (formData.answers as string).split(',') : [];
+                                                    const currentAnswers = Array.isArray(formData.answers)
+                                                        ? prev.answers : [];
                                                     const newAnswers = isChecked
                                                         ? [...currentAnswers, opt]
                                                         : currentAnswers.filter(a => a !== opt);
-                                                    return { ...prev, answers: newAnswers.join(',') };
+                                                    return { ...prev, answers: newAnswers };
                                                 });
                                             }}
                                         />
@@ -267,7 +269,10 @@ export function MetaTestUpload() {
                             <textarea
                                 name="answers"
                                 value={formData.answers}
-                                onChange={handleInputChange}
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    setFormData(prev => ({ ...prev, answers: [val] }));
+                                }}
                                 placeholder="직접 정답을 입력하세요 (고급 난이도)"
                                 className="w-full min-h-[100px] box-border border border-black rounded-md p-3 resize-none leading-[1.5] [field-sizing:content]"
                             />
