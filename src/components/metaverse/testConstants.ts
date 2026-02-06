@@ -3,10 +3,10 @@ export const MAX_ATTEMPS = 3;
 export const LABEL_MAP: Record<string, Record<string, string>> = {
     country: {
         USA: '미국',
-        Japan: '일본',
-        China: '중국',
-        Germany: '독일',
-        Italy: '이탈리아'
+        JAPAN: '일본',
+        CHINA: '중국',
+        GERMANY: '독일',
+        ITALY: '이탈리아'
     },
     place: {
         CONVENIENCE_STORE: '편의점',

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 // import { LABEL_MAP } from "../../components/metaverse/testConstants";
 import { useTestLogic } from "../../components/metaverse/useTestLogic";
 import { api } from "../../api/axiosInstance";
@@ -19,8 +19,8 @@ interface NPCDetail {
 
 const MetaTestPage = () => {
     const { id } = useParams<{ id: string }>();
-
     const [data, setData] = useState<NPCDetail | null>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (id) {
@@ -29,24 +29,41 @@ const MetaTestPage = () => {
                     'Authorization': `Bearer ${token}`
                 }
             })*/
-           api.get(`/professor/npc/list/${id}`) //api는 axios 인스턴스, 토큰을 자동으로 포함하며 import가 필요합니다
-           .then(res => {
-                if (!res) throw new Error(`서버 응답 오류`);
-                setData(res.data as NPCDetail);
-                //return res.data as Promise<NPCDetail>; // setData를 즉시 적용할 수 있기 때문에 Promise를 반환하지 않아도 됩니다
-            })
+            api.get(`/professor/npc/list/${id}`) //api는 axios 인스턴스, 토큰을 자동으로 포함하며 import가 필요합니다
+                .then(res => {
+                    if (!res) throw new Error(`서버 응답 오류`);
+                    setData(res.data as NPCDetail);
+                    //return res.data as Promise<NPCDetail>; // setData를 즉시 적용할 수 있기 때문에 Promise를 반환하지 않아도 됩니다
+                })
                 /*.then((data: any) => { // Promise를 반환하지 않기 때문에 이제 사용하지 않아도 됩니다
                     console.log("받은 데이터: ", data);
                     setData(data as NPCDetail);
                 })*/
-            .catch(err => { //catch는 그대로 둬도 됩니다
-                console.error("데이터 로드 실패: ", err);
-                setData(null);
-            });
+                .catch(err => { //catch는 그대로 둬도 됩니다
+                    console.error("데이터 로드 실패: ", err);
+                    setData(null);
+                });
         }
     }, [id]);
 
     const logic = useTestLogic(data);
+
+    const handleEdit = () => {
+        navigate(`/metaverse/upload/${id}`);
+    };
+
+    const handleDelete = async (id: number) => {
+        if(!window.confirm("문제를 삭제하시겠습니까?")) return;
+
+        try {
+            await api.delete(`/professor/npc/delete/${id}`);
+            alert("삭제되었습니다.");
+            navigate(`/`);
+        } catch(error) {
+            console.error("삭제 중 오류 발생", error);
+            alert("삭제 중 오류가 발생했습니다.");
+        }
+    }
 
     if (!data) return <div>로딩 중...</div>;
 
@@ -58,8 +75,10 @@ const MetaTestPage = () => {
                     <p className="text-sm text-gray-500">대화 주제 : {data.topic}</p>
                 </div>
                 <div className="flex gap-3">
-                    <button className="bg-blue-800 text-white font-bold rounded-md pt-1 pb-1 pr-3 pl-3 hover:bg-blue-900">수정</button>
-                    <button className="bg-red-600 text-white font-bold rounded-md pt-1 pb-1 pr-3 pl-3 hover:bg-red-700">삭제</button>
+                    <button onClick={handleEdit}
+                    className="bg-blue-800 text-white font-bold rounded-md pt-1 pb-1 pr-3 pl-3 hover:bg-blue-900">수정</button>
+                    <button onClick={() => handleDelete(data.id)}
+                    className="bg-red-600 text-white font-bold rounded-md pt-1 pb-1 pr-3 pl-3 hover:bg-red-700">삭제</button>
                 </div>
             </div>
             <div className="grid justify-start items-center gap-3 border border-gray-300 rounded-md w-full p-4">
@@ -154,11 +173,11 @@ const MetaTestPage = () => {
                         <table>
                             <tbody>
                                 <tr><td className="py-1 px-3">결과</td>
-                                <td>{logic.isCorrect ? "정답" : "오답"}</td></tr>
+                                    <td>{logic.isCorrect ? "정답" : "오답"}</td></tr>
                                 <tr><td className="py-1 px-3">정답</td>
-                                <td>{Array.isArray(data.answers) ? data.answers.join(', ') : data.answers}</td></tr>
+                                    <td>{Array.isArray(data.answers) ? data.answers.join(', ') : (data.answers || "정답 정보 없음")}</td></tr>
                                 <tr><td className="py-1 px-3">해설</td>
-                                <td>{data.explanation}</td></tr>
+                                    <td>{data.explanation}</td></tr>
                             </tbody>
                         </table>
                     ) : (

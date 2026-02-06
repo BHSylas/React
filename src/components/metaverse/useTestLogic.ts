@@ -1,30 +1,37 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MAX_ATTEMPS } from "./testConstants";
 
 export function useTestLogic(data: any) {
-    const [userChoice, setUserChoice] = useState<string | string[]> (
-        data?.level === 'INTERMEDIATE' ? [] : ''
-    );
+    const [userChoice, setUserChoice] = useState<string | string[]>([]);
     const [attempts, setAttempts] = useState(0); // 문제 풀기 시도 횟수
     const [showResult, setShowResult] = useState(false); // 정답 해설 표시
     const [isCorrect, setIsCorrect] = useState<boolean | null>(null); // 답을 맞췄는지 오답인지
 
+    useEffect(() => {
+        if(data) {
+            setUserChoice(data.level === 'INTERMEDIATE' ? [] : '');
+        }
+    }, [data]);
+
     const handleSubmit = () => {
+        if(!data) return;
         let correct = false;
 
         if(data.level === 'INTERMEDIATE' && Array.isArray(data.answers)) { //중급 & 다중 선택지일 경우
             const choiceArray = userChoice as string[];
             
             correct = data.answers.length === choiceArray.length && 
-            choiceArray.every(val => data.answers.includes(val)); // 답 개수 확인, 선택한 답이 실제 답에 포함되었는지 체크
+            data.answers.every((val: string, idx: number) => val === choiceArray[idx]);
         } else if(data.level === 'ADVANCED') {
             const processedUserAnswer = (userChoice as string).trim().replace(/\s+/g, ' ');
-            const processedCorrectAnswer = (data.answers as string).trim().replace(/\s+/g, '');
+            const correctAnswer = Array.isArray(data.answers) ? data.answer[0] : data.answers;
+            const processedCorrectAnswer = (correctAnswer as string).trim().replace(/\s+/g, '');
 
             correct = processedUserAnswer === processedCorrectAnswer;
         }
         else {
-            correct = data.answers === userChoice; // 초급, 중급 다중 선택이 아닐 경우
+            const correctAnswer = Array.isArray(data.answers) ? data.answer[0] : data.answers;
+            correct = String(correctAnswer) === String(userChoice); // 초급, 중급 다중 선택이 아닐 경우
         }
 
         if(correct) {

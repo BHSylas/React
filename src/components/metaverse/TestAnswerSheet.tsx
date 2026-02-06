@@ -2,12 +2,19 @@ import React, { useState, type KeyboardEvent, type ChangeEvent, useEffect } from
 
 interface TestAnswerProps {
     onAnswersChange? : (newList: string[]) => void;
+    savedOptions? : string[];
 }
 
-const TestAnswer: React.FC<TestAnswerProps> = ({onAnswersChange}) => {
+const TestAnswer: React.FC<TestAnswerProps> = ({onAnswersChange, savedOptions}) => {
     const [inputValue, setInputValue] = useState<string>(''); // 입력중인 단어
-    const [wordList, setWordList] = useState<string[]>([]); // 등록된 단어
+    const [wordList, setWordList] = useState<string[]>(savedOptions || []); // 등록된 단어
 
+    useEffect(() => {
+        if(savedOptions) {
+            setWordList(savedOptions);
+        }
+    }, [savedOptions]);
+    
     useEffect(() => {
         onAnswersChange?.(wordList);
     }, [wordList, onAnswersChange]);
