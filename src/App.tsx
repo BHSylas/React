@@ -36,7 +36,7 @@ function App() {
                 <Route path="/board" element={<BoardListPage />} />
                 <Route path="/board/:postId" element={<BoardViewPage />} />
                 <Route path="/unity-test" element={<UnityTestPage />} />
-                <Route path="/metaverse/upload" element={<MetaTestUpload />} />
+                <Route path="/metaverse/upload/:id?" element={<MetaTestUpload />} />
                 <Route path="/metaverse/page/:id" element={<MetaTestPage />} />
               </Route>
             </Routes>

@@ -1,37 +1,88 @@
 import TestAnswer from '../../components/metaverse/TestAnswerSheet';
 import NpcInput from '../../components/metaverse/NpcInput';
 import NpcPreview from '../../components/metaverse/NpcPreview';
-import { type ChangeEvent, useCallback, useState } from 'react';
+import { type ChangeEvent, useCallback, useEffect, useState } from 'react';
 import UserInput from '../../components/metaverse/UserInput';
 import UserPreview from '../../components/metaverse/UserPreview';
+import { useLocation, useNavigate } from 'react-router';
+import { useParams } from 'react-router';
+import axios from 'axios';
+
+const INITIAL_FORM = {
+    lectureId: 1, // 강의 id 임의 값
+    country: 'USA',
+    place: 'CONVENIENCE_STORE',
+    level: 'BEGINNER',
+    npcScript: '',
+    question: '',
+    answers: '' as string | string[],
+    options: [] as string[],
+    explanation: '',
+    nextConversationId: null as number | null,
+    topic: '',
+};
 
 export function MetaTestUpload() {
-    // // NPC 대사 출력
-    // const [npcDialogue, setNpcDialogue] = useState<string>('');
-    // const handleDialogueChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    //     setNpcDialogue(e.target.value);
-    // };
-    // // 캐릭터 대사 출력(정답이 아닌 칸, 고급에 경우 안 써도 괜찮도록)
-    // const [charaText, setCharaText] = useState<string>('');
-    // const handleCharaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    //     setCharaText(e.target.value);
-    // };
+    const [formData, setFormData] = useState(INITIAL_FORM);
+    const [candidateList, setCandidateList] = useState<any[]>([]); // 연결 가능한 문제 업로드 목록
+    const [currentSavedId, setCurrentSavedId] = useState<number | null>(null); // 연결하는 문제 ID
 
-    // const [answers, setAnswers] = useState<string[]>([]);
+    const { id } = useParams<{ id: string }>(); //url에서 id추출
+    const location = useLocation();
+    const navigate = useNavigate();
 
-    const [formData, setFormData] = useState({
-        lectureId: 1, // 강의 id 임의 값
-        country: 'USA',
-        place: 'CONVENIENCE_STORE',
-        level: 'BEGINNER',
-        npcScript: '',
-        question: '',
-        answers: '',
-        options: [] as string[],
-        explanation: '',
-        nextConversationId: null,
-        topic: '',
-    });
+    // 수정모드 여부 확인
+    const editData = location.state?.editData;
+    const isEdit = !!id;
+
+    // 수정 시 데이터 채워넣기
+    useEffect(() => {
+        if (isEdit && id) {
+            if (editData) {
+                setFormData({
+                    ...INITIAL_FORM,
+                    ...editData,
+                    answers: Array.isArray(editData.answers) ? editData.answers.join(',') : editData.answers
+                });
+                setCurrentSavedId(Number(id));
+                fetchCandidates(Number(id));
+            } else {
+                axios.get(`/api/professor/npc/list/${id}`).then(res => {
+                    const data = res.data;
+                    setFormData({
+                        ...INITIAL_FORM,
+                        ...data,
+                        answers: Array.isArray(data.answers) ? data.answers.join(',') : data.answers
+                    });
+                    setCurrentSavedId(Number(id));
+                    fetchCandidates(Number(id));
+                }).catch(err => console.error("데이터 로드 실패:", err));
+            }
+        }
+    }, [id, isEdit, editData]);
+
+    const fetchCandidates = (id: number) => {
+        axios.get(`/api/professor/npc/next-candidates/${id}`).then(res => {
+            if (!res) throw new Error("문제 목록 업로드 실패");
+            setCandidateList(res.data);
+        }).catch(err => console.error("문제 목록 로드 실패: ", err));
+    };
+
+    const handleConnectNext = (targetNextId: string) => {
+        if (!currentSavedId) return alert("연결한 문제가 없습니다");
+
+        const nextId = targetNextId === "" ? null : Number(targetNextId);
+
+        axios.put(`/api/professor/npc/next/${currentSavedId}`, null, {
+            params: { nextConversationId: nextId }
+        }).then(() => {
+            alert("문제 연결이 완료되었습니다.");
+            setFormData(prev => ({ ...prev, nextConversationId: nextId }));
+        }).catch(err => {
+            console.log("연결 실패: ", err);
+            alert("연결 중 오류가 발생했습니다.");
+        });
+    };
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -43,57 +94,65 @@ export function MetaTestUpload() {
     };
 
     const handleOptionsChange = useCallback((newList: string[]) => {
-        setFormData(prev => {
-            if (JSON.stringify(prev.options) === JSON.stringify(newList)) {
-                return prev;
-            }
-            return { ...prev, options: newList }
-        });
+        setFormData(prev => ({
+            ...prev, options: newList
+        }));
     }, []);
 
     const handleSave = async () => {
-
-        let finalAnswers: string[] = [];
-
-        if(Array.isArray(formData.answers)) {
-            finalAnswers = formData.answers;
-        }
-        else if(typeof formData.answers === 'string' && formData.answers.trim() !== '') {
-            finalAnswers = formData.answers.split(',').map(a => a.trim()).filter(a => a !== '');
+        if (!formData.npcScript && !formData.question) {
+            return alert("NPC 대사 또는 질문을 입력해주세요.");
         }
 
-        const payload = {
-            lectureId: formData.lectureId,
-            country: formData.country,
-            place: formData.place,
-            level: formData.level,
-            npcScript: formData.npcScript,
-            question: formData.question,
-            answers: finalAnswers,
-            options: formData.options,
-            explanation: formData.explanation,
-            topic: formData.topic,
-            nextConversationId: formData.nextConversationId
-        };
-
-        const token = localStorage.getItem("token");
-
-        console.log("전송될 DTO 데이터: ", payload);
         try {
-            const response = await fetch('/api/professor/npc', {
-                method: 'POST',
+            let formattedAnswers: string[] = [];
+            if (Array.isArray(formData.answers)) {
+                formattedAnswers = formData.answers.filter(Boolean);
+            } else if (typeof formData.answers === 'string') {
+                formattedAnswers = formData.answers.split(',').map((a: string) =>
+                    a.trim()).filter(Boolean);
+            }
+
+            const payload = {
+                ...formData,
+                lectureId: Number(formData.lectureId),
+                options: Array.isArray(formData.options) ? formData.options : [],
+                answers: formattedAnswers,
+                nextConversationId: null,
+            };
+
+            const token = localStorage.getItem("token");
+            console.log(formData);
+
+            const config = {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(payload)
-            });
-            if (response.ok) alert("업로드 성공!");
+                    ...({ 'Authorization': `Bearer ${token}` })
+                }, withCredentials: true
+            };
+
+            if (isEdit) {
+                await axios.put(`/api/professor/npc/update/${id}`, payload, config);
+                alert("수정되었습니다.");
+                navigate(-1); // 전페이지
+                return;
+            }
+            else {
+                const res = await axios.post('/api/professor/npc', payload, config);
+
+                if (res && res.data) {
+                    const newId = res.data.id;
+                    setCurrentSavedId(newId);
+                    alert("업로드 되었습니다.");
+                    setFormData(INITIAL_FORM);
+                    fetchCandidates(newId);
+                }
+            }
         } catch (error) {
             console.error("업로드 중 오류: ", error);
+            alert("업로드 중 오류가 발생했습니다.");
         }
     };
-
 
     return (
         <main>
@@ -105,20 +164,6 @@ export function MetaTestUpload() {
                 <div className='w-full mb-8'>
                     <h3 className='text-2xl font-bold mb-5'>테스트 정보</h3>
                     <div className="w-full h-auto flex justify-evenly items-center border-y-2 border-neutral-800 flex justify-start items-center pt-5 pb-5 pl-3 pr-3">
-                        {/* <div>
-                            <label className='font-bold'>교수 성함</label>
-                            <input className='outline-none text-center' readOnly placeholder='성함'></input>
-                        </div> */}
-                        {/* <div>
-                            <label className='font-bold mr-3'>분야</label>
-                            <select className="text-center border border-gray-500 rounded-md pl-1 pr-1">
-                                <option value="en">영어</option>
-                                <option value="jp">일본어</option>
-                                <option value="cn">중국어</option>
-                                <option value="de">독일어</option>
-                                <option value="it">이탈리아어</option>
-                            </select>
-                        </div> */}
                         <div>
                             <label className='font-bold mr-3'>국가</label>
                             <select name='country' value={formData.country} onChange={handleInputChange} className="text-center border border-gray-500 rounded-md pl-1 pr-1">
@@ -173,7 +218,9 @@ export function MetaTestUpload() {
                     <div className='w-full mb-8'>
                         <h3 className='text-2xl font-bold mb-5'>답 목록</h3>
                         <div className="w-full h-auto border-y-2 border-neutral-800 flex justify-start items-center pt-5 pb-5 pl-3 pr-3">
-                            <TestAnswer onAnswersChange={handleOptionsChange} />
+                            <TestAnswer
+                                onAnswersChange={handleOptionsChange}
+                                savedOptions={formData.options} />
                         </div>
                     </div>
                     <div className='w-full mb-8'>
@@ -199,11 +246,11 @@ export function MetaTestUpload() {
                                     <label key={idx} className="flex items-center gap-2 cursor-pointer">
                                         <input
                                             type="checkbox"
-                                            checked={formData.answers.split(',').includes(opt)}
+                                            checked={(formData.answers as string).split(',').includes(opt)}
                                             onChange={(e) => {
                                                 const isChecked = e.target.checked;
                                                 setFormData(prev => {
-                                                    const currentAnswers = prev.answers ? prev.answers.split(',') : [];
+                                                    const currentAnswers = formData.answers ? (formData.answers as string).split(',') : [];
                                                     const newAnswers = isChecked
                                                         ? [...currentAnswers, opt]
                                                         : currentAnswers.filter(a => a !== opt);
@@ -234,10 +281,41 @@ export function MetaTestUpload() {
                             onChange={handleInputChange}
                             className="w-full min-h-[100px] box-border border border-black rounded-md p-3 resize-none leading-[1.5] [field-sizing:content]"></textarea>
                     </div>
+                    <div className="flex gap-4 items-center w-full mb-8">
+                        <div className={`w-full mb-8 p-5 border-2 rounded-md ${currentSavedId ? 'border-blue-500' : 'border-gray-300'}`}>
+                            <h3 className='text-xl font-bold mb-4'>
+                                다음 문제 연결 {currentSavedId && <span className='text-sm font-normal'>(현재 문제 ID: {currentSavedId})</span>}
+                            </h3>
+
+                            <div className="flex gap-4 items-center">
+                                <select
+                                    disabled={!currentSavedId}
+                                    className="border p-2 rounded-md flex-1"
+                                    onChange={(e) => handleConnectNext(e.target.value)}
+                                    value={formData.nextConversationId ?? ""}
+                                >
+                                    <option value="">연결할 문제 선택 (없음)</option>
+                                    {candidateList.map((item) => (
+                                        <option key={item.id} value={item.id}>
+                                            [ID: {item.id}] {item.topic || '주제 없음'} - {item.npcScript?.substring(0, 20)}...
+                                        </option>
+                                    ))}
+                                </select>
+                                {!currentSavedId && <p className='text-red-500 text-sm'>먼저 문제를 업로드해야 연결이 가능합니다.</p>}
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div className='w-full mb-8 flex justify-end'>
-                    <button onClick={handleSave} className="rounded-md bg-blue-800 p-2 text-white hover:bg-blue-900">업로드</button>
-                    <button className="rounded-md bg-red-600 p-2 text-white hover:bg-red-700  ml-5">취소</button>
+                <div className='w-full mb-8 flex justify-end gap-4'>
+                    <button
+                        onClick={handleSave}
+                        className="bg-blue-800 px-5 py-2 rounded-md text-white font-bold hover:bg-blue-900">
+                        업로드
+                    </button>
+                    <button onClick={() => { if (confirm("초기화하시겠습니까?")) setFormData(INITIAL_FORM); }}
+                        className="bg-red-500 px-5 py-2 rounded-md text-white font-bold hover:bg-red-600">
+                        초기화
+                    </button>
                 </div>
             </div>
         </main >
