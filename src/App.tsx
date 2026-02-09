@@ -16,6 +16,7 @@ import UnityTestPage from "./pages/user/UnityTestPage";
 import NewClassPage from "./pages/prof/NewClassPage";
 import { MetaTestUpload } from "./pages/prof/MetaTestUploadPage";
 import MetaTestPage from "./pages/prof/MetaTestPage";
+import MetaList from "./pages/prof/MetaList";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
                 <Route path="/unity-test" element={<UnityTestPage />} />
                 <Route path="/metaverse/upload/:id?" element={<MetaTestUpload />} />
                 <Route path="/metaverse/page/:id" element={<MetaTestPage />} />
+                <Route path="/metaverse" element={<MetaList />}/>
               </Route>
             </Routes>
           </BrowserRouter>

@@ -35,9 +35,13 @@ export function MetaTestUpload() {
     const editData = location.state?.editData;
     const isEdit = !!id;
 
+    const token = localStorage.getItem('token');
+
     // 수정 시 데이터 채워넣기
     useEffect(() => {
         if (isEdit && id) {
+            const numbericId = Number(id);
+            setCurrentSavedId(numbericId)
             if (editData) {
                 setFormData({
                     ...INITIAL_FORM,
@@ -49,14 +53,18 @@ export function MetaTestUpload() {
                 setCurrentSavedId(Number(id));
                 fetchCandidates(Number(id));
             } else {
-                axios.get(`/api/professor/npc/list/${id}`).then(res => {
+                axios.get(`/api/professor/npc/list/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }).then(res => {
                     const data = res.data;
                     setFormData({
                         ...INITIAL_FORM,
                         ...data,
-                        answers: Array.isArray(editData.answers)
-                            ? editData.answers
-                            : [editData.answers].filter(Boolean)
+                        answers: Array.isArray(data.answers)
+                            ? data.answers
+                            : [data.answers].filter(Boolean)
                     });
                     setCurrentSavedId(Number(id));
                     fetchCandidates(Number(id));
@@ -66,10 +74,17 @@ export function MetaTestUpload() {
     }, [id, isEdit, editData]);
 
     const fetchCandidates = (id: number) => {
-        axios.get(`/api/professor/npc/next-candidates/${id}`).then(res => {
+        axios.get(`/api/professor/npc/next-candidates/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }).then(res => {
             if (!res) throw new Error("문제 목록 업로드 실패");
-            setCandidateList(res.data);
-        }).catch(err => console.error("문제 목록 로드 실패: ", err));
+            if (res.data) {
+                setCandidateList(res.data || []);
+                console.log("불러온 목록: ", res.data);
+            }
+        }).catch(err => console.error("문제 목록 로드 실패: ", err))
     };
 
     const handleConnectNext = (targetNextId: string) => {
@@ -77,7 +92,10 @@ export function MetaTestUpload() {
 
         const nextId = targetNextId === "" ? null : Number(targetNextId);
 
-        axios.put(`/api/professor/npc/next/${currentSavedId}`, null, {
+        axios.put(`/api/professor/npc/next/${currentSavedId}`, {}, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             params: { nextConversationId: nextId }
         }).then(() => {
             alert("문제 연결이 완료되었습니다.");
@@ -86,6 +104,11 @@ export function MetaTestUpload() {
             console.log("연결 실패: ", err);
             alert("연결 중 오류가 발생했습니다.");
         });
+
+        setFormData(prev => ({
+            ...prev,
+            nextConversationId: nextId
+        }));
     };
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -116,9 +139,6 @@ export function MetaTestUpload() {
                 answers: Array.isArray(formData.answers) ? formData.answers.filter(a => a.trim() !== "") : [],
                 nextConversationId: formData.nextConversationId,
             };
-            console.log(formData);
-            console.log("최종 서버 전송 데이터:", payload);
-            const token = localStorage.getItem("token");
 
             const config = {
                 headers: {
@@ -126,6 +146,8 @@ export function MetaTestUpload() {
                     'Authorization': `Bearer ${token}`
                 }, withCredentials: true
             };
+
+            console.log("서버로 보내는 최종 데이터:", payload);
 
             if (isEdit) {
                 await axios.put(`/api/professor/npc/update/${id}`, payload, config);
@@ -300,9 +322,9 @@ export function MetaTestUpload() {
                                     value={formData.nextConversationId ?? ""}
                                 >
                                     <option value="">연결할 문제 선택 (없음)</option>
-                                    {candidateList.map((item) => (
+                                    {Array.isArray(candidateList) && candidateList.map((item) => (
                                         <option key={item.id} value={item.id}>
-                                            [ID: {item.id}] {item.topic || '주제 없음'} - {item.npcScript?.substring(0, 20)}...
+                                            {item.topic || '주제 없음'} - {item.npcScript?.substring(0, 20)}...
                                         </option>
                                     ))}
                                 </select>

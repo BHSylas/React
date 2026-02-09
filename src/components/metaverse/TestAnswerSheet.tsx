@@ -1,4 +1,4 @@
-import React, { useState, type KeyboardEvent, type ChangeEvent, useEffect } from "react";
+import React, { useState, type KeyboardEvent, type ChangeEvent } from "react";
 
 interface TestAnswerProps {
     onAnswersChange?: (newList: string[]) => void;
@@ -7,17 +7,6 @@ interface TestAnswerProps {
 
 const TestAnswer: React.FC<TestAnswerProps> = ({ onAnswersChange, savedOptions = [] }) => {
     const [inputValue, setInputValue] = useState<string>(''); // 입력중인 단어
-    // const [wordList, setWordList] = useState<string[]>(savedOptions || []); // 등록된 단어
-
-    // useEffect(() => {
-    //     if(savedOptions) {
-    //         setWordList(savedOptions);
-    //     }
-    // }, [savedOptions]);
-
-    // useEffect(() => {
-    //     onAnswersChange?.(wordList);
-    // }, [wordList, onAnswersChange]);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);
@@ -32,8 +21,6 @@ const TestAnswer: React.FC<TestAnswerProps> = ({ onAnswersChange, savedOptions =
             }
             onAnswersChange?.([...savedOptions, newValue]);
             setInputValue('');
-            // setWordList([...wordList, inputValue.trim()]);
-            // setInputValue('');
         }
     }; // 엔터를 치면 단어 목록으로 만듬(공백은 제외) 이후 입력창 비움
 
