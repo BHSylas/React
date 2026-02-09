@@ -24,13 +24,13 @@ export function useTestLogic(data: any) {
             data.answers.every((val: string, idx: number) => val === choiceArray[idx]);
         } else if(data.level === 'ADVANCED') {
             const processedUserAnswer = (userChoice as string).trim().replace(/\s+/g, ' ');
-            const correctAnswer = Array.isArray(data.answers) ? data.answer[0] : data.answers;
+            const correctAnswer = Array.isArray(data.answers) ? data.answers[0] : data.answers;
             const processedCorrectAnswer = (correctAnswer as string).trim().replace(/\s+/g, '');
 
             correct = processedUserAnswer === processedCorrectAnswer;
         }
         else {
-            const correctAnswer = Array.isArray(data.answers) ? data.answer[0] : data.answers;
+            const correctAnswer = Array.isArray(data.answers) ? data.answers[0] : data.answers;
             correct = String(correctAnswer) === String(userChoice); // 초급, 중급 다중 선택이 아닐 경우
         }
 

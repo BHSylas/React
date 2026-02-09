@@ -15,7 +15,7 @@ const INITIAL_FORM = {
     level: 'BEGINNER',
     npcScript: '',
     question: '',
-    answers: '' as string | string[],
+    answers: [] as string[],
     options: [] as string[],
     explanation: '',
     nextConversationId: null as number | null,
@@ -35,24 +35,36 @@ export function MetaTestUpload() {
     const editData = location.state?.editData;
     const isEdit = !!id;
 
+    const token = localStorage.getItem('token');
+
     // 수정 시 데이터 채워넣기
     useEffect(() => {
         if (isEdit && id) {
+            const numbericId = Number(id);
+            setCurrentSavedId(numbericId)
             if (editData) {
                 setFormData({
                     ...INITIAL_FORM,
                     ...editData,
-                    answers: Array.isArray(editData.answers) ? editData.answers.join(',') : editData.answers
+                    answers: Array.isArray(editData.answers)
+                        ? editData.answers              // 배열이면 그대로 사용
+                        : [editData.answers].filter(Boolean) // 문자열이면 배열로 감싸고, null/undefined 제거
                 });
                 setCurrentSavedId(Number(id));
                 fetchCandidates(Number(id));
             } else {
-                axios.get(`/api/professor/npc/list/${id}`).then(res => {
+                axios.get(`/api/professor/npc/list/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }).then(res => {
                     const data = res.data;
                     setFormData({
                         ...INITIAL_FORM,
                         ...data,
-                        answers: Array.isArray(data.answers) ? data.answers.join(',') : data.answers
+                        answers: Array.isArray(data.answers)
+                            ? data.answers
+                            : [data.answers].filter(Boolean)
                     });
                     setCurrentSavedId(Number(id));
                     fetchCandidates(Number(id));
@@ -62,10 +74,17 @@ export function MetaTestUpload() {
     }, [id, isEdit, editData]);
 
     const fetchCandidates = (id: number) => {
-        axios.get(`/api/professor/npc/next-candidates/${id}`).then(res => {
+        axios.get(`/api/professor/npc/next-candidates/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }).then(res => {
             if (!res) throw new Error("문제 목록 업로드 실패");
-            setCandidateList(res.data);
-        }).catch(err => console.error("문제 목록 로드 실패: ", err));
+            if (res.data) {
+                setCandidateList(res.data || []);
+                console.log("불러온 목록: ", res.data);
+            }
+        }).catch(err => console.error("문제 목록 로드 실패: ", err))
     };
 
     const handleConnectNext = (targetNextId: string) => {
@@ -73,7 +92,10 @@ export function MetaTestUpload() {
 
         const nextId = targetNextId === "" ? null : Number(targetNextId);
 
-        axios.put(`/api/professor/npc/next/${currentSavedId}`, null, {
+        axios.put(`/api/professor/npc/next/${currentSavedId}`, {}, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
             params: { nextConversationId: nextId }
         }).then(() => {
             alert("문제 연결이 완료되었습니다.");
@@ -82,6 +104,11 @@ export function MetaTestUpload() {
             console.log("연결 실패: ", err);
             alert("연결 중 오류가 발생했습니다.");
         });
+
+        setFormData(prev => ({
+            ...prev,
+            nextConversationId: nextId
+        }));
     };
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -89,7 +116,7 @@ export function MetaTestUpload() {
         setFormData(prev => ({
             ...prev,
             [name]: value,
-            ...(name === 'level' ? { answers: '' } : {})
+            ...(name === 'level' ? { answers: [] } : {})
         }));
     };
 
@@ -105,31 +132,22 @@ export function MetaTestUpload() {
         }
 
         try {
-            let formattedAnswers: string[] = [];
-            if (Array.isArray(formData.answers)) {
-                formattedAnswers = formData.answers.filter(Boolean);
-            } else if (typeof formData.answers === 'string') {
-                formattedAnswers = formData.answers.split(',').map((a: string) =>
-                    a.trim()).filter(Boolean);
-            }
-
             const payload = {
                 ...formData,
                 lectureId: Number(formData.lectureId),
-                options: Array.isArray(formData.options) ? formData.options : [],
-                answers: formattedAnswers,
-                nextConversationId: null,
+                options: Array.isArray(formData.options) ? formData.options.filter(a => a.trim() !== "") : [],
+                answers: Array.isArray(formData.answers) ? formData.answers.filter(a => a.trim() !== "") : [],
+                nextConversationId: formData.nextConversationId,
             };
-
-            const token = localStorage.getItem("token");
-            console.log(formData);
 
             const config = {
                 headers: {
                     'Content-Type': 'application/json',
-                    ...({ 'Authorization': `Bearer ${token}` })
+                    'Authorization': `Bearer ${token}`
                 }, withCredentials: true
             };
+
+            console.log("서버로 보내는 최종 데이터:", payload);
 
             if (isEdit) {
                 await axios.put(`/api/professor/npc/update/${id}`, payload, config);
@@ -148,7 +166,11 @@ export function MetaTestUpload() {
                     fetchCandidates(newId);
                 }
             }
-        } catch (error) {
+        } catch (error: any) {
+            if (error.response) {
+                console.log("에러 상태: ", error.response.status);
+                console.log("에러 데이터: ", error.response.data);
+            }
             console.error("업로드 중 오류: ", error);
             alert("업로드 중 오류가 발생했습니다.");
         }
@@ -231,7 +253,8 @@ export function MetaTestUpload() {
                                     formData.options.map((opt, idx) => (
                                         <label key={idx} className='flex items-center gap-2 cursor-pointer'>
                                             <input type='radio' name='answers' value={opt}
-                                                checked={formData.answers === opt} onChange={handleInputChange} />
+                                                checked={formData.answers[0] === opt}
+                                                onChange={() => setFormData(prev => ({ ...prev, answers: [opt] }))} />
                                             <span>{opt}</span>
                                         </label>
                                     ))
@@ -246,15 +269,16 @@ export function MetaTestUpload() {
                                     <label key={idx} className="flex items-center gap-2 cursor-pointer">
                                         <input
                                             type="checkbox"
-                                            checked={(formData.answers as string).split(',').includes(opt)}
+                                            checked={formData.answers.includes(opt)}
                                             onChange={(e) => {
                                                 const isChecked = e.target.checked;
                                                 setFormData(prev => {
-                                                    const currentAnswers = formData.answers ? (formData.answers as string).split(',') : [];
+                                                    const currentAnswers = Array.isArray(formData.answers)
+                                                        ? prev.answers : [];
                                                     const newAnswers = isChecked
                                                         ? [...currentAnswers, opt]
                                                         : currentAnswers.filter(a => a !== opt);
-                                                    return { ...prev, answers: newAnswers.join(',') };
+                                                    return { ...prev, answers: newAnswers };
                                                 });
                                             }}
                                         />
@@ -267,7 +291,10 @@ export function MetaTestUpload() {
                             <textarea
                                 name="answers"
                                 value={formData.answers}
-                                onChange={handleInputChange}
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    setFormData(prev => ({ ...prev, answers: [val] }));
+                                }}
                                 placeholder="직접 정답을 입력하세요 (고급 난이도)"
                                 className="w-full min-h-[100px] box-border border border-black rounded-md p-3 resize-none leading-[1.5] [field-sizing:content]"
                             />
@@ -295,9 +322,9 @@ export function MetaTestUpload() {
                                     value={formData.nextConversationId ?? ""}
                                 >
                                     <option value="">연결할 문제 선택 (없음)</option>
-                                    {candidateList.map((item) => (
+                                    {Array.isArray(candidateList) && candidateList.map((item) => (
                                         <option key={item.id} value={item.id}>
-                                            [ID: {item.id}] {item.topic || '주제 없음'} - {item.npcScript?.substring(0, 20)}...
+                                            {item.topic || '주제 없음'} - {item.npcScript?.substring(0, 20)}...
                                         </option>
                                     ))}
                                 </select>

@@ -15,6 +15,7 @@ interface NPCDetail {
     country: string;
     level: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
     topic: string;
+    nextConversationId: null | number;
 }
 
 const MetaTestPage = () => {
@@ -53,13 +54,13 @@ const MetaTestPage = () => {
     };
 
     const handleDelete = async (id: number) => {
-        if(!window.confirm("문제를 삭제하시겠습니까?")) return;
+        if (!window.confirm("문제를 삭제하시겠습니까?")) return;
 
         try {
             await api.delete(`/professor/npc/delete/${id}`);
             alert("삭제되었습니다.");
             navigate(`/`);
-        } catch(error) {
+        } catch (error) {
             console.error("삭제 중 오류 발생", error);
             alert("삭제 중 오류가 발생했습니다.");
         }
@@ -76,9 +77,9 @@ const MetaTestPage = () => {
                 </div>
                 <div className="flex gap-3">
                     <button onClick={handleEdit}
-                    className="bg-blue-800 text-white font-bold rounded-md pt-1 pb-1 pr-3 pl-3 hover:bg-blue-900">수정</button>
+                        className="bg-blue-800 text-white font-bold rounded-md pt-1 pb-1 pr-3 pl-3 hover:bg-blue-900">수정</button>
                     <button onClick={() => handleDelete(data.id)}
-                    className="bg-red-600 text-white font-bold rounded-md pt-1 pb-1 pr-3 pl-3 hover:bg-red-700">삭제</button>
+                        className="bg-red-600 text-white font-bold rounded-md pt-1 pb-1 pr-3 pl-3 hover:bg-red-700">삭제</button>
                 </div>
             </div>
             <div className="grid justify-start items-center gap-3 border border-gray-300 rounded-md w-full p-4">
@@ -167,6 +168,16 @@ const MetaTestPage = () => {
                         </div>
                     </div>
                 </section>
+                {data.nextConversationId !== null && (
+                    <section className="border-t-2 border-gray-300 pt-3 mt-2">
+                    <div>
+                        <h3 className="font-bold">다음 문제</h3>
+                        <p className="text-sm text-gray-600 mt-2 mb-1">
+                            주제: {data.topic} 문제가 연결되어 있습니다.
+                        </p>
+                    </div>
+                </section>
+                )}
                 <section className="border-t-2 border-gray-300 pt-3 mt-2">
                     <h3 className="font-bold">답안지 및 정보</h3>
                     {logic.showResult ? (
