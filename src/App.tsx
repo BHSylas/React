@@ -17,6 +17,7 @@ import NewClassPage from "./pages/prof/NewClassPage";
 import { MetaTestUpload } from "./pages/prof/MetaTestUploadPage";
 import MetaTestPage from "./pages/prof/MetaTestPage";
 import MetaList from "./pages/prof/MetaList";
+import { BoardUploadPage } from "./pages/user/BoardUploadPage";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
                 <Route path="/class/new" element={<NewClassPage />} />
                 <Route path="/board" element={<BoardListPage />} />
                 <Route path="/board/:postId" element={<BoardViewPage />} />
+                <Route path="/board/upload" element={<BoardUploadPage />}/>
                 <Route path="/unity-test" element={<UnityTestPage />} />
                 <Route path="/metaverse/upload/:id?" element={<MetaTestUpload />} />
                 <Route path="/metaverse/page/:id" element={<MetaTestPage />} />
