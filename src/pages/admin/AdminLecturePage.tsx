@@ -12,7 +12,6 @@ export default function AdminLecturePage() {
     useEffect(() => {
         api.get(`/admin/lectures?status=${state}`).then((res) => {
             setLectures(res.data.content);
-            console.log(res.data.content);
         });
     }, [state]);
     const approveLecture = (lectureId: string) => {
@@ -22,7 +21,7 @@ export default function AdminLecturePage() {
         });}
     const rejectLecture = (lectureId: string) => {
         api.patch(`/admin/lectures/${lectureId}/rejection`).then(() => {
-            alert("승인되었습니다.");
+            alert("반려되었습니다.");
             setLectures(lectures.filter(lec => lec.lectureId !== lectureId));
         });}
     if(role === null) {

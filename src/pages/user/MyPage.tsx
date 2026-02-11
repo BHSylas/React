@@ -8,8 +8,13 @@ export default function MyPage() {
         setRgb([Math.floor(256 * Math.random()), Math.floor(256 * Math.random()), Math.floor(256 * Math.random())]);
     }, 750);}
     return(
-        <div className="flex justify-center items-center h-screen">
-            <div className={`text-7xl font-bold transition-colors`} style={{ color: `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})` }}>
+        <div className="w-full h-screen">
+            <section>
+                <div className="mb-8">
+                    <div className="border border-gray-300">Head</div>
+                </div>
+            </section>
+            <div className={`text-7xl font-bold transition-colors flex justify-center items-center`} style={{ color: `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})` }}>
                 Not implemented yet;
             </div>
         </div>
