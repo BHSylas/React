@@ -1,12 +1,13 @@
 import TestAnswer from '../../components/metaverse/TestAnswerSheet';
 import NpcInput from '../../components/metaverse/NpcInput';
 import NpcPreview from '../../components/metaverse/NpcPreview';
-import { type ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { type ChangeEvent, useCallback, useContext, useEffect, useState } from 'react';
 import UserInput from '../../components/metaverse/UserInput';
 import UserPreview from '../../components/metaverse/UserPreview';
 import { useLocation, useNavigate } from 'react-router';
 import { useParams } from 'react-router';
 import axios from 'axios';
+import { AuthContext } from '../../context/AuthContext';
 
 const INITIAL_FORM = {
     lectureId: 1, // 강의 id 임의 값
@@ -30,6 +31,13 @@ export function MetaTestUpload() {
     const { id } = useParams<{ id: string }>(); //url에서 id추출
     const location = useLocation();
     const navigate = useNavigate();
+
+    const role = useContext(AuthContext).role;
+    console.log(role);
+        if(role === '0') {
+            alert("No exception!");
+            navigate('/');
+        }
 
     // 수정모드 여부 확인
     const editData = location.state?.editData;

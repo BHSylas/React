@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import axios from 'axios';
 import { useNavigate } from "react-router";
 import { getLanguageName, getLevelName, getCountryName } from "../../components/metaverse/ListRecord";
+import { AuthContext } from "../../context/AuthContext";
 
 interface MetaListItem {
     id: number,
@@ -33,9 +34,12 @@ const MetaList = () => {
 
     const [page, setPage] = useState(0);
     const [totalPage, setTotalPage] = useState(0); // 총 페이지 수
-
     const navigate = useNavigate();
-
+    const role = useContext(AuthContext).role;
+    if(role === '0') {
+        alert("No exception!");
+        navigate('/');
+    }
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (!token) return;
