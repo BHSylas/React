@@ -17,6 +17,8 @@ import { MetaTestUpload } from "./pages/prof/MetaTestUploadPage";
 import MetaTestPage from "./pages/prof/MetaTestPage";
 import MetaList from "./pages/prof/MetaList";
 import { BoardUploadPage } from "./pages/user/BoardUploadPage";
+import AdminMainPage from "./pages/admin/AdminMainPage";
+import AdminLecturePage from "./pages/admin/AdminLecturePage";
 
 function App() {
   return (
@@ -42,6 +44,9 @@ function App() {
                 <Route path="/metaverse/upload/:id?" element={<MetaTestUpload />} />
                 <Route path="/metaverse/page/:id" element={<MetaTestPage />} />
                 <Route path="/metaverse" element={<MetaList />}/>
+
+                <Route path="/admin" element={<AdminMainPage />} />
+                <Route path="/admin/lectures" element={<AdminLecturePage />} />
               </Route>
             </Routes>
           </BrowserRouter>

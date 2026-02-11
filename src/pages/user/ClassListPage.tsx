@@ -28,6 +28,7 @@ async function fetchClasses(params: {
   if (response.data.length === 0) {
     throw new Error("No classes found");
   }
+  console.log(response.data.content);
   return await response.data.content;
 }
 
