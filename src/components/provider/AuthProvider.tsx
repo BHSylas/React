@@ -2,9 +2,14 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { api } from "../../api/axiosInstance";
+import { jwtDecode, type JwtPayload } from "jwt-decode";
 
 interface AuthProviderProps {
   children: ReactNode;
+}
+
+interface TokenPayload extends JwtPayload {
+    role: number | string; // 0, 1, 2 숫자로 들어오면 number
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
@@ -12,6 +17,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [token, setToken] = useState<string | null>(null);
   const [name, setName] = useState<string | null>(null);
   const [nickname, setNickname] = useState<string | null>(null);
+  const [role, setRole] = useState<string | null>(null);
   const [isAuthReady, setIsAuthReady] = useState(false);
 
   const isTokenExpired = (token: string) => {
@@ -35,6 +41,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setToken(savedToken);
       setName(savedName);
       setNickname(savedNickname);
+      try {
+        const decoded = jwtDecode<TokenPayload>(savedToken);
+        setRole(String(decoded.role));
+      } 
+      catch (error) {
+        console.error("토큰 해독 실패", error);
+      }
     } else {
       localStorage.clear();
     }
@@ -61,6 +74,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setToken(token);
     setName(name);
     setNickname(nickname);
+    try {
+      const decoded = jwtDecode<TokenPayload>(token);
+      setRole(String(decoded.role));
+    } 
+    catch (error) {
+      console.error("토큰 해독 실패", error);
+    }
   };
 
   const logout = () => {
@@ -82,6 +102,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         token,
         name,
         nickname,
+        role,
         isAuthReady,
         login,
         logout,
