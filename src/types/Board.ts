@@ -1,8 +1,9 @@
 export interface Board {
-  id: number;
+  boardId: number;
   title: string;
-  author: string;
+  writerName: string;
   createdAt: string;
   viewCount: number;
-  category: string;
+  boardType: string;
+  pinned: boolean;
 }

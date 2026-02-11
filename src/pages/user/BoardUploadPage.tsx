@@ -30,10 +30,30 @@ export function BoardUploadPage() {
     );
 
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
+        const { name, value, type } = e.target;
+        // 1. 체크박스(pinned)인 경우 처리
+        if (type === "checkbox") {
+            const checked = (e.target as HTMLInputElement).checked;
+            setFormData((prev) => ({
+                ...prev,
+                [name]: checked,
+            }));
+            return;
+        }
+
+        // 2. 숫자형 데이터(lectureId) 처리
+        if (name === "lectureId") {
+            setFormData((prev) => ({
+                ...prev,
+                [name]: Number(value),
+            }));
+            return;
+        }
+
+        // 3. 나머지 일반 텍스트 및 셀렉트 박스 처리
         setFormData((prev) => ({
             ...prev,
-            [name]: value
+            [name]: value,
         }));
     };
 
@@ -95,6 +115,18 @@ export function BoardUploadPage() {
                                 </option>
                             ))}
                         </select>
+                        {formData.boardType === "NOTICE" && (
+                            <label className="flex items-center gap-2 cursor-pointer bg-yellow-50 px-3 py-1 rounded-md border border-yellow-200 mt-5">
+                                <input
+                                    type="checkbox"
+                                    name="pinned"
+                                    checked={formData.pinned}
+                                    onChange={handleChange}
+                                    className="w-4 h-4 accent-yellow-600"
+                                />
+                                <span className="text-sm font-medium text-yellow-800">이 게시글을 상단에 고정합니다</span>
+                            </label>
+                        )}
                         {formData.boardType === "LECTURE_QNA" && (
                             <BoardLecture selectedId={formData.lectureId}
                                 onSelect={handleLectureSelect}></BoardLecture>
