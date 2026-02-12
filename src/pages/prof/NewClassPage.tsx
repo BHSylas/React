@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { api } from "../../api/axiosInstance";
+import { useNavigate } from "react-router-dom";
 
 type Language = "en" | "jp" | "de" | "it" | "cn";
 
@@ -10,7 +11,7 @@ export default function NewClassPage() {
     const [language, setLanguage] = useState<Language>("en");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-
+    const navigate = useNavigate();
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -24,11 +25,11 @@ export default function NewClassPage() {
                 language,
             };
 
-            const res = await api.post("/instructor/lectures", payload);
-            console.log("Create class success:", res.data);
+            await api.post("/instructor/lectures", payload);
 
             // 테스트 단계에서는 일단 alert / console 정도로 충분
             alert("Class created successfully");
+            navigate("/class");
         } catch (err) {
             console.error(err);
             setError("Failed to create class");

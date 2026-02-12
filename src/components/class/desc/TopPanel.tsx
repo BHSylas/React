@@ -9,7 +9,7 @@ interface TopPanelProps {
   level: string;
   duration: string;
   thumbnailUrl?: string;
-  classId?: string;
+  classId: string;
   isEnrolling?: boolean;
 }
 

@@ -10,6 +10,7 @@ export default function CommentForm({ postId, onSubmit }: { postId: string, onSu
       content: content,
     }).then((res) => {
       console.log(res.data);
+      setContent("");
       onSubmit();
     }).catch((err : any) => {
       console.error(err);
