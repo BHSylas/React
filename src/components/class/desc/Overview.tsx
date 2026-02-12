@@ -13,8 +13,8 @@ export default function Overview({
     <section className="max-w-7xl mx-auto px-6 py-10 space-y-10">
       {/* Description */}
       <div>
-        <h2 className="text-lg font-semibold mb-3">강의 소개</h2>
-        <p className="text-sm text-gray-700 leading-relaxed">
+        <h2 className="text-2xl font-semibold mb-3">강의 소개</h2>
+        <p className="text-lg text-gray-700 leading-relaxed p-2">
           {description}
         </p>
       </div>
