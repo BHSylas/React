@@ -15,3 +15,11 @@ export const BOARD_FORM = {
     lectureId: null as number | null,
 
 }
+
+export const QNA_FORM = {
+    title: '',
+    boardType: "LECTURE_QNA",
+    content: "",
+    pinned: false,
+    lectureId: null as number | null,
+}

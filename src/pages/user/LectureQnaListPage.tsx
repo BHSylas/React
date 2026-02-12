@@ -1,25 +1,16 @@
 import { useState, useEffect } from "react";
 import { BoardListBlock } from "../../components/board/list/BoardListBlock";
 import { BoardSearchFilter } from "../../components/board/list/BoardSearchFilter";
-import { BoardWriteBar } from "../../components/board/list/BoardWriteBar";
 import type { Board } from "../../types/Board";
-import TagManu from "./BoardTag";
-import type { CategoryValue } from "./BoardTag";
 import { BoardPagination } from "../../components/board/list/BoardPagination";
 import { api } from "../../api/axiosInstance";
+import { useNavigate, useParams } from "react-router-dom";
 
-export function BoardListPage() {
+export function LectureQnaListPage() {
   // const [boards, setBoards] = useState<Board[]>([]);
   const [loading, setLoading] = useState<boolean>(true); //로딩중 상태
-  const [activeTab, setActiveTab] = useState<CategoryValue>(() => {
-    const savedCategory = sessionStorage.getItem("recentCategory");
-    if (savedCategory) {
-      sessionStorage.removeItem("recentCategory");
-      return savedCategory as CategoryValue;
-    }
-    return "NOTICE";
-  });
-
+  const activeTab = "LECTURE_QNA";
+    const lectureId = useParams().lectureId ?? null;
   const [allBoards, setAllBoard] = useState<Board[]>([]); // 전체 보드
   const [searchBoard, setSerarchBoard] = useState({ keyword: "", category: "title" }); // 서치
   const [currentPage, setCurrentPage] = useState(1);
@@ -30,7 +21,8 @@ export function BoardListPage() {
     setLoading(true);
     api.get('/boards/searchBoard', {
       params: {
-        boardType: activeTab, // 현재 탭에 맞는 데이터만 서버에서 가져옴
+        boardType: activeTab, // 항상 LECTURE_QNA 탭
+        lectureId: lectureId,
         page: currentPage - 1,
         size: postsPerPage,
         title: searchBoard.category === "title" ? searchBoard.keyword : "",
@@ -62,38 +54,48 @@ export function BoardListPage() {
   useEffect(() => {
     fetchBoards();
   }, [activeTab, currentPage, searchBoard]);
-
-  const handleChangeTab = (tab: CategoryValue) => {
-    sessionStorage.setItem("recentCategory", tab);
-    setActiveTab(tab);
-  }
   return (
     <section className="mx-auto px-6 py-8 space-y-6">
-      {/* <div className="text-7xl text-center font-bold text-blue-800">상단이 너무 심심해 보임</div> */}
-      <TagManu activeTab={activeTab} onTabChange={handleChangeTab} />
+      <h1 className="text-2xl font-bold mb-4">강의 Q&A</h1>
       {/* 목록 */}
       {loading ? (
         <div className="p-5 text-center">로딩 중...</div>
       ) : (
         <BoardListBlock boards={allBoards} />
       )}
-      {/* 상단 액션 */}
-      <BoardWriteBar />
-      {/* Pagination (placeholder) */}
-      {/* <div className="flex justify-center text-sm text-gray-400">
-        Pagination 영역 (구현 예정) */}
-      {/* <BoardSearchFilter onSearch={() => { }} /> */}
-      {/* </div> */}
+      <QnaWriteBar lectureId={lectureId} />
       <BoardPagination
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={setCurrentPage} />
-      {/* 검색 */}
       <BoardSearchFilter
         onSearch={(params) => {
           setSerarchBoard(params)
         }}
       />
     </section>
+  );
+}
+
+function QnaWriteBar({lectureId} : {lectureId?: string | null}) {
+  const navigate = useNavigate();
+  if(lectureId == null) {
+    return(
+        <div className="flex justify-end">
+            NO
+        </div>
+    )
+  }
+  return (
+    <div className="flex justify-end">
+      <button
+        type="button"
+        onClick={() => navigate(`/class/qna/upload/${lectureId}`)}
+        className="btn px-4 py-2 text-sm font-medium rounded-md
+                bg-blue-800 text-white hover:bg-blue-900 transition-colors"
+      >
+        글쓰기
+      </button>
+    </div>
   );
 }
