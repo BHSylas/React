@@ -22,7 +22,10 @@ export function BoardViewPage() {
         <BoardPostPanel post={post} />
         <div className="divider" />
         <BoardActionBar
-        onBack={() => {navigate(-1);}}
+        onBack={() => {
+          sessionStorage.setItem("recentCategory", post?.boardType || "NOTICE");
+          navigate(-1);
+        }}
         onWrite={() => {}}
         onEdit={() => {}}
         onDelete={() => {}}

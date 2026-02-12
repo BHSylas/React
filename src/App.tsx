@@ -19,6 +19,7 @@ import MetaList from "./pages/prof/MetaList";
 import { BoardUploadPage } from "./pages/user/BoardUploadPage";
 import AdminMainPage from "./pages/admin/AdminMainPage";
 import AdminLecturePage from "./pages/admin/AdminLecturePage";
+import { LectureQnaListPage } from "./pages/user/LectureQnaListPage";
 
 function App() {
   return (
@@ -34,9 +35,10 @@ function App() {
                 <Route path="/login" element={<LoginForm />} />
                 <Route path="/register" element={<RegisterForm />} />
                 <Route path="/my" element={<MyPage />} />
-                <Route path="/class" element={<ClassListPage />} />
-                <Route path="/class/:classId" element={<ClassViewPage />} />
-                <Route path="/class/new" element={<NewClassPage />} />
+                <Route path="/lecture" element={<ClassListPage />} />
+                <Route path="/lecture/:classId" element={<ClassViewPage />} />
+                <Route path="/lecture/new" element={<NewClassPage />} />
+                <Route path="/lecture/qna/:lectureId" element={<LectureQnaListPage />} />
                 <Route path="/board" element={<BoardListPage />} />
                 <Route path="/board/:postId" element={<BoardViewPage />} />
                 <Route path="/board/upload" element={<BoardUploadPage />}/>

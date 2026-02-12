@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { api } from "../../../api/axiosInstance";
 import { decompileCountryCode } from "../../../utils/decompileCountryCode";
 
@@ -22,6 +23,7 @@ export default function TopPanel({
   classId,
   isEnrolling = false,
 }: TopPanelProps) {
+  const navigate = useNavigate();
   const enrolling = () => {
     api.post(`/me/enrollments/${classId}`)
     .then((res) => {
@@ -74,6 +76,9 @@ export default function TopPanel({
               <button
               type="button"
               className="px-6 py-3 rounded-md bg-blue-600 hover:bg-blue-700 transition-colors text-sm font-semibold"
+              onClick={() => {
+                navigate("/class/qna/" + classId);
+              }}
             >
               Q&A 바로가기
             </button>
