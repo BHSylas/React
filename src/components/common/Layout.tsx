@@ -39,7 +39,7 @@ export default function Layout() {
       <Navbar onMenuClick={openSide}/>
       <NavPlace />
       <Sidebar isOpen={sideOpen} onClose={closeSide}/>
-      <div className="flex flex-1 px-4 lg:px-8 gap-6 pt-4 shadow">
+      <div className="flex flex-1 px-4 lg:px-8 gap-6 pt-4">
         <AuthModal />
         <div className="flex-1">
           <div className="max-w-7xl mx-auto space-y-4">

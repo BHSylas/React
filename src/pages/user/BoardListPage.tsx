@@ -5,8 +5,8 @@ import { BoardWriteBar } from "../../components/board/list/BoardWriteBar";
 import type { Board } from "../../types/Board";
 import TagManu from "./BoardTag";
 import type { CategoryValue } from "./BoardTag";
-import axios from "axios";
 import { BoardPagination } from "../../components/board/list/BoardPagination";
+import { api } from "../../api/axiosInstance";
 
 // const MOCK_BOARDS: Board[] = [
 //   {
@@ -41,7 +41,7 @@ export function BoardListPage() {
   const fetchBoards = () => {
     // useEffect(() => {
     setLoading(true);
-    axios.get('/api/board/searchBoard', {
+    api.get('/boards/searchBoard', {
       params: {
         boardType: activeTab, // 현재 탭에 맞는 데이터만 서버에서 가져옴
         page: currentPage - 1,

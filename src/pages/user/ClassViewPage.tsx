@@ -32,15 +32,10 @@ export default function ClassViewPage() { //현재 테스트 데이터 삽입 �
         classId={classId}
         isEnrolling={enrolling}
       />
-
       <Overview
         description={page.description}
-        objectives={["배움"]}
-        instructorBio="홍길동 강사는 동에 번쩍 서에 번쩍 돌아다니는 시간 강사로 수상하지 않습니다. 실제 의롭습니다."
       />
-
       <ReviewBlock />
-      <div>{classId}</div>
     </main>
   );
 }

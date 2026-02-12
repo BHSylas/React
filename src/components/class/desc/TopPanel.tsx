@@ -1,4 +1,5 @@
 import { api } from "../../../api/axiosInstance";
+import { decompileCountryCode } from "../../../utils/decompileCountryCode";
 
 interface TopPanelProps {
   title: string;
@@ -54,9 +55,9 @@ export default function TopPanel({
             <h1 className="text-2xl font-bold mb-3">{title}</h1>
 
             <div className="text-sm text-slate-300 space-y-1">
-              <div>강사 · {instructor}</div>
+              <div>{instructor} 강사</div>
               <div>
-                {category} · {level} · {duration}
+                {decompileCountryCode(category)} · {level}{duration}
               </div>
             </div>
           </div>

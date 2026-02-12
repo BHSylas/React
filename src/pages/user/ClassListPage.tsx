@@ -24,7 +24,7 @@ async function fetchClasses(params: {
   // =========================
   // 실제 API 요청 (백엔드 준비 후)
   // =========================
-  const response = await api.get(`/lectures?page=0&size=5&language=${params.categoryId}&enrolling=true`);
+  const response = await api.get(`/lectures?page=0&size=5&language=${params.categoryId}`);
   if (response.data.length === 0) {
     throw new Error("No classes found");
   }
