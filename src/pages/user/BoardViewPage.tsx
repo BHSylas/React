@@ -32,7 +32,7 @@ export function BoardViewPage() {
         />
         </div>
 
-      <CommentBlock />
+      <CommentBlock postId={postId || "0"} />
     </main>
   );
 }
