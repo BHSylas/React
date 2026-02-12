@@ -35,10 +35,10 @@ function App() {
                 <Route path="/login" element={<LoginForm />} />
                 <Route path="/register" element={<RegisterForm />} />
                 <Route path="/my" element={<MyPage />} />
-                <Route path="/lecture" element={<ClassListPage />} />
-                <Route path="/lecture/:classId" element={<ClassViewPage />} />
-                <Route path="/lecture/new" element={<NewClassPage />} />
-                <Route path="/lecture/qna/:lectureId" element={<LectureQnaListPage />} />
+                <Route path="/class" element={<ClassListPage />} />
+                <Route path="/class/:classId" element={<ClassViewPage />} />
+                <Route path="/class/new" element={<NewClassPage />} />
+                <Route path="/class/qna/:lectureId" element={<LectureQnaListPage />} />
                 <Route path="/board" element={<BoardListPage />} />
                 <Route path="/board/:postId" element={<BoardViewPage />} />
                 <Route path="/board/upload" element={<BoardUploadPage />}/>
