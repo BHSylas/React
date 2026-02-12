@@ -16,8 +16,9 @@ export default function EnrollmentRenderer({ classes }: { classes: EnrollmentIte
                     key={enrollment.lectureId} 
                     className="border border-gray-300 rounded-lg p-4 cursor-pointer hover:shadow-lg transition-shadow" 
                     onClick={() => {navigate(`/class/${enrollment.lectureId}`)}}>
-                        <h3 className="text-2xl font-bold mb-4">{enrollment.title}</h3>
-                        <p className="text-sm text-gray-400">{decompileCountryCode(enrollment.language)} · {enrollment.professorNickname} · {enrollment.country}</p>
+                        <h3 className="text-2xl font-bold mb-2">{enrollment.title}</h3>
+                        <p className="text-sm text-gray-400 mb-2">{enrollment.professorNickname} 강사</p>
+                        <p className="text-sm text-gray-400">{decompileCountryCode(enrollment.language)} · {enrollment.country}</p>
                         <p className="text-gray-600 mb-2">{enrollment.progressRate}%</p>
                         <div className="flex w-full h-2 rounded overflow-hidden bg-gray-300">
                             <div className="bg-green-500" style={{ flexGrow: enrollment.progressRate / 100 }}></div>

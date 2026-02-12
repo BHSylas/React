@@ -38,7 +38,7 @@ export default function MyPage() {
                 </div>
             </section>
             <section>
-                <div className={`flex`}>
+                <div className={`flex h-screen`}>
                     <Picker picked={picked} onPick={handlePick} />
                     {picked === "Class" && (
                         <EnrollmentRenderer classes={classes} />
@@ -52,7 +52,7 @@ export default function MyPage() {
 function Picker({ picked, onPick }: { picked: string; onPick: (item: "Class" | "QnA" | "Post" | "Comment") => void }) {
     const items = ["Class", "QnA", "Post", "Comment"];
     return (
-        <div className="flex flex-col gap-4 justify-center mb-8">
+        <div className="flex flex-col gap-4 mb-8">
             {items.map((item) => {
                 const isPicked = picked === item;
                 return (
