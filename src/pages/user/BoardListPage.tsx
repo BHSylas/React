@@ -8,30 +8,16 @@ import type { CategoryValue } from "./BoardTag";
 import { BoardPagination } from "../../components/board/list/BoardPagination";
 import { api } from "../../api/axiosInstance";
 
-// const MOCK_BOARDS: Board[] = [
-//   {
-//     id: 1,
-//     title: "첫 번째 게시글입니다",
-//     author: "관리자",
-//     createdAt: "2024-01-01",
-//     viewCount: 12,
-//     category: "공지사항",
-//   },
-//   {
-//     id: 2,
-//     title: "React 질문 있습니다",
-//     author: "홍길동",
-//     createdAt: "2024-01-02",
-//     viewCount: 5,
-//     category: "Q&A",
-//   },
-// ];
-
-
 export function BoardListPage() {
   // const [boards, setBoards] = useState<Board[]>([]);
   const [loading, setLoading] = useState<boolean>(true); //로딩중 상태
-  const [activeTab, setActiveTab] = useState<CategoryValue>('NOTICE');
+  const [activeTab, setActiveTab] = useState<CategoryValue>(() => {
+      const savedCategory = sessionStorage.getItem("recentCategory");
+      if (savedCategory) {
+        return savedCategory as CategoryValue;
+      }
+      return "NOTICE";
+    });
   const [allBoards, setAllBoard] = useState<Board[]>([]); // 전체 보드
   const [searchBoard, setSerarchBoard] = useState({ keyword: "", category: "title" }); // 서치
   const [currentPage, setCurrentPage] = useState(1);
@@ -77,14 +63,14 @@ export function BoardListPage() {
     fetchBoards();
   }, [activeTab, currentPage, searchBoard]);
 
-  // if (boards.length === 0) {
-  //   setBoards();
-  //   return null;
-  // }
+  const handleChangeTab = (tab: CategoryValue) => {
+    sessionStorage.setItem("recentCategory", tab);
+    setActiveTab(tab);
+  }
   return (
     <section className="mx-auto px-6 py-8 space-y-6">
       {/* <div className="text-7xl text-center font-bold text-blue-800">상단이 너무 심심해 보임</div> */}
-      <TagManu activeTab={activeTab} onTabChange={setActiveTab} />
+      <TagManu activeTab={activeTab} onTabChange={handleChangeTab} />
       {/* 목록 */}
       {loading ? (
         <div className="p-5 text-center">로딩 중...</div>
