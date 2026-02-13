@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { api } from "../../api/axiosInstance";
+import { useNavigate } from "react-router-dom";
 import { VideoUpload } from "../../components/prof/upload/VideoUpload";
 import { VideoYoutube } from "../../components/prof/upload/VideoYoutube";
 
@@ -12,6 +13,7 @@ export default function NewClassPage() {
     const [language, setLanguage] = useState<Language>("en");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     const [createdLectureId, setCreatedLectureId] = useState<number | null>(null);
 
@@ -37,6 +39,7 @@ export default function NewClassPage() {
 
             // 테스트 단계에서는 일단 alert / console 정도로 충분
             alert("Class created successfully");
+            navigate("/class");
         } catch (err) {
             console.error(err);
             setError("Failed to create class");

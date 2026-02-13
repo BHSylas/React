@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { api } from "../../../api/axiosInstance";
 import { decompileCountryCode } from "../../../utils/decompileCountryCode";
+import { useState } from "react";
+import { useAuth } from "../../../hooks/useAuth";
 
 interface TopPanelProps {
   title: string;
@@ -9,7 +11,7 @@ interface TopPanelProps {
   level: string;
   duration: string;
   thumbnailUrl?: string;
-  classId?: string;
+  classId: string;
   isEnrolling?: boolean;
 }
 
@@ -24,13 +26,23 @@ export default function TopPanel({
   isEnrolling = false,
 }: TopPanelProps) {
   const navigate = useNavigate();
+  const [enrollment, setEnrollment] = useState(isEnrolling);
+  const {role} = useAuth();
   const enrolling = () => {
     api.post(`/me/enrollments/${classId}`)
-    .then((res) => {
-      console.log(res.data);
+    .then(() => {
+      setEnrollment(true);
+      alert("수강 신청이 완료되었습니다!");
     })
     .catch((err : any) => {
       console.error(err);
+      if(role === '1') {
+        alert("강사는 수강할 수 없습니다.");
+      }
+      else
+      {
+        alert("수강 신청에 실패했습니다. 다시 시도해 주세요.");
+      }
     });
   }
   return (
@@ -65,7 +77,7 @@ export default function TopPanel({
           </div>
 
           <div className="mt-6">
-            {isEnrolling ?
+            {enrollment ?
             <div className="flex gap-3">
               <button
               type="button"

@@ -35,7 +35,11 @@ export function BoardListBlock({ boards }: BoardListBlockProps) {
           <div>{board.writerName}</div>
           <div>{CATEGORY_MAP[board.boardType]}</div>
           <div>{board.createdAt.split('T')[0]}</div>
-          <div className="text-right">{board.viewCount || "0"}</div>
+          <div className="flex justify-around">
+            <div className="text-center">조회 {board.viewCount || "0"}</div>
+            <div className="text-center">댓글 {board.commentCount || "0"}</div>
+          </div>
+          
         </div>
       ))}
     </div>

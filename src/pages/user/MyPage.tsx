@@ -16,7 +16,6 @@ export default function MyPage() {
         switch(picked) {
             case "Class":
                 api.get("/me/enrollments").then(res => {
-                    console.log(res.data.content);
                     setClasses(res.data.content);
                 });
                 break;

@@ -1,4 +1,5 @@
 import { useAuth } from "../../hooks/useAuth";
+import displayRole from "../../utils/displayRole";
 
 export default function HeadRenderer() {
     const {name, nickname, role} = useAuth();
@@ -12,7 +13,7 @@ export default function HeadRenderer() {
             <div className="">
                 <p className="text-lg">이름: {name}</p>
                 <p className="text-lg">닉네임: {nickname}</p>
-                <p className="text-lg">역할: {role}</p>
+                <p className="text-lg">{displayRole(parseInt(role))}</p>
             </div>
         </div>
     </div>
