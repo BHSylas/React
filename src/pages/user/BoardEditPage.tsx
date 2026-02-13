@@ -1,32 +1,33 @@
-import { useState, type ChangeEvent } from "react"
-import { useNavigate } from "react-router";
-import axios from "axios";
+import { useEffect, useState, type ChangeEvent } from "react"
+import { useNavigate, useParams } from "react-router";
 import { BOARD_ROLE_OPTION, BOARD_FORM } from "../../components/board/upload/BoardOptions";
-import { jwtDecode, type JwtPayload } from "jwt-decode";
 import { BoardLecture } from "../../components/board/upload/BoardLecture";
+import { api } from "../../api/axiosInstance";
+import { useAuth } from "../../hooks/useAuth";
 
-interface MyTokenPayload extends JwtPayload {
-    role: number | string; // 0, 1, 2 숫자로 들어오면 number
-}
-
-export function BoardUploadPage() {
+export function BoardEditPage() {
+    const postId = useParams().postId;
     const [formData, setFormData] = useState(BOARD_FORM);
     const navigate = useNavigate();
+    const {role} = useAuth();
 
-    const token = localStorage.getItem("token");
-    let userRole = ""; // 기본은 학생으로 설정
-
-    if (token) {
-        try {
-            const decoded = jwtDecode<MyTokenPayload>(token);
-            userRole = String(decoded.role);
-        } catch (error) {
-            console.error("토큰 해독 실패", error);
-        }
+    useEffect(() => {
+        // 여기에 기존 게시글 데이터를 불러오는 로직 추가
+        if (!postId) return;
+        api.get(`/boards/list/${postId}`).then(res => {
+            if (!res) throw new Error(`서버 응답 오류`);
+            setFormData(res.data);
+        }).catch(err => {
+            console.error("데이터 로드 실패: ", err);
+            alert("게시글 로드 중 오류가 발생했습니다.");
+        });
+    }, [postId]);
+    if(role === null) {
+        console.log("?");
+        return <div>Loading...</div>;
     }
-
     const filteredOptions = BOARD_ROLE_OPTION.filter(opt =>
-        opt.roles.includes(userRole)
+        opt.roles.includes(role)
     );
 
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -71,14 +72,11 @@ export function BoardUploadPage() {
             return;
         }
 
-        axios.post('/api/boards/create', formData, {
-            headers: {
-                Authorization: `Bearer ${token}` // 토큰 전달
-            }
-        }).then(res => {
+        api.put(`/boards/update/${postId}`, formData).then(res => {
             if (!res) throw new Error(`서버 응답 오류`);
-            alert("업로드 성공!");
-            navigate('/board')
+            console.log(res, res.data);
+            alert("수정 성공!");
+            navigate(`/board/${postId}`)
         }).catch(err => {
             console.error("데이터 로드 실패: ", err);
             alert("업로드 중 오류가 발생했습니다.");

@@ -21,6 +21,7 @@ import { ProfClassList } from "./pages/prof/ProfClassList";
 import AdminMainPage from "./pages/admin/AdminMainPage";
 import AdminLecturePage from "./pages/admin/AdminLecturePage";
 import { LectureQnaListPage } from "./pages/user/LectureQnaListPage";
+import { BoardEditPage } from "./pages/user/BoardEditPage";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
                 <Route path="/board" element={<BoardListPage />} />
                 <Route path="/board/:postId" element={<BoardViewPage />} />
                 <Route path="/board/upload" element={<BoardUploadPage />}/>
+                <Route path="/board/edit/:postId" element={<BoardEditPage />}/>
                 <Route path="/unity-test" element={<UnityTestPage />} />
                 <Route path="/metaverse/upload/:id?" element={<MetaTestUpload />} />
                 <Route path="/metaverse/page/:id" element={<MetaTestPage />} />
