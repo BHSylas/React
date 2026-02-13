@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { CommentBlock } from "../../components/board/comment/CommentBlock";
 import { BoardActionBar } from "../../components/board/desc/BoardActionBar";
-import { BoardPostPanel } from "../../components/board/desc/BoardPostPanel";
+import { BoardPostPanel, type BoardPostPanelProps } from "../../components/board/desc/BoardPostPanel";
 import { useNavigate, useParams } from "react-router-dom";
-import { api } from "../../api/axiosInstance";
-import type { Board } from "../../types/Board";
+import axios from "axios";
+
+const token = localStorage.getItem("token");
 
 export function BoardViewPage() {
     const postId = useParams().postId;
@@ -18,19 +19,16 @@ export function BoardViewPage() {
 
   return (
     <main className="mx-auto px-6 py-8 space-y-6">
-        <div className="p-6 border rounded-lg shadow-sm space-y-4">
-        <BoardPostPanel post={post} />
+      <div className="p-6 border rounded-lg shadow-sm space-y-4">
+        <BoardPostPanel {...post} />
         <div className="divider" />
         <BoardActionBar
-        onBack={() => {
-          sessionStorage.setItem("recentCategory", post?.boardType || "NOTICE");
-          navigate(-1);
-        }}
-        onWrite={() => {}}
-        onEdit={() => {}}
-        onDelete={() => {}}
+          onBack={() => { navigate(-1); }}
+          onWrite={() => { navigate('/board/upload') }}
+          onEdit={() => {}}
+          onDelete={handleDelete}
         />
-        </div>
+      </div>
 
       <section id="comments">
         <CommentBlock postId={postId || "0"} />
