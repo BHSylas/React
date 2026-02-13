@@ -13,6 +13,7 @@ export default function ProtectedRoute({ children }: { children: JSX.Element }) 
     localStorage.setItem("requireLogin", "yes");
     return <Navigate to="/" replace/>;
   }
+  localStorage.removeItem("requireLogin");
 
   return children;
 }

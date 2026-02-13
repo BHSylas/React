@@ -29,11 +29,6 @@ function App() {
           <BrowserRouter>
             <Routes>
               <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
-              </Route>
-              <Route element={<Layout />}>
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<LoginForm />} />
-                <Route path="/register" element={<RegisterForm />} />
                 <Route path="/my" element={<MyPage />} />
                 <Route path="/class" element={<ClassListPage />} />
                 <Route path="/class/:classId" element={<ClassViewPage />} />
@@ -46,9 +41,13 @@ function App() {
                 <Route path="/metaverse/upload/:id?" element={<MetaTestUpload />} />
                 <Route path="/metaverse/page/:id" element={<MetaTestPage />} />
                 <Route path="/metaverse" element={<MetaList />}/>
-
                 <Route path="/admin" element={<AdminMainPage />} />
                 <Route path="/admin/lectures" element={<AdminLecturePage />} />
+              </Route>
+              <Route element={<Layout />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<LoginForm />} />
+                <Route path="/register" element={<RegisterForm />} />
               </Route>
             </Routes>
           </BrowserRouter>

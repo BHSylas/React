@@ -5,7 +5,6 @@ import LoginForm from "./LoginForm";
 
 export default function AuthModal() {
   const { isOpen, mode, close } = useContext(AuthModalContext);
-
   if (!isOpen) return null;
 
   return (

@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { api } from "../../../api/axiosInstance";
 import { decompileCountryCode } from "../../../utils/decompileCountryCode";
+import { useState } from "react";
 
 interface TopPanelProps {
   title: string;
@@ -24,10 +25,12 @@ export default function TopPanel({
   isEnrolling = false,
 }: TopPanelProps) {
   const navigate = useNavigate();
+  const [enrollment, setEnrollment] = useState(isEnrolling);
   const enrolling = () => {
     api.post(`/me/enrollments/${classId}`)
-    .then((res) => {
-      console.log(res.data);
+    .then(() => {
+      setEnrollment(true);
+      alert("수강 신청이 완료되었습니다!");
     })
     .catch((err : any) => {
       console.error(err);
@@ -65,7 +68,7 @@ export default function TopPanel({
           </div>
 
           <div className="mt-6">
-            {isEnrolling ?
+            {enrollment ?
             <div className="flex gap-3">
               <button
               type="button"

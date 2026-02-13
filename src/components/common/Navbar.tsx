@@ -27,6 +27,10 @@ export function Navbar({onMenuClick} : NavbarProps) {
       lastScrollY.current = currentY;
     };
     window.addEventListener("scroll", onScroll);
+    if(localStorage.getItem("requireLogin") === "yes"){
+      openLogin();
+      localStorage.removeItem("requireLogin");
+    }
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
