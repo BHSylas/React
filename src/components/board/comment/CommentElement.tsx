@@ -15,12 +15,14 @@ export default function CommentElement( {comment} : {comment: Comment} ) {
     const update = () => {
         api.put(`/boards/comments/update/${comment.commentId}`, {
             content: content,
-        }).then((res) => {
-            console.log(res.data);
+        }).then(() => {
             setEdit(false);
             originalContent.current = content;
         }).catch((err : any) => {
             console.error(err);
+            alert("NO");
+            setEdit(false);
+            setContent(originalContent.current);
         });
     }
     const remove = () => {
@@ -31,6 +33,7 @@ export default function CommentElement( {comment} : {comment: Comment} ) {
             setDeleted(true);
         }).catch((err : any) => {
             console.error(err);
+            alert("NO");
         });
     }
     if(deleted) {

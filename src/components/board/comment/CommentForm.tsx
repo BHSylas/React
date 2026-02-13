@@ -5,11 +5,9 @@ export default function CommentForm({ postId, onSubmit }: { postId: string, onSu
   const [content, setContent] = useState("");
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(postId, content);
     api.post(`/boards/comments/create/${postId}`, {
       content: content,
-    }).then((res) => {
-      console.log(res.data);
+    }).then(() => {
       setContent("");
       onSubmit();
     }).catch((err : any) => {
