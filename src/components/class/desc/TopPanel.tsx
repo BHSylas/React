@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { api } from "../../../api/axiosInstance";
 import { decompileCountryCode } from "../../../utils/decompileCountryCode";
 import { useState } from "react";
+import { useAuth } from "../../../hooks/useAuth";
 
 interface TopPanelProps {
   title: string;
@@ -26,6 +27,7 @@ export default function TopPanel({
 }: TopPanelProps) {
   const navigate = useNavigate();
   const [enrollment, setEnrollment] = useState(isEnrolling);
+  const {role} = useAuth();
   const enrolling = () => {
     api.post(`/me/enrollments/${classId}`)
     .then(() => {
@@ -34,6 +36,13 @@ export default function TopPanel({
     })
     .catch((err : any) => {
       console.error(err);
+      if(role === '1') {
+        alert("강사는 수강할 수 없습니다.");
+      }
+      else
+      {
+        alert("수강 신청에 실패했습니다. 다시 시도해 주세요.");
+      }
     });
   }
   return (

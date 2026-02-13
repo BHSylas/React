@@ -5,6 +5,7 @@ export interface Board {
   createdAt: string;
   content: string;
   viewCount: number;
+  commentCount: number;
   boardType: string;
   pinned: boolean;
 }

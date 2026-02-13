@@ -14,7 +14,7 @@ export function BoardViewPage() {
       api.get(`/boards/list/${postId}`).then((res) => {
         setPost(res.data);
       });
-    }, []);
+    }, [postId]);
 
   return (
     <main className="mx-auto px-6 py-8 space-y-6">
@@ -32,7 +32,9 @@ export function BoardViewPage() {
         />
         </div>
 
-      <CommentBlock postId={postId || "0"} />
+      <section id="comments">
+        <CommentBlock postId={postId || "0"} />
+      </section>
     </main>
   );
 }
