@@ -24,12 +24,10 @@ async function fetchClasses(params: {
   // =========================
   // 실제 API 요청 (백엔드 준비 후)
   // =========================
-  const response = await api.get(`/lectures?page=0&size=5&language=${params.categoryId}&enrolling=false`);
+  const response = await api.get(`/lectures?page=0&size=5&language=${params.categoryId}`);
   if (response.data.length === 0) {
     throw new Error("No classes found");
   }
-  //if(params.categoryId === "ALL") return MOCK_CLASSES;
-  //else return MOCK_CLASSES.filter(c => c.categoryId === params.categoryId.toLowerCase());
   return await response.data.content;
 }
 

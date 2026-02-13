@@ -5,33 +5,21 @@ import { BoardWriteBar } from "../../components/board/list/BoardWriteBar";
 import type { Board } from "../../types/Board";
 import TagManu from "./BoardTag";
 import type { CategoryValue } from "./BoardTag";
-import axios from "axios";
 import { BoardPagination } from "../../components/board/list/BoardPagination";
-
-// const MOCK_BOARDS: Board[] = [
-//   {
-//     id: 1,
-//     title: "첫 번째 게시글입니다",
-//     author: "관리자",
-//     createdAt: "2024-01-01",
-//     viewCount: 12,
-//     category: "공지사항",
-//   },
-//   {
-//     id: 2,
-//     title: "React 질문 있습니다",
-//     author: "홍길동",
-//     createdAt: "2024-01-02",
-//     viewCount: 5,
-//     category: "Q&A",
-//   },
-// ];
-
+import { api } from "../../api/axiosInstance";
 
 export function BoardListPage() {
   // const [boards, setBoards] = useState<Board[]>([]);
   const [loading, setLoading] = useState<boolean>(true); //로딩중 상태
-  const [activeTab, setActiveTab] = useState<CategoryValue>('NOTICE');
+  const [activeTab, setActiveTab] = useState<CategoryValue>(() => {
+    const savedCategory = sessionStorage.getItem("recentCategory");
+    if (savedCategory) {
+      sessionStorage.removeItem("recentCategory");
+      return savedCategory as CategoryValue;
+    }
+    return "NOTICE";
+  });
+
   const [allBoards, setAllBoard] = useState<Board[]>([]); // 전체 보드
   const [searchBoard, setSerarchBoard] = useState({ keyword: "", category: "title" }); // 서치
   const [currentPage, setCurrentPage] = useState(1);
@@ -39,9 +27,8 @@ export function BoardListPage() {
   const postsPerPage = 10; // 한 페이지에 보여줄 게시글 수
 
   const fetchBoards = () => {
-    // useEffect(() => {
     setLoading(true);
-    axios.get('/api/board/searchBoard', {
+    api.get('/boards/searchBoard', {
       params: {
         boardType: activeTab, // 현재 탭에 맞는 데이터만 서버에서 가져옴
         page: currentPage - 1,
@@ -58,7 +45,6 @@ export function BoardListPage() {
       setLoading(false);
     }).catch(err => {
       console.error("데이터 로드 실패: ", err);
-      alert("업로드 중 오류가 발생했습니다.");
       setAllBoard([]);
       setLoading(false);
     });
@@ -77,14 +63,14 @@ export function BoardListPage() {
     fetchBoards();
   }, [activeTab, currentPage, searchBoard]);
 
-  // if (boards.length === 0) {
-  //   setBoards();
-  //   return null;
-  // }
+  const handleChangeTab = (tab: CategoryValue) => {
+    sessionStorage.setItem("recentCategory", tab);
+    setActiveTab(tab);
+  }
   return (
     <section className="mx-auto px-6 py-8 space-y-6">
       {/* <div className="text-7xl text-center font-bold text-blue-800">상단이 너무 심심해 보임</div> */}
-      <TagManu activeTab={activeTab} onTabChange={setActiveTab} />
+      <TagManu activeTab={activeTab} onTabChange={handleChangeTab} />
       {/* 목록 */}
       {loading ? (
         <div className="p-5 text-center">로딩 중...</div>

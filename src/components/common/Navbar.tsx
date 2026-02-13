@@ -1,12 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-import { MenuDropdown } from "./MenuDropdown";
 import { textLimiter } from "../../utils/textLimiter";
 import { useContext, useEffect, useRef, useState } from "react";
 import { AuthModalContext } from "../../context/AuthModalContext";
+import "../../global.css";
 
-export function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false);
+interface NavbarProps {
+  onMenuClick: () => void;
+}
+
+export function Navbar({onMenuClick} : NavbarProps) {
   const [visible, setVisible] = useState(true);
   const lastScrollY = useRef(0);
   const { isLoggedIn, nickname: nickname, logout } = useAuth();
@@ -15,11 +18,10 @@ export function Navbar() {
 
   useEffect(() => {
     const onScroll = () => {
-      setMenuOpen(false);
       const currentY = window.scrollY;
-      if (currentY > lastScrollY.current && currentY > 50) {
+      if (currentY > lastScrollY.current + 25 && currentY > 50) {
         setVisible(false); // 아래로 스크롤
-      } else {
+      } else if (currentY < lastScrollY.current) {
         setVisible(true); // 위로 스크롤
       }
       lastScrollY.current = currentY;
@@ -32,9 +34,10 @@ export function Navbar() {
   return (
     <div
       className={`
-        navbar shadow fixed z-50
+        navbar shadow fixed z-20
         transition bg-base-100
         duration-300
+        fixed-padding-adjust
         ${visible ? "translate-y-0" : "-translate-y-full"}
       `}
     >
@@ -46,15 +49,11 @@ export function Navbar() {
               {/* 모바일: 클릭 */}
               <button
                 className="my-2 mx-1 text-xl"
-                onClick={() => {setMenuOpen(v => !v)}}
+                onClick={onMenuClick}
               >
                 ☰
               </button>
               {/* 데스크톱: hover */}
-              <MenuDropdown
-                isOpen={menuOpen}
-                close={() => setMenuOpen(false)}
-              />
             </div>
             <span
                 className="my-2 lg:text-xl font-bold cursor-pointer text-blue-800"

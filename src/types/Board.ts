@@ -3,6 +3,7 @@ export interface Board {
   title: string;
   writerName: string;
   createdAt: string;
+  content: string;
   viewCount: number;
   boardType: string;
   pinned: boolean;

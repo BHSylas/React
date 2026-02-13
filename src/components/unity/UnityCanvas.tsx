@@ -18,9 +18,9 @@ export function UnityCanvas() {
       window.createUnityInstance(
         canvasRef.current,
         {
-          dataUrl: "/unity/Build/Builds.data.br",
-          frameworkUrl: "/unity/Build/Builds.framework.js.br",
-          codeUrl: "/unity/Build/Builds.wasm.br",
+          dataUrl: "/unity/Build/Builds.data",
+          frameworkUrl: "/unity/Build/Builds.framework.js",
+          codeUrl: "/unity/Build/Builds.wasm",
           streamingAssetsUrl: "/unity/StreamingAssets",
         },
         (progress: number) => console.log("Unity loading:", progress)

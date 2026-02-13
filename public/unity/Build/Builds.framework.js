@@ -27,7 +27,7 @@ Module['ready'] = new Promise((resolve, reject) => {
   readyPromiseResolve = resolve;
   readyPromiseReject = reject;
 });
-["_main","getExceptionMessage","___get_exception_message","_free","___cpp_exception","___cxa_increment_exception_refcount","___cxa_decrement_exception_refcount","___thrown_object_from_unwind_exception","_GetFakemodTimeInSeconds","_ReleaseKeys","_GetCopyBufferAsCStr","_getMetricsInfo","_SendMessageFloat","_SendMessageString","_SendMessage","_SetFullscreen","_InjectProfilerSample","_SendPasteEvent","_fflush","onRuntimeInitialized"].forEach((prop) => {
+["_main","getExceptionMessage","___get_exception_message","_free","___cpp_exception","___cxa_increment_exception_refcount","___cxa_decrement_exception_refcount","___thrown_object_from_unwind_exception","_GetFakemodTimeInSeconds","_ReleaseKeys","_GetCopyBufferAsCStr","_getMetricsInfo","_SendMessageNumber","_SendMessageString","_SendMessage","_SetFullscreen","_ConnectToProfiler","_StopProfiling","_IsConnectedToProfiler","_SendPasteEvent","_fflush","onRuntimeInitialized"].forEach((prop) => {
   if (!Object.getOwnPropertyDescriptor(Module['ready'], prop)) {
     Object.defineProperty(Module['ready'], prop, {
       get: () => abort('You are getting ' + prop + ' on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js'),
@@ -269,8 +269,6 @@ function assignNewVideoInputId() {
 
 function updateVideoInputDevices(devices) {
 	videoInputDevicesSuccessfullyEnumerated = true;
-	// we're going to clear the list of videoInputDevices and regenerate it to get more accurate info after being granted camera access
-	videoInputDevices = [];
 	var retainedDevices = {};
 	var newDevices = [];
 
@@ -279,7 +277,13 @@ function updateVideoInputDevices(devices) {
 		if (device.kind === 'videoinput') { // Only interested in WebCam inputs
 			var oldDevice = matchToOldDevice(device);
 			if (oldDevice) {
-				retainedDevices[oldDevice.id] = oldDevice;
+				var updatedOldDevice = oldDevice;
+				if (device.isFrontFacing != undefined)
+				{
+					// if we got an updated facing mode after getting device permissions, update just that property
+					updatedOldDevice.isFrontFacing = device.isFrontFacing;
+				}
+				retainedDevices[oldDevice.id] = updatedOldDevice;
 			} else {
 				newDevices.push(device);
 			}
@@ -296,11 +300,10 @@ function updateVideoInputDevices(devices) {
 			// name is probably better than a long hash)
 			device.name = device.label || ("Video input #" + (device.id + 1));
 
-			// Chrome 85 on Android labels camera provides devices with labels like
-			// "camera2 0, facing back" and "camera2 1, facing front", use that to
-			// determine whether the device is front facing or not.
-			// some labels don't provide that info, like the camera on a 2019 MacbookPro: FaceTime HD Camera (Built-in)
-			// so if there's no "front" or "back" in the label or name, we're going to assume it's front facing
+			// This is the "old"/backup way of checking whether a camera is front facing
+			// It doesn't work for non-English languages since it looks for the English word "front"
+			// We only want to use this method if we aren't able to get permissions from the user to access the web camera, which lets us access the facing mode
+			// If there's no "front" or "back" in the label or name, we're going to assume it's front facing, which is generally the case
 			device.isFrontFacing = device.name.toLowerCase().includes('front') || (!(device.name.toLowerCase().includes('front')) && !(device.name.toLowerCase().includes('back')));
 
 			videoInputDevices[device.id] = device;
@@ -329,6 +332,30 @@ function removeEnumerateMediaDevicesRunDependency() {
 	};
 }
 
+function queueWebCamDeviceUpdates(devices) {
+	devices = devices.filter(device => device.kind === "videoinput");
+	var promises = devices.map(function(device) {
+		return navigator.mediaDevices.getUserMedia({
+		video: { deviceId: device.deviceId }
+		}).then(function(stream) {
+			var track = stream.getVideoTracks()[0];
+			const capabilities = track.getCapabilities();
+			// Check if device has "user" in facingMode array, which indicates it is front facing
+			// If we fail to get the capabilities property, set isFrontFacing to true by default
+			device.isFrontFacing = Array.isArray(capabilities.facingMode)
+				? capabilities.facingMode.includes("user")
+				: true;
+			track.stop();
+		}).catch(function(err) {
+			var deviceId = device.deviceId ?? "unknown";
+			var label = device.label ?? "unknown";
+			console.warn(`Device with id: ${deviceId} and label: ${label} failed to update\n ${err}`)}
+		)
+	});
+
+	return promises;
+}
+
 function enumerateMediaDeviceList() {
 	if (!videoInputDevices) return;
 	// Bug/limitation: If there are multiple video or audio devices connected,
@@ -341,15 +368,6 @@ function enumerateMediaDeviceList() {
 		console.warn('Unable to enumerate media devices: ' + e + '\nWebcams will not be available.');
 		disableAccessToMediaDevices();
 	});
-
-	// Work around Firefox 81 bug on Windows:
-	// https://bugzilla.mozilla.org/show_bug.cgi?id=1397977, devicechange
-	// events do not fire, so resort to polling for device changes once every
-	// 60 seconds.
-	if (/Firefox/.test(navigator.userAgent)) {
-		setTimeout(enumerateMediaDeviceList, 60000);
-		warnOnce('Applying workaround to Firefox bug https://bugzilla.mozilla.org/show_bug.cgi?id=1397977');
-	}
 }
 
 function disableAccessToMediaDevices() {
@@ -387,6 +405,17 @@ if (!Module['ENVIRONMENT_IS_PTHREAD']) {
 		}
 	}, 0);
 }
+Module["ConnectToProfiler"] = function (ipAndPort) {
+  const ipAndPortCstr = stringToNewUTF8(ipAndPort);
+  _ConnectToProfiler(ipAndPortCstr);
+  _free(ipAndPortCstr);
+};
+Module["StopProfiling"] = function () {
+  _StopProfiling();
+};
+Module["IsConnectedToProfiler"] = function () {
+  return !!_IsConnectedToProfiler();
+};
 function SendMessage(gameObject, func, param) {
     var func_cstr = stringToNewUTF8(func);
     var gameObject_cstr = stringToNewUTF8(gameObject);
@@ -400,7 +429,7 @@ function SendMessage(gameObject, func, param) {
             _SendMessageString(gameObject_cstr, func_cstr, param_cstr);
         }
         else if (typeof param === "number")
-            _SendMessageFloat(gameObject_cstr, func_cstr, param);
+            _SendMessageNumber(gameObject_cstr, func_cstr, param);
         else
             throw "" + param + " is does not have a type which is supported by SendMessage.";
 
@@ -1333,14 +1362,6 @@ function dbg(text) {
 // end include: runtime_debug.js
 // === Body ===
 
-var ASM_CONSTS = {
-  4034712: () => { Module['emscripten_get_now_backup'] = performance.now; },  
- 4034767: ($0) => { performance.now = function() { return $0; }; },  
- 4034815: ($0) => { performance.now = function() { return $0; }; },  
- 4034863: () => { performance.now = Module['emscripten_get_now_backup']; }
-};
-
-
 
 // end include: preamble.js
 
@@ -1683,10 +1704,6 @@ var ASM_CONSTS = {
         warnOnce.shown[text] = 1;
         err(text);
       }
-    }
-
-  function _Alive() {
-      alert("I live!");
     }
 
   function _GetJSLoadTimeInfo(loadTimePtr) {
@@ -2893,16 +2910,6 @@ var ASM_CONSTS = {
           }
           JS_OrientationSensor_callback = 0;
       }
-
-  function _JS_Profiler_InjectJobs()
-    {
-      for (var jobname in Module["Jobs"])
-      {
-        var job = Module["Jobs"][jobname];
-        if (typeof job["endtime"] != "undefined")
-          Module.ccall("InjectProfilerSample", null, ["string", "number", "number"], [jobname, job.starttime, job.endtime]);
-      }
-    }
 
   
   function _JS_RequestDeviceSensorPermissionsOnTouch() {
@@ -7547,6 +7554,24 @@ var ASM_CONSTS = {
   	}
 
   
+  function _JS_SystemInfo_GetBrowserName(buffer, bufferSize)
+  	{
+  		var browser = Module.SystemInfo.browser;
+  		if (buffer)
+  			stringToUTF8(browser, buffer, bufferSize);
+  		return lengthBytesUTF8(browser);
+  	}
+
+  
+  function _JS_SystemInfo_GetBrowserVersionString(buffer, bufferSize)
+  	{
+  		var browserVer = Module.SystemInfo.browserVersion;
+  		if (buffer)
+  			stringToUTF8(browserVer, buffer, bufferSize);
+  		return lengthBytesUTF8(browserVer);
+  	}
+
+  
   function _JS_SystemInfo_GetCanvasClientSize(domElementSelector, outWidth, outHeight)
   	{
   		var selector = UTF8ToString(domElementSelector);
@@ -7610,6 +7635,14 @@ var ASM_CONSTS = {
   		HEAPF64[outHeight] = Module.SystemInfo.height;
   	}
 
+  
+  function _JS_SystemInfo_GetStreamingAssetsURL(buffer, bufferSize)
+  	{
+  		if (buffer)
+  			stringToUTF8(Module.streamingAssetsUrl, buffer, bufferSize);
+  		return lengthBytesUTF8(Module.streamingAssetsUrl);
+  	}
+
   function _JS_SystemInfo_HasAstcHdr()
       {
         var ext = GLctx.getExtension('WEBGL_compressed_texture_astc');
@@ -7637,6 +7670,11 @@ var ASM_CONSTS = {
   function _JS_SystemInfo_HasWebGPU()
   	{
   		return Module.SystemInfo.hasWebGPU;
+  	}
+
+  function _JS_SystemInfo_IsMobile()
+  	{
+  		return Module.SystemInfo.mobile;
   	}
 
   function _JS_UnityEngineShouldQuit() {
@@ -8021,7 +8059,6 @@ var ASM_CONSTS = {
             try {
               var queued = peer.msg_send_queue.shift();
               while (queued) {
-                console.error('peer.socket.send(queued)');
                 peer.socket.send(queued);
                 queued = peer.msg_send_queue.shift();
               }
@@ -9435,43 +9472,6 @@ var ASM_CONSTS = {
 
   function _dlopen(handle) {
       warnOnce('dlopen: Unable to open DLL! Dynamic linking is not supported in WebAssembly builds due to limitations to performance and code size. Please statically link in the needed libraries.');
-    }
-
-  var readEmAsmArgsArray = [];
-  function readEmAsmArgs(sigPtr, buf) {
-      // Nobody should have mutated _readEmAsmArgsArray underneath us to be something else than an array.
-      assert(Array.isArray(readEmAsmArgsArray));
-      // The input buffer is allocated on the stack, so it must be stack-aligned.
-      assert(buf % 16 == 0);
-      readEmAsmArgsArray.length = 0;
-      var ch;
-      // Most arguments are i32s, so shift the buffer pointer so it is a plain
-      // index into HEAP32.
-      buf >>= 2;
-      while (ch = HEAPU8[sigPtr++]) {
-        var chr = String.fromCharCode(ch);
-        var validChars = ['d', 'f', 'i'];
-        // In WASM_BIGINT mode we support passing i64 values as bigint.
-        validChars.push('j');
-        assert(validChars.includes(chr), `Invalid character ${ch}("${chr}") in readEmAsmArgs! Use only [${validChars}], and do not specify "v" for void return argument.`);
-        // Floats are always passed as doubles, and doubles and int64s take up 8
-        // bytes (two 32-bit slots) in memory, align reads to these:
-        buf += (ch != 105/*i*/) & buf;
-        readEmAsmArgsArray.push(
-          ch == 105/*i*/ ? HEAP32[buf] :
-         (ch == 106/*j*/ ? HEAP64 : HEAPF64)[buf++ >> 1]
-        );
-        ++buf;
-      }
-      return readEmAsmArgsArray;
-    }
-  function runEmAsmFunction(code, sigPtr, argbuf) {
-      var args = readEmAsmArgs(sigPtr, argbuf);
-      if (!ASM_CONSTS.hasOwnProperty(code)) abort('No EM_ASM constant found at address ' + code);
-      return ASM_CONSTS[code].apply(null, args);
-    }
-  function _emscripten_asm_const_int(code, sigPtr, argbuf) {
-      return runEmAsmFunction(code, sigPtr, argbuf);
     }
 
   function _emscripten_cancel_main_loop() {
@@ -14271,59 +14271,6 @@ var ASM_CONSTS = {
 
   function _glViewport(x0, x1, x2, x3) { GLctx.viewport(x0, x1, x2, x3) }
 
-  var GlobalData = {ws:[]};
-  function _js_html_utpWebSocketCreate(sockId, addrData, addrSize) {
-          var addr = new TextDecoder().decode(HEAPU8.subarray(addrData, addrData + addrSize));
-          var sock = new WebSocket(addr);
-          sock.binaryType = "arraybuffer";
-          sock.utpMessageQueue = [];
-          sock.addEventListener('message', function (e) {
-              var data8 = new Uint8Array(e.data);
-              sock.utpMessageQueue.push(data8);
-          });
-          GlobalData.ws[sockId] = sock;
-      }
-
-  function _js_html_utpWebSocketDestroy(sockId) {
-          var sock = GlobalData.ws[sockId];
-          if (sock && (sock.readyState == WebSocket.CONNECTING || sock.readyState == WebSocket.OPEN)) {
-              sock.close();
-          }
-          GlobalData.ws[sockId] = undefined;
-      }
-
-  function _js_html_utpWebSocketIsConnected(sockId) {
-          var sock = GlobalData.ws[sockId];
-          if (!sock)
-              return -1;
-          if (sock.readyState == WebSocket.OPEN)
-              return 1;
-          if (sock.readyState == WebSocket.CONNECTING)
-              return 0;
-          return -1;
-      }
-
-  function _js_html_utpWebSocketRecv(sockId, data, size) {
-          var sock = GlobalData.ws[sockId];
-          if (!sock || sock.readyState != WebSocket.OPEN)
-              return -1;
-          if (sock.utpMessageQueue.length == 0)
-              return 0;
-          var buffer = sock.utpMessageQueue.shift();
-          if (buffer.length > size)
-              return 0;
-          HEAP8.set(buffer, data);
-          return buffer.length;
-      }
-
-  function _js_html_utpWebSocketSend(sockId, data, size) {
-          var sock = GlobalData.ws[sockId];
-          if (!sock || sock.readyState != WebSocket.OPEN)
-              return -1;
-          sock.send(HEAPU8.subarray(data, data + size));
-          return size;
-      }
-
   /** @param {number=} ch */
   function wgpuDecodeStrings(s, c, ch) {
       ch = ch || 65;
@@ -16373,7 +16320,6 @@ function checkIncomingModuleAPI() {
   ignoredModuleProp('fetchSettings');
 }
 var wasmImports = {
-  "Alive": _Alive,
   "GetJSLoadTimeInfo": _GetJSLoadTimeInfo,
   "GetJSMemoryInfo": _GetJSMemoryInfo,
   "JS_Accelerometer_IsRunning": _JS_Accelerometer_IsRunning,
@@ -16417,7 +16363,6 @@ var wasmImports = {
   "JS_OrientationSensor_IsRunning": _JS_OrientationSensor_IsRunning,
   "JS_OrientationSensor_Start": _JS_OrientationSensor_Start,
   "JS_OrientationSensor_Stop": _JS_OrientationSensor_Stop,
-  "JS_Profiler_InjectJobs": _JS_Profiler_InjectJobs,
   "JS_RequestDeviceSensorPermissionsOnTouch": _JS_RequestDeviceSensorPermissionsOnTouch,
   "JS_RunQuitCallbacks": _JS_RunQuitCallbacks,
   "JS_ScreenOrientation_DeInit": _JS_ScreenOrientation_DeInit,
@@ -16447,6 +16392,8 @@ var wasmImports = {
   "JS_Sound_SetVolume": _JS_Sound_SetVolume,
   "JS_Sound_Stop": _JS_Sound_Stop,
   "JS_SystemInfo_GetAnimationFrameRate": _JS_SystemInfo_GetAnimationFrameRate,
+  "JS_SystemInfo_GetBrowserName": _JS_SystemInfo_GetBrowserName,
+  "JS_SystemInfo_GetBrowserVersionString": _JS_SystemInfo_GetBrowserVersionString,
   "JS_SystemInfo_GetCanvasClientSize": _JS_SystemInfo_GetCanvasClientSize,
   "JS_SystemInfo_GetDocumentURL": _JS_SystemInfo_GetDocumentURL,
   "JS_SystemInfo_GetGPUInfo": _JS_SystemInfo_GetGPUInfo,
@@ -16454,11 +16401,13 @@ var wasmImports = {
   "JS_SystemInfo_GetOS": _JS_SystemInfo_GetOS,
   "JS_SystemInfo_GetPreferredDevicePixelRatio": _JS_SystemInfo_GetPreferredDevicePixelRatio,
   "JS_SystemInfo_GetScreenSize": _JS_SystemInfo_GetScreenSize,
+  "JS_SystemInfo_GetStreamingAssetsURL": _JS_SystemInfo_GetStreamingAssetsURL,
   "JS_SystemInfo_HasAstcHdr": _JS_SystemInfo_HasAstcHdr,
   "JS_SystemInfo_HasCursorLock": _JS_SystemInfo_HasCursorLock,
   "JS_SystemInfo_HasFullscreen": _JS_SystemInfo_HasFullscreen,
   "JS_SystemInfo_HasWebGL": _JS_SystemInfo_HasWebGL,
   "JS_SystemInfo_HasWebGPU": _JS_SystemInfo_HasWebGPU,
+  "JS_SystemInfo_IsMobile": _JS_SystemInfo_IsMobile,
   "JS_UnityEngineShouldQuit": _JS_UnityEngineShouldQuit,
   "JS_WebCamVideo_GetNativeHeight": _JS_WebCamVideo_GetNativeHeight,
   "JS_WebCamVideo_GetNativeWidth": _JS_WebCamVideo_GetNativeWidth,
@@ -16505,7 +16454,6 @@ var wasmImports = {
   "_tzset_js": __tzset_js,
   "abort": _abort,
   "dlopen": _dlopen,
-  "emscripten_asm_const_int": _emscripten_asm_const_int,
   "emscripten_cancel_main_loop": _emscripten_cancel_main_loop,
   "emscripten_clear_interval": _emscripten_clear_interval,
   "emscripten_console_error": _emscripten_console_error,
@@ -16723,11 +16671,6 @@ var wasmImports = {
   "glVertexAttribIPointer": _glVertexAttribIPointer,
   "glVertexAttribPointer": _glVertexAttribPointer,
   "glViewport": _glViewport,
-  "js_html_utpWebSocketCreate": _js_html_utpWebSocketCreate,
-  "js_html_utpWebSocketDestroy": _js_html_utpWebSocketDestroy,
-  "js_html_utpWebSocketIsConnected": _js_html_utpWebSocketIsConnected,
-  "js_html_utpWebSocketRecv": _js_html_utpWebSocketRecv,
-  "js_html_utpWebSocketSend": _js_html_utpWebSocketSend,
   "navigator_gpu_get_preferred_canvas_format": _navigator_gpu_get_preferred_canvas_format,
   "navigator_gpu_request_adapter_async": _navigator_gpu_request_adapter_async,
   "strftime": _strftime,
@@ -16802,7 +16745,7 @@ var _GetCopyBufferAsCStr = Module["_GetCopyBufferAsCStr"] = createExportWrapper(
 /** @type {function(...*):?} */
 var _getMetricsInfo = Module["_getMetricsInfo"] = createExportWrapper("getMetricsInfo");
 /** @type {function(...*):?} */
-var _SendMessageFloat = Module["_SendMessageFloat"] = createExportWrapper("SendMessageFloat");
+var _SendMessageNumber = Module["_SendMessageNumber"] = createExportWrapper("SendMessageNumber");
 /** @type {function(...*):?} */
 var _SendMessageString = Module["_SendMessageString"] = createExportWrapper("SendMessageString");
 /** @type {function(...*):?} */
@@ -16810,9 +16753,13 @@ var _SendMessage = Module["_SendMessage"] = createExportWrapper("SendMessage");
 /** @type {function(...*):?} */
 var _SetFullscreen = Module["_SetFullscreen"] = createExportWrapper("SetFullscreen");
 /** @type {function(...*):?} */
-var _main = Module["_main"] = createExportWrapper("__main_argc_argv");
+var _ConnectToProfiler = Module["_ConnectToProfiler"] = createExportWrapper("ConnectToProfiler");
 /** @type {function(...*):?} */
-var _InjectProfilerSample = Module["_InjectProfilerSample"] = createExportWrapper("InjectProfilerSample");
+var _StopProfiling = Module["_StopProfiling"] = createExportWrapper("StopProfiling");
+/** @type {function(...*):?} */
+var _IsConnectedToProfiler = Module["_IsConnectedToProfiler"] = createExportWrapper("IsConnectedToProfiler");
+/** @type {function(...*):?} */
+var _main = Module["_main"] = createExportWrapper("__main_argc_argv");
 /** @type {function(...*):?} */
 var _SendPasteEvent = Module["_SendPasteEvent"] = createExportWrapper("SendPasteEvent");
 /** @type {function(...*):?} */
@@ -16891,7 +16838,7 @@ Module["cwrap"] = cwrap;
 Module["stackTrace"] = stackTrace;
 var missingLibrarySymbols = [
   'convertPCtoSourceLocation',
-  'runMainThreadEmAsm',
+  'readEmAsmArgs',
   'jstoi_s',
   'listenOnce',
   'autoResumeAudioContext',
@@ -17056,8 +17003,6 @@ var unexportedSymbols = [
   'emscriptenLog',
   'UNWIND_CACHE',
   'readEmAsmArgsArray',
-  'readEmAsmArgs',
-  'runEmAsmFunction',
   'jstoi_q',
   'getExecutableName',
   'handleException',
@@ -17308,7 +17253,6 @@ var unexportedSymbols = [
   'JS_DeviceMotion_eventHandler',
   'JS_DeviceMotion_add',
   'JS_DeviceMotion_remove',
-  'IDBFS',
   'miniTempWebGLUIntBuffers',
   'computeUnpackAlignedImageSize3D',
   'emscriptenWebGLGetTexPixelData3D',
@@ -17327,7 +17271,7 @@ var unexportedSymbols = [
   'webgpu_cache',
   'webgpu_buildID',
   'wr',
-  'GlobalData',
+  'IDBFS',
 ];
 unexportedSymbols.forEach(unexportedRuntimeSymbol);
 

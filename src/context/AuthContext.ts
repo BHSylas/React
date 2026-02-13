@@ -6,6 +6,7 @@ export interface AuthContextType {
   token: string | null;
   name: string | null;
   nickname: string | null;
+  role: string | null;
   isAuthReady: boolean;
   login: (payload: {
     token: string;
@@ -20,6 +21,7 @@ export const AuthContext = createContext<AuthContextType>({
   token: null,
   name: null,
   nickname: null,
+  role: null,
   isAuthReady: false,
   login: () => {},
   logout: () => {},

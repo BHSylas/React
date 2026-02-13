@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-//import { Navbar } from "./components/common/Navbar";
 import Home from "./pages/user/Home";
 import { AuthProvider } from "./components/provider/AuthProvider";
 import Layout from "./components/common/Layout";
@@ -19,6 +18,9 @@ import MetaTestPage from "./pages/prof/MetaTestPage";
 import MetaList from "./pages/prof/MetaList";
 import { BoardUploadPage } from "./pages/user/BoardUploadPage";
 import { ProfClassList } from "./pages/prof/ProfClassList";
+import AdminMainPage from "./pages/admin/AdminMainPage";
+import AdminLecturePage from "./pages/admin/AdminLecturePage";
+import { LectureQnaListPage } from "./pages/user/LectureQnaListPage";
 
 function App() {
   return (
@@ -38,6 +40,7 @@ function App() {
                 <Route path="/class/:classId" element={<ClassViewPage />} />
                 <Route path="/class/new" element={<NewClassPage />} />
                 <Route path="/class/prof" element={<ProfClassList />}/>
+                <Route path="/class/qna/:lectureId" element={<LectureQnaListPage />} />
                 <Route path="/board" element={<BoardListPage />} />
                 <Route path="/board/:postId" element={<BoardViewPage />} />
                 <Route path="/board/upload" element={<BoardUploadPage />}/>
@@ -45,6 +48,9 @@ function App() {
                 <Route path="/metaverse/upload/:id?" element={<MetaTestUpload />} />
                 <Route path="/metaverse/page/:id" element={<MetaTestPage />} />
                 <Route path="/metaverse" element={<MetaList />}/>
+
+                <Route path="/admin" element={<AdminMainPage />} />
+                <Route path="/admin/lectures" element={<AdminLecturePage />} />
               </Route>
             </Routes>
           </BrowserRouter>

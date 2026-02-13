@@ -5,4 +5,5 @@ export interface ClassItem {
   country: string;
   description: string;
   language: string;
+  status: string;
 }

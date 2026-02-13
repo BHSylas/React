@@ -1,4 +1,5 @@
 // import worldimg from "/worldMap.png";
+import LoremIpsum from "../../components/dev/Lipsum";
 import WorldMap from "../../components/home/WorldMap";
 import { useNavigate } from "react-router";
 
@@ -52,6 +53,9 @@ export default function Home() {
               <div className="p-3 mx-2">
                 <p>목록 없음</p>
                   {/*Placeholder of list*/}
+                  <LoremIpsum />
+                  <LoremIpsum />
+                  <LoremIpsum />
               </div>
           </section>
       </div>
