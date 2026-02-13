@@ -1,15 +1,15 @@
-interface BoardPostPanelProps {
+export interface BoardPostPanelProps {
   title: string;
-  author: string;
-  category: string;
+  writerName: string;
+  boardType: string;
   createdAt: string;
   content: string;
 }
 
 export function BoardPostPanel({
   title,
-  author,
-  category,
+  writerName,
+  boardType,
   createdAt,
   content,
 }: BoardPostPanelProps) {
@@ -19,9 +19,9 @@ export function BoardPostPanel({
       <div className="space-y-1">
         <h1 className="text-xl font-semibold">{title}</h1>
         <div className="text-sm text-gray-500 flex gap-2">
-          <span>{author}</span>
+          <span>{writerName}</span>
           <span>·</span>
-          <span>{category}</span>
+          <span>{boardType}</span>
           <span>·</span>
           <span>{createdAt}</span>
         </div>
