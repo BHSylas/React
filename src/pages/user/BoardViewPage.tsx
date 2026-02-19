@@ -24,7 +24,7 @@ export function BoardViewPage() {
     }
 
     setLoading(true);
-    axios.get(`/api/board/list/${boardId}`, {
+    axios.get(`/api/boards/list/${boardId}`, {
       headers: {
         Authorization: `Bearer ${token}` // 토큰 전달
       }

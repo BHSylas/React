@@ -21,6 +21,7 @@ import { ProfClassList } from "./pages/prof/ProfClassList";
 import AdminMainPage from "./pages/admin/AdminMainPage";
 import AdminLecturePage from "./pages/admin/AdminLecturePage";
 import { LectureQnaListPage } from "./pages/user/LectureQnaListPage";
+import { ProfClassStudent } from "./pages/prof/profClassStudent";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
                 <Route path="/class/:classId" element={<ClassViewPage />} />
                 <Route path="/class/new" element={<NewClassPage />} />
                 <Route path="/class/prof" element={<ProfClassList />}/>
+                <Route path="/class/prof/:lectureId/enrollments" element={<ProfClassStudent />}/>
                 <Route path="/class/qna/:lectureId" element={<LectureQnaListPage />} />
                 <Route path="/board" element={<BoardListPage />} />
                 <Route path="/board/:postId" element={<BoardViewPage />} />
