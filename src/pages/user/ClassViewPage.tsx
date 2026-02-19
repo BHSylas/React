@@ -21,6 +21,9 @@ export default function ClassViewPage() { //현재 테스트 데이터 삽입 �
     if(page === null) {
     return <div>Loading...</div>;
     }
+    if(classId === undefined) {
+      return <div>Invalid class ID</div>;
+    }
   return (
     <main>
       <TopPanel

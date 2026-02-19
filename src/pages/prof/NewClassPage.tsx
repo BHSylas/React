@@ -63,6 +63,13 @@ export default function NewClassPage() {
                             />
                         </div>
 
+
+
+
+
+
+
+
                         <div className="mb-2">
                             <label className="text-xl font-bold">소개</label><br />
                             <textarea

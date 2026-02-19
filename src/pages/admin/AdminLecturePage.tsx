@@ -20,7 +20,7 @@ export default function AdminLecturePage() {
             setLectures(lectures.filter(lec => lec.lectureId !== lectureId));
         });}
     const rejectLecture = (lectureId: string) => {
-        api.patch(`/admin/lectures/${lectureId}/rejection`).then(() => {
+        api.patch(`/admin/lectures/${lectureId}/rejection`, {reason: "거지같음"}).then(() => {
             alert("반려되었습니다.");
             setLectures(lectures.filter(lec => lec.lectureId !== lectureId));
         });}

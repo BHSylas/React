@@ -7,9 +7,7 @@ export function CommentBlock( {postId} : {postId: string} ) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [requireRenewal, setRequireRenewal] = useState(true);
   useEffect(() => {
-    // 댓글 불러오기 API 호출
     api.get(`/boards/comments/list/${postId}?size=50`).then((res) => {
-      console.log(res.data);
       setComments(res.data.content);
     }).finally(() => {
       setRequireRenewal(false);

@@ -3,6 +3,8 @@ import ClassBoardSidebar from "../../components/class/list/ClassBoardSidebar";
 import ClassList from "../../components/class/list/ClassList";
 import { type ClassItem } from "../../types/ClassItem";
 import { api } from "../../api/axiosInstance";
+import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 // import { ta } from "date-fns/locale";
 
 //import { api } from "../../api/axiosInstance";
@@ -33,10 +35,8 @@ async function fetchClasses(params: {
 
 
 export function ClassListPage() {
-  /* =========================
-      상태 정의
-  ========================= */
-
+  const {role} = useAuth();
+  const navigate = useNavigate();
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>(() => {
     const savedLang = sessionStorage.getItem("language");
     if (savedLang && LANGUAGE_MAP[savedLang]) {
@@ -48,10 +48,6 @@ export function ClassListPage() {
   const [classList, setClassList] = useState<ClassItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  /* =========================
-      단일 검색 메서드
-  ========================= */
 
   const requestClasses = useCallback(
   async (categoryId: string) => {
@@ -70,27 +66,14 @@ export function ClassListPage() {
   []
 );
 
-
-  /* =========================
-     최초 진입 / 조건 변경
-  ========================= */
-
   useEffect(() => {
     requestClasses(selectedCategoryId);
   }, [selectedCategoryId, requestClasses]);
-
-  /* =========================
-     Sidebar Callback
-  ========================= */
 
   const handleSelectCategory = (categoryId: string) => {
     if (isLoading) return; // 로딩 중 요청 무시
     setSelectedCategoryId(categoryId);
   };
-
-  /* =========================
-     렌더링
-  ========================= */
 
   return (
     <div className="flex mx-auto gap-6 py-6">
@@ -102,6 +85,11 @@ export function ClassListPage() {
 
       {/* List 영역 */}
       <div className="flex-1 relative">
+        {role === '1' && 
+          <div className="w-full flex justify-end mb-4">
+            <button className="transition hover:text-blue-800 hover:font-bold hover:scale-105" onClick={() => {navigate("/class/new")}}>+ 새 강의</button>
+          </div>
+        }
         {/* 에러 */}
         {error && (
           <div className="p-4 text-red-600 font-semibold">

@@ -1,3 +1,5 @@
+import displayCategory from "../../../utils/displayCategory";
+
 export interface BoardPostPanelProps {
   title: string;
   writerName: string;
@@ -21,9 +23,9 @@ export function BoardPostPanel({
         <div className="text-sm text-gray-500 flex gap-2">
           <span>{writerName}</span>
           <span>·</span>
-          <span>{boardType}</span>
+          <span>{displayCategory(boardType)}</span>
           <span>·</span>
-          <span>{createdAt}</span>
+          <span>{new Date(createdAt).toLocaleDateString()}</span>
         </div>
       </div>
 
