@@ -99,10 +99,6 @@ export function BoardEditPage() {
                         className="border-b-2 border-gray-300 w-full h-full text-xl p-2 outline-none mb-5"
                         placeholder="게시글 제목"></input>
                     <div>
-                        <input className="outline-none px-1 w-auto"
-                            placeholder="작성자" readOnly></input>
-                        <input className="outline-none px-1 w-auto"
-                            placeholder="날짜" readOnly></input>
                         <select name="boardType"
                             value={formData.boardType}
                             onChange={handleChange}

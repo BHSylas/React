@@ -13,7 +13,7 @@ export default function EnrollmentRenderer({ classes }: { classes: EnrollmentIte
         </div>
     }
     if(classes.length === 0) {
-        return <div className="text-center py-10">수강 중인 강의가 없습니다.</div>;
+        return <div className="p-5 text-gray-300">수강 중인 강의가 없습니다.</div>;
     }
     return (
         <div className="flex-1 px-8">

@@ -8,4 +8,5 @@ export interface Board {
   commentCount: number;
   boardType: string;
   pinned: boolean;
+  answered: boolean;
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api } from "../../api/axiosInstance";
+// import { api } from "../../api/axiosInstance";
 import type { EnrollmentItem } from "../../types/EnrollmentItem";
 import HeadRenderer from "../../components/my/HeadRenderer";
 import EnrollmentRenderer from "../../components/my/EnrollmentRenderer";
@@ -9,6 +9,9 @@ export default function MyPage() {
     const [loading, setLoading] = useState(true);
     const [picked, setPicked] = useState<"Class" | "QnA" | "Post" | "Comment">("Class");
     const [classes, setClasses] = useState<EnrollmentItem[]>([]);
+    const [contentList, setContentList] = useState<any[]>([]);
+
+
     const handlePick = (item: "Class" | "QnA" | "Post" | "Comment") => {
         setPicked(item);
     }
@@ -34,19 +37,23 @@ export default function MyPage() {
     if(loading) {
         return (<div>...</div>);
     }
-    return(
+    return (
         <div className="w-full h-screen">
             <section>
                 <div className="mb-8 flex flex-col">
                     <HeadRenderer />
-                    <div className="divider mx-20"/>
+                    <div className="divider mx-20" />
                 </div>
             </section>
             <section>
                 <div className={`flex h-screen`}>
                     <Picker picked={picked} onPick={handlePick} />
                     {picked === "Class" && (
-                        <EnrollmentRenderer classes={classes} />
+                        Number(role) === 1 ? <div className="flex-1 px-8"> <ProfClassList /> </div>
+                            : <EnrollmentRenderer classes={classes} />
+                    )}
+                    {picked !== "Class" && (
+                        < MyActivityRenderer type={picked} data={contentList} />
                     )}
                 </div>
             </section>

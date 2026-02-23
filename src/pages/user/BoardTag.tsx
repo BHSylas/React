@@ -1,7 +1,7 @@
 // import React, { useState } from "react";
 
-export type CategoryValue = 'NOTICE' | 'FREE' | 'FAQ' | 'QNA' | 'LECTURE_QNA' | 'MANUAL';
-export type CategoryLabel = | '공지사항' | '자유게시판' | 'FAQ' | 'Q&A' | '강의 Q&A' | '매뉴얼';
+export type CategoryValue = 'NOTICE' | 'FREE' | 'FAQ' | 'QNA' | 'MANUAL';
+export type CategoryLabel = | '공지사항' | '자유게시판' | 'FAQ' | 'Q&A'| '매뉴얼';
 
 interface MenuItem {
     label: CategoryLabel;
@@ -13,7 +13,7 @@ const menuItems: MenuItem[] = [
     { label: '자유게시판', value: 'FREE' },
     { label: 'FAQ', value: 'FAQ' },
     { label: 'Q&A', value: 'QNA' },
-    { label: '강의 Q&A', value: 'LECTURE_QNA' },
+    // { label: '강의 Q&A', value: 'LECTURE_QNA' },
     { label: '매뉴얼', value: 'MANUAL' },
 ];
 
@@ -27,7 +27,7 @@ const TagManu: React.FC<TagManuProps> = ({ activeTab, onTabChange }) => {
 
     const activeLabel = menuItems.find(item => item.value === activeTab)?.label;
 
-    // const menuItems: Category[] = ['공지사항', '자유게시판', 'FAQ', 'Q&A', '강의 Q&A', '매뉴얼'];
+    // const menuItems: Category[] = ['공지사항', '자유게시판', 'FAQ', 'Q&A', '매뉴얼'];
 
     return (
         <div className="grid justify-center items-center gap-5 mb-10">
