@@ -61,7 +61,7 @@ export default function TopPanel({
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-sm text-slate-300">
-              Thumbnail
+              섬네일 없음
             </div>
           )}
         </div>

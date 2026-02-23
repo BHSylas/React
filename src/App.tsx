@@ -6,8 +6,8 @@ import ProtectedRoute from "./components/Auth/ProtectedRoute";
 import LoginForm from "./components/Auth/LoginForm";
 import RegisterForm from "./pages/user/RegisterForm";
 import { AuthModalProvider } from "./components/provider/AuthModalProvider";
-import { ClassListPage } from "./pages/user/ClassListPage";
-import ClassViewPage from "./pages/user/ClassViewPage";
+import { LectureListPage } from "./pages/user/LectureListPage";
+import LectureViewPage from "./pages/user/LectureViewPage";
 import { BoardListPage } from "./pages/user/BoardListPage";
 import MyPage from "./pages/user/MyPage";
 import { BoardViewPage } from "./pages/user/BoardViewPage";
@@ -34,8 +34,8 @@ function App() {
             <Routes>
               <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
                 <Route path="/my" element={<MyPage />} />
-                <Route path="/class" element={<ClassListPage />} />
-                <Route path="/class/:classId" element={<ClassViewPage />} />
+                <Route path="/class" element={<LectureListPage />} />
+                <Route path="/class/:classId" element={<LectureViewPage />} />
                 <Route path="/class/new" element={<NewClassPage />} />
                 <Route path="/class/prof" element={<ProfClassList />}/>
                 <Route path="/class/prof/:lectureId/enrollments" element={<ProfClassStudent />}/>
