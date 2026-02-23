@@ -6,6 +6,7 @@ export interface BoardPostPanelProps {
   boardType: string;
   createdAt: string;
   content: string;
+  lectureId: string;
 }
 
 export function BoardPostPanel({

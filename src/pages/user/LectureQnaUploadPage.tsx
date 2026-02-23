@@ -1,68 +1,32 @@
 import { useState, type ChangeEvent } from "react"
 import { useNavigate } from "react-router";
 import axios from "axios";
-import { BOARD_ROLE_OPTION, BOARD_FORM } from "../../components/board/upload/BoardOptions";
-import { jwtDecode, type JwtPayload } from "jwt-decode";
-// import { BoardLecture } from "../../components/board/upload/BoardLecture";
+import { QNA_FORM } from "../../components/board/upload/BoardOptions";
+import { BoardLecture } from "../../components/board/upload/BoardLecture";
 
-interface MyTokenPayload extends JwtPayload {
-    role: number | string; // 0, 1, 2 숫자로 들어오면 number
-}
-
-export function BoardUploadPage() {
-    const [formData, setFormData] = useState(BOARD_FORM);
+export function LectureQnAUploadPage() {
+    const [formData, setFormData] = useState({
+        ...QNA_FORM
+    });
     const navigate = useNavigate();
-
     const token = localStorage.getItem("token");
-    let userRole = ""; // 기본은 학생으로 설정
-
-    if (token) {
-        try {
-            const decoded = jwtDecode<MyTokenPayload>(token);
-            userRole = String(decoded.role);
-        } catch (error) {
-            console.error("토큰 해독 실패", error);
-        }
-    }
-
-    const filteredOptions = BOARD_ROLE_OPTION.filter(opt =>
-        opt.roles.includes(userRole)
-    );
 
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const { name, value, type } = e.target;
-        // 1. 체크박스(pinned)인 경우 처리
-        if (type === "checkbox") {
-            const checked = (e.target as HTMLInputElement).checked;
+        const { name, value } = e.target;
+
             setFormData((prev) => ({
                 ...prev,
-                [name]: checked,
+                [name]: value,
             }));
-            return;
+
         }
 
-        // 2. 숫자형 데이터(lectureId) 처리
-        if (name === "lectureId") {
-            setFormData((prev) => ({
-                ...prev,
-                [name]: Number(value),
-            }));
-            return;
-        }
-
-        // 3. 나머지 일반 텍스트 및 셀렉트 박스 처리
-        setFormData((prev) => ({
+    const handleLectureSelect = (id: number) => {
+        setFormData(prev => ({
             ...prev,
-            [name]: value,
+            lectureId: id
         }));
     };
-
-    // const handleLectureSelect = (id: number) => {
-    //     setFormData(prev => ({
-    //         ...prev,
-    //         lectureId: id
-    //     }));
-    // };
 
     const handleSave = async () => {
 
@@ -71,7 +35,7 @@ export function BoardUploadPage() {
             return;
         }
 
-        const dataToSend = {...formData};
+        const dataToSend = { ...formData };
 
         if (formData.boardType !== "LECTURE_QNA") {
             dataToSend.lectureId = 0;
@@ -80,14 +44,14 @@ export function BoardUploadPage() {
             return;
         }
 
-        axios.post('/api/boards/create', formData, {
+        axios.post('/api/boards/create', dataToSend, {
             headers: {
                 Authorization: `Bearer ${token}` // 토큰 전달
             }
         }).then(res => {
             if (!res) throw new Error(`서버 응답 오류`);
             alert("업로드 성공!");
-            navigate('/board')
+            navigate(`/class/qna/${formData.lectureId}`)
         }).catch(err => {
             console.error("데이터 로드 실패: ", err);
             alert("업로드 중 오류가 발생했습니다.");
@@ -96,7 +60,7 @@ export function BoardUploadPage() {
 
     const handleReset = () => {
         if (window.confirm("내용을 모두 삭제하겠습니까?")) {
-            setFormData({ ...BOARD_FORM });
+            setFormData({ ...QNA_FORM });
         }
     }
 
@@ -110,32 +74,8 @@ export function BoardUploadPage() {
                         className="border-b-2 border-gray-300 w-full h-full text-xl p-2 outline-none mb-5"
                         placeholder="게시글 제목"></input>
                     <div>
-                        <select name="boardType"
-                            value={formData.boardType}
-                            onChange={handleChange}
-                            className="px-2 border border-gray-500 rounded-md mr-6">
-                            {filteredOptions.map((opt) => (
-                                <option key={opt.value} value={opt.value}>
-                                    {opt.label}
-                                </option>
-                            ))}
-                        </select>
-                        {formData.boardType === "NOTICE" && (
-                            <label className="flex items-center gap-2 cursor-pointer bg-yellow-50 px-3 py-1 rounded-md border border-yellow-200 mt-5">
-                                <input
-                                    type="checkbox"
-                                    name="pinned"
-                                    checked={formData.pinned}
-                                    onChange={handleChange}
-                                    className="w-4 h-4 accent-yellow-600"
-                                />
-                                <span className="text-sm font-medium text-yellow-800">이 게시글을 상단에 고정합니다</span>
-                            </label>
-                        )}
-                        {/* {formData.boardType === "LECTURE_QNA" && (
                             <BoardLecture selectedId={formData.lectureId}
                                 onSelect={handleLectureSelect}></BoardLecture>
-                        )} */}
                     </div>
                 </div>
                 <div>

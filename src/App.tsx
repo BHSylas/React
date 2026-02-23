@@ -17,12 +17,12 @@ import { MetaTestUpload } from "./pages/prof/MetaTestUploadPage";
 import MetaTestPage from "./pages/prof/MetaTestPage";
 import MetaList from "./pages/prof/MetaList";
 import { BoardUploadPage } from "./pages/user/BoardUploadPage";
-import { ProfClassList } from "./pages/prof/ProfClassList";
 import AdminMainPage from "./pages/admin/AdminMainPage";
 import AdminLecturePage from "./pages/admin/AdminLecturePage";
 import { LectureQnaListPage } from "./pages/user/LectureQnaListPage";
 import { ProfClassStudent } from "./pages/prof/profClassStudent";
 import { BoardEditPage } from "./pages/user/BoardEditPage";
+import { LectureQnAUploadPage } from "./pages/user/LectureQnaUploadPage";
 
 function App() {
   return (
@@ -36,9 +36,9 @@ function App() {
                 <Route path="/class" element={<ClassListPage />} />
                 <Route path="/class/:classId" element={<ClassViewPage />} />
                 <Route path="/class/new" element={<NewClassPage />} />
-                <Route path="/class/prof" element={<ProfClassList />}/>
                 <Route path="/class/prof/:lectureId/enrollments" element={<ProfClassStudent />}/>
                 <Route path="/class/qna/:lectureId" element={<LectureQnaListPage />} />
+                <Route path="/class/qna/upload/:lectureId" element={<LectureQnAUploadPage />}/>
                 <Route path="/board" element={<BoardListPage />} />
                 <Route path="/board/:postId" element={<BoardViewPage />} />
                 <Route path="/board/upload" element={<BoardUploadPage />}/>

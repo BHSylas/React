@@ -20,28 +20,46 @@ export function BoardListBlock({ boards }: BoardListBlockProps) {
   return (
     <div className="border-t">
       {boards.map((board) => (
-        <div
-          key={board.boardId}
-          className={`grid grid-cols-[1fr_120px_120px_120px_70px]
-                     gap-4 px-3 py-3 border-b text-sm cursor-pointer
-                    ${board.pinned ? 'bg-blue-50 hover:bg-blue-100' : 'hover:bg-gray-50'}`}
-          onClick={() => {
-            navigate(`/board/${board.boardId}`);
-          }}
-        >
-          <div className="truncate font-medium">
-            {board.title || "제목없음"}
+        <div>
+          <div
+            key={board.boardId}
+            className={`grid grid-cols-[1fr_120px_120px_120px_70px]
+                     gap-4 px-3 py-3 border-b text-sm cursor-pointer items-center
+                    ${board.pinned ? 'bg-blue-50 hover:bg-blue-100 text-blue-800' : 'hover:bg-gray-50'}`}
+            onClick={() => {
+              navigate(`/board/${board.boardId}`);
+            }}
+          >
+            <div className="truncate font-medium">
+              {board.title || "제목없음"}
+            </div>
+            <div>{board.writerName}</div>
+            <div>{CATEGORY_MAP[board.boardType]}</div>
+            <div>{board.createdAt.split('T')[0]}</div>
+            <div className="flex justify-around">
+              <div className="text-center">조회 {board.viewCount || "0"}</div>
+              <div className="text-center">댓글 {board.commentCount || "0"}</div>
+            </div>
           </div>
-          <div>{board.writerName}</div>
-          <div>{CATEGORY_MAP[board.boardType]}</div>
-          <div>{board.createdAt.split('T')[0]}</div>
-          <div className="flex justify-around">
-            <div className="text-center">조회 {board.viewCount || "0"}</div>
-            <div className="text-center">댓글 {board.commentCount || "0"}</div>
-          </div>
-          
+          {board.answered && (
+            <div
+              key={board.boardId}
+              onClick={() => {
+                navigate(`/board/${board.boardId}`);
+              }}
+              className='flex items-center w-full px-3 py-3 border-b text-sm cursor-pointeritems-center bg-blue-50 
+              hover:bg-blue-100 text-blue-800'>
+              <div className="w-12 text-blue-500 flex justify-center">
+                <span className="text-xl">└</span>
+              </div>
+              <div className="truncate font-medium">
+                [RE] {board.title || "제목없음"} 에 대한 답변입니다.
+              </div>
+            </div>
+          )}
         </div>
       ))}
+
     </div>
   );
 }
