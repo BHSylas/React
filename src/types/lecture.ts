@@ -1,5 +1,5 @@
 export type LectureSource =
-  | { type: "LOCAL"; localPath: string }
+  | { type: "UPLOAD"; localPath: string }
   | { type: "YOUTUBE"; videoId: string };
 
 export type LecturePlaybackInit = {

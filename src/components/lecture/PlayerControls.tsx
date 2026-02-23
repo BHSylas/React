@@ -41,7 +41,9 @@ export default function PlayerControls({
         </div>
 
         <div className="ml-auto flex items-center gap-2">
-          <span className="text-sm opacity-70">배속</span>
+          <div className="block">
+            <span className="text-sm opacity-70">⏩</span>
+          </div>
           <select
             className="select select-bordered select-sm"
             value={playbackRate}
@@ -59,7 +61,7 @@ export default function PlayerControls({
       <div className="mt-3">
         <input
           type="range"
-          className="range range-primary"
+          className="range range-sm range-primary w-full"
           min={0}
           max={Math.max(0, safeDuration)}
           step={1}

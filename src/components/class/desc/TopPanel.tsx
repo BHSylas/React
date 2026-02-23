@@ -46,9 +46,6 @@ export default function TopPanel({
     });
   }
   const video = () => {
-    api.get(`/lectures/${classId}/video`).then(res => {
-      alert(res.data.localPath ? `영상 경로: ${res.data.localPath}` : res.data.youtubeUrl ? `유튜브 URL: ${res.data.youtubeUrl}` : "영상 정보를 불러오지 못했습니다.");
-    })
     navigate(`/class/${classId}/player`);
   }
   return (

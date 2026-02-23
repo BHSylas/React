@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
 import type { ProgressDTO } from "../types/lecture";
+import { api } from "../api/axiosInstance";
 
 type ReporterArgs = {
   lectureId: string;
@@ -13,12 +14,23 @@ type ReporterArgs = {
 
 // TODO: 여기만 나중에 실제 axios instance로 교체하시면 됩니다.
 async function sendProgressHTTP(_lectureId: string, _dto: ProgressDTO) {
-  // 예: await api.post(`/lectures/${lectureId}/progress`, dto)
-  return;
+  api.put(`/me/enrollments/${_lectureId}/progress`, _dto)
+  .then(() => {
+    console.log("inserted progress: ", _dto);
+  })
+  .catch(err => {
+    console.error("error: ", err);
+  });
 }
 
 function sendProgressBeacon(_lectureId: string, _dto: ProgressDTO) {
-  // 예: navigator.sendBeacon(`/lectures/${lectureId}/progress`, JSON.stringify(dto))
+  api.put(`/me/enrollments/${_lectureId}/progress`, _dto)
+  .then(() => {
+    console.log("inserted progress: ", _dto);
+  })
+  .catch(err => {
+    console.error("error: ", err);
+  });
   return;
 }
 
@@ -34,13 +46,10 @@ export function useProgressReporter({ lectureId, getSnapshot }: ReporterArgs) {
       Math.min(100, (snap.maxWatchedSec / snap.durationSec) * 100)
     );
 
-    // 서버 DTO: totalDuration은 minute 단위(1~)
-    const totalDurationMin = Math.max(1, Math.ceil(snap.durationSec / 60));
-
     return {
       progress: Math.round(progress * 10) / 10,
       lastWatchedTime: Math.max(0, Math.floor(snap.maxWatchedSec)),
-      totalDuration: totalDurationMin,
+      totalDuration: Math.max(1, Math.round(snap.durationSec)),
     };
   }, [getSnapshot]);
 

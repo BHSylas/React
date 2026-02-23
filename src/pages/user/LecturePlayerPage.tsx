@@ -1,22 +1,55 @@
+import { useEffect, useState } from "react";
 import PlayerShell from "../../components/lecture/PlayerShell";
 import type { LecturePlaybackInit } from "../../types/lecture";
+import { api } from "../../api/axiosInstance";
+import { useParams } from "react-router-dom";
 
 
 export default function LecturePlayerPage() {
-  // ✅ 프로토타입: 서버에서 내려온 값이라고 가정
-  // We are using a hardcoded init object here for demonstration purposes. In a real application, 
-  // you would fetch this data from your server based on the lecture being accessed.
-  const init: LecturePlaybackInit = {
-    lectureId: "lecture-123",
-    source: {
-      // type: "LOCAL",
-      // localPath: "https://www.w3schools.com/html/mov_bbb.mp4",
-
-      type: "YOUTUBE",
-      videoId: "twgC7JWKzYg",
-    },
-    lastWatchedTimeSec: 60 * 15, // 15분부터 시작
-  };
-
-  return <PlayerShell init={init} />;
+  const lectureId = useParams<{ lectureId: string }>().lectureId;
+  const [initial, setInitial] = useState<LecturePlaybackInit | null>(null);
+  useEffect(() => {
+    api.get(`/lectures/${lectureId}/video`).then(res => {
+      const data = res.data;
+      api.get(`/me/enrollments/${lectureId}`).then(progressRes => {
+        setInitial({
+          lectureId: lectureId!,
+          source: {
+            type: data.sourceType,
+            localPath: data.localPath,
+            videoId: data.youtubeVideoId,
+          },
+          lastWatchedTimeSec: progressRes.data.lastWatchedTime ?? 0,
+        });
+      }).catch(err => {
+        console.error("Failed to fetch progress info:", err);
+        // Fallback to init without progress if API call fails
+        setInitial({
+          lectureId: lectureId!,
+          source: {
+            type: data.sourceType,
+            localPath: data.localPath,
+            videoId: data.youtubeVideoId,
+          },
+          lastWatchedTimeSec: 0,
+        });
+      });
+    }).catch(err => {
+      console.error("Failed to fetch lecture video info:", err);
+      // Fallback to a default init if API call fails
+      setInitial({
+        lectureId: lectureId!,
+        source: {
+          type: "YOUTUBE",
+          videoId: "twgC7JWKzYg",
+        },
+        lastWatchedTimeSec: 60 * 15,
+      });
+    });
+  }, [lectureId]);
+  
+  if(!initial) {
+    return <div>Loading...</div>;
+  }
+  return <PlayerShell init={initial} />;
 }

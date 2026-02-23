@@ -5,9 +5,20 @@ import LocalVideoPlayer from "./LocalVideoPlayer";
 import YoutubePlayer from "./YoutubePlayer";
 import PlayerControls from "./PlayerControls";
 import { useInterval } from "../../hooks/useInterval";
+import { useProgressReporter } from "../../hooks/useProgressReporter";
 
 export default function PlayerShell({ init }: { init: LecturePlaybackInit }) {
   const playerRef = useRef<PlayerHandle>(null);
+  const { reportHTTP } = useProgressReporter({
+    lectureId: init.lectureId,
+    getSnapshot: () => playerRef.current?.getSnapshot() ?? {
+      currentSec: 0,
+      maxWatchedSec: 0,
+      durationSec: 0,
+      isPlaying: false,
+      playbackRate: 1,
+    },
+  });
 
   // UI 갱신용 snapshot (엔진은 내부 단일 소스)
   const [snapshot, setSnapshot] = useState(
@@ -24,13 +35,13 @@ export default function PlayerShell({ init }: { init: LecturePlaybackInit }) {
   useInterval(() => {
     const snap = playerRef.current?.getSnapshot();
     if (!snap) return;
-
-    //console.log("progress snapshot:", snap);
+    
+    reportHTTP();
   }, 5000);
 
   return (
     <div className="mx-auto max-w-5xl p-4 space-y-4">
-      {init.source.type === "LOCAL" ? (
+      {init.source.type === "UPLOAD" ? (
         <LocalVideoPlayer
           ref={playerRef}
           src={init.source.localPath}
