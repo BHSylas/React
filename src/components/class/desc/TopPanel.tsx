@@ -45,6 +45,12 @@ export default function TopPanel({
       }
     });
   }
+  const video = () => {
+    api.get(`/lectures/${classId}/video`).then(res => {
+      alert(res.data.localPath ? `영상 경로: ${res.data.localPath}` : res.data.youtubeUrl ? `유튜브 URL: ${res.data.youtubeUrl}` : "영상 정보를 불러오지 못했습니다.");
+    })
+    navigate(`/class/${classId}/player`);
+  }
   return (
     <section className="bg-slate-800 text-white">
       <div className="max-w-7xl mx-auto px-6 py-8 flex gap-8">
@@ -82,6 +88,7 @@ export default function TopPanel({
               <button
               type="button"
               className="px-6 py-3 rounded-md bg-blue-600 hover:bg-blue-700 transition-colors text-sm font-semibold"
+              onClick={video}
             >
               수강하기
             </button>

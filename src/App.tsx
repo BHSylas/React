@@ -23,6 +23,7 @@ import AdminLecturePage from "./pages/admin/AdminLecturePage";
 import { LectureQnaListPage } from "./pages/user/LectureQnaListPage";
 import { ProfClassStudent } from "./pages/prof/profClassStudent";
 import { BoardEditPage } from "./pages/user/BoardEditPage";
+import LecturePlayerPage from "./pages/user/LecturePlayerPage";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
                 <Route path="/class/prof" element={<ProfClassList />}/>
                 <Route path="/class/prof/:lectureId/enrollments" element={<ProfClassStudent />}/>
                 <Route path="/class/qna/:lectureId" element={<LectureQnaListPage />} />
+                <Route path="/class/:lectureId/player" element={<LecturePlayerPage />} />
                 <Route path="/board" element={<BoardListPage />} />
                 <Route path="/board/:postId" element={<BoardViewPage />} />
                 <Route path="/board/upload" element={<BoardUploadPage />}/>
