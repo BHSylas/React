@@ -17,9 +17,12 @@ export default function MyPage() {
     const {role} = useAuth();
     useEffect(() => {
         //API call
+        if(role === '2') {
+            navigate("/admin");
+        }
         switch(picked) {
             case "Class":
-                if(role !== '0') {
+                if(role === '1') {
                     setLoading(false);
                     return;
                 }
@@ -33,9 +36,6 @@ export default function MyPage() {
         }
         setLoading(false);
     }, [picked]);
-    if(role === '2') {
-        navigate("/admin");
-    }
     if(loading) {
         return (<div>...</div>);
     }
