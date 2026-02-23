@@ -3,6 +3,7 @@ import { api } from "../../api/axiosInstance";
 import type { EnrollmentItem } from "../../types/EnrollmentItem";
 import HeadRenderer from "../../components/my/HeadRenderer";
 import EnrollmentRenderer from "../../components/my/EnrollmentRenderer";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function MyPage() {
     const [loading, setLoading] = useState(true);
@@ -11,10 +12,15 @@ export default function MyPage() {
     const handlePick = (item: "Class" | "QnA" | "Post" | "Comment") => {
         setPicked(item);
     }
+    const {role} = useAuth();
     useEffect(() => {
         //API call
         switch(picked) {
             case "Class":
+                if(role !== '0') {
+                    setLoading(false);
+                    return;
+                }
                 api.get("/me/enrollments").then(res => {
                     setClasses(res.data.content);
                 });

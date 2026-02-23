@@ -1,9 +1,17 @@
 import { useNavigate } from "react-router-dom";
 import { decompileCountryCode } from "../../utils/decompileCountryCode";
 import type { EnrollmentItem } from "../../types/EnrollmentItem";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function EnrollmentRenderer({ classes }: { classes: EnrollmentItem[] }) {
     const navigate = useNavigate();
+    const {role} = useAuth();
+    console.log(role);
+    if(role === '1') {
+        return <div className="w-full">
+            <h1 className="text-3xl font-bold text-center m-4 cursor-pointer" onClick={() => {navigate('/class/prof')}}>강의 관리 페이지로 이동</h1>
+        </div>
+    }
     if(classes.length === 0) {
         return <div className="text-center py-10">수강 중인 강의가 없습니다.</div>;
     }

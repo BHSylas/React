@@ -45,6 +45,9 @@ export default function TopPanel({
       }
     });
   }
+  const video = () => {
+    navigate(`/class/${classId}/player`);
+  }
   return (
     <section className="bg-slate-800 text-white">
       <div className="max-w-7xl mx-auto px-6 py-8 flex gap-8">
@@ -82,6 +85,7 @@ export default function TopPanel({
               <button
               type="button"
               className="px-6 py-3 rounded-md bg-blue-600 hover:bg-blue-700 transition-colors text-sm font-semibold"
+              onClick={video}
             >
               수강하기
             </button>

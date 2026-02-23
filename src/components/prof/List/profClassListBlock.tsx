@@ -13,7 +13,7 @@ const LANGUAGE_MAP: Record<string, string> = {
     it: "이탈리아어",
 }
 
-export function ClassListBlock({ classList }: ClassListBlockPorps) {
+export function ProfClassListBlock({ classList }: ClassListBlockPorps) {
     const navigate = useNavigate();
 
     return (
@@ -29,7 +29,8 @@ export function ClassListBlock({ classList }: ClassListBlockPorps) {
                 {classList.map((list) => (
                     <div key={list.lectureId}
                         className="grid grid-cols-[1fr_120px_120px_120px_70px]
-                     gap-4 px-3 py-3 border-b text-sm cursor-pointer">
+                     gap-4 px-3 py-3 border-b text-sm cursor-pointer"
+                        onClick={() => navigate(`/class/prof/${list.lectureId}/enrollments`)}>
                         <div className="truncate font-medium">
                             {list.title || "제목없음"}
                         </div>
