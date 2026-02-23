@@ -30,9 +30,6 @@ export default function PlayerControls({
   return (
     <div className="w-full rounded-2xl bg-base-200 p-4 shadow">
       <div className="flex flex-wrap items-center gap-3">
-        <button className="btn btn-primary" onClick={onTogglePlay}>
-          {isPlaying ? "일시정지" : "재생"}
-        </button>
 
         <div className="flex items-center gap-2 text-sm opacity-90">
           <span className="font-mono">{formatTime(currentSec)}</span>
@@ -41,8 +38,8 @@ export default function PlayerControls({
         </div>
 
         <div className="ml-auto flex items-center gap-2">
-          <div className="block">
-            <span className="text-sm opacity-70">⏩</span>
+          <div className="block mb-1">
+            <span className="text-lg">⏭</span>
           </div>
           <select
             className="select select-bordered select-sm"
@@ -72,6 +69,23 @@ export default function PlayerControls({
           <span>0:00</span>
           <span>최대 이동 가능: {formatTime(seekMax)}</span>
           <span>{formatTime(safeDuration)}</span>
+        </div>
+        <div className="flex justify-center gap-6 mt-4 text-4xl">
+          <div className="flex flex-col">
+            <button className="btn btn-sm" onClick={() => onSeek(currentSec - 5 * playbackRate)}>
+              ⏪
+            </button>
+            <p className="text-sm text-center mt-2">-{5 * playbackRate}s</p>
+          </div>
+          <button className="btn btn-sm" onClick={onTogglePlay}>
+            {isPlaying ? "⏸️" : "▶️"}
+          </button>
+          <div className="flex flex-col">
+            <button className="btn btn-sm" onClick={() => onSeek(currentSec + 5 * playbackRate)}>
+              ⏩
+            </button>
+            <p className="text-sm text-center mt-2">+{5 * playbackRate}s</p>
+          </div>
         </div>
       </div>
     </div>

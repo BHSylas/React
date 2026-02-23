@@ -4,11 +4,13 @@ import type { EnrollmentItem } from "../../types/EnrollmentItem";
 import HeadRenderer from "../../components/my/HeadRenderer";
 import EnrollmentRenderer from "../../components/my/EnrollmentRenderer";
 import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 export default function MyPage() {
     const [loading, setLoading] = useState(true);
     const [picked, setPicked] = useState<"Class" | "QnA" | "Post" | "Comment">("Class");
     const [classes, setClasses] = useState<EnrollmentItem[]>([]);
+    const navigate = useNavigate();
     const handlePick = (item: "Class" | "QnA" | "Post" | "Comment") => {
         setPicked(item);
     }
@@ -31,6 +33,9 @@ export default function MyPage() {
         }
         setLoading(false);
     }, [picked]);
+    if(role === '2') {
+        navigate("/admin");
+    }
     if(loading) {
         return (<div>...</div>);
     }

@@ -50,7 +50,7 @@ function App() {
                 <Route path="/metaverse/page/:id" element={<MetaTestPage />} />
                 <Route path="/metaverse" element={<MetaList />}/>
                 <Route path="/admin" element={<AdminMainPage />} />
-                <Route path="/admin/lectures" element={<AdminLecturePage />} />
+                <Route path="/admin/class" element={<AdminLecturePage />} />
               </Route>
               <Route element={<Layout />}>
                 <Route path="/" element={<Home />} />
