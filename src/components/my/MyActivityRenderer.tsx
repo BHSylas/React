@@ -19,8 +19,8 @@ export function MyActivityRenderer({ type, data }: { type: string, data: any[] }
         <div className="ml-3 w-full">
             <h2 className="text-lg font-bold mb-3 border-b-2 pb-2">{type} 내역</h2>
             <div className="divide-y cursor-pointer">
-            {data.map((item) => (
-                <div key={item.id}
+            {data.map((item, index) => (
+                <div key={item.boardId || item.commentId || `activity-${index}`}
                     className="w-full grid gap-1 p-3"
                     onClick={() => hanbleItemClick(item.boardId)}>
                     <div className="font-bold">{item.title || item.content}</div>
