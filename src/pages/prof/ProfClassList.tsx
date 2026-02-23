@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { type ClassItem } from "../../types/ClassItem";
 import axios from "axios";
-import { ClassListBlock } from "../../components/prof/List/profClassListBlock";
+import { ProfClassListBlock } from "../../components/prof/List/profClassListBlock";
 import { useNavigate } from "react-router";
 
 export function ProfClassList() {
@@ -40,14 +40,14 @@ export function ProfClassList() {
 
 
     return (
-        <main>
+        <main className="w-full mx-3">
             <h3 className="my-6 font-bold text-xl">나의 강의 목록</h3>
             {loading ? (
                 <div className="p-5 text-center">로딩 중...</div>
             ) : (
                 <div>
                     {classList && classList.length > 0 ? (
-                        <ClassListBlock classList={classList} />
+                        <ProfClassListBlock classList={classList} />
                     ) : (
                         <div className="p-5 text-center">강의 목록이 없습니다.</div>
                     )}

@@ -4,9 +4,6 @@ import type { EnrollmentItem } from "../../types/EnrollmentItem";
 import HeadRenderer from "../../components/my/HeadRenderer";
 import EnrollmentRenderer from "../../components/my/EnrollmentRenderer";
 import { useAuth } from "../../hooks/useAuth";
-import { ProfClassList } from "../../components/prof/my/ProfClassList";
-import { MyActivityRenderer } from "../../components/my/MyActivityRenderer";
-import axios from "axios";
 
 export default function MyPage() {
     const [loading, setLoading] = useState(true);
@@ -18,58 +15,26 @@ export default function MyPage() {
     const handlePick = (item: "Class" | "QnA" | "Post" | "Comment") => {
         setPicked(item);
     }
-
-    const { role, nickname } = useAuth();
-
+    const {role} = useAuth();
     useEffect(() => {
-        const fetchData = async () => {
-
-            if (picked === "Class" && Number(role) === 1) {
-                setLoading(false);
-                return;
-            }
-
-            setLoading(true);
-            setContentList([]);
-
-            const token = localStorage.getItem("token");
-
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${token}`
+        //API call
+        switch(picked) {
+            case "Class":
+                if(role !== '0') {
+                    setLoading(false);
+                    return;
                 }
-            };
-            try {
-                switch (picked) {
-                    case "Class":
-                        const res = await axios.get("/api/me/enrollments", config);
-                        setClasses(res.data.content || []);
-                        break;
-
-                    case "QnA":
-                    case "Post":
-                        // QnA 게시판에서 내 닉네임으로 작성된 것만
-                        const boardRes = await axios.get("/api/boards/searchBoard?size=1000", config);
-                        const boardData = boardRes.data.content || [];
-                        const filtered = boardData.filter((item: any) => {
-                            const isAuthor = item.writerName?.trim() === nickname?.trim();
-
-                            if (picked === "QnA") return isAuthor && item.boardType === "LECTURE_QNA";
-                            if (picked === "Post") return isAuthor;
-                        });
-                        setContentList(filtered);
-                        break;
-                }
-            } catch (error) {
-                console.error("데이터 로딩 실패:", error);
-            }
-            finally {
-                setLoading(false);
-            }
-        };
-        fetchData();
-    }, [picked, nickname]);
-    if (loading) {
+                api.get("/me/enrollments").then(res => {
+                    setClasses(res.data.content);
+                });
+                break;
+            default:
+                console.log("Picked item:", picked);
+                break;
+        }
+        setLoading(false);
+    }, [picked]);
+    if(loading) {
         return (<div>...</div>);
     }
     return (
