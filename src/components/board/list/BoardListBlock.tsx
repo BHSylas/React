@@ -19,10 +19,9 @@ export function BoardListBlock({ boards }: BoardListBlockProps) {
 
   return (
     <div className="border-t">
-      {boards.map((board) => (
-        <div>
+      {boards.map((board, idx) => (
+        <div key={`board-group-${board.boardId}-${idx}`}>
           <div
-            key={board.boardId}
             className={`grid grid-cols-[1fr_120px_120px_120px_70px]
                      gap-4 px-3 py-3 border-b text-sm cursor-pointer items-center
                     ${board.pinned ? 'bg-blue-50 hover:bg-blue-100 text-blue-800' : 'hover:bg-gray-50'}`}
@@ -43,7 +42,6 @@ export function BoardListBlock({ boards }: BoardListBlockProps) {
           </div>
           {board.answered && (
             <div
-              key={board.boardId}
               onClick={() => {
                 navigate(`/board/${board.boardId}`);
               }}

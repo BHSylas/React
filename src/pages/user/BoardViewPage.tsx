@@ -32,7 +32,6 @@ export function BoardViewPage() {
   useEffect(() => {
     api.get(`/boards/list/${postId}`).then((res) => {
       setPost(res.data);
-      console.log(res.data);
     }).catch((err) => {
       console.error("데이터 로드 실패: ", err);
       alert("게시글 로드 중 오류가 발생했습니다.");

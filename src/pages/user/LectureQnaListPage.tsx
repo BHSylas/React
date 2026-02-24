@@ -53,7 +53,7 @@ export function LectureQnaListPage() {
 
   useEffect(() => {
     fetchBoards();
-  }, [activeTab, currentPage, searchBoard]);
+  }, [activeTab, currentPage, searchBoard.keyword, searchBoard.category]);
   return (
     <section className="mx-auto px-6 py-8 space-y-6">
       <h1 className="text-2xl font-bold mb-4">강의 Q&A</h1>

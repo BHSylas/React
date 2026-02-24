@@ -28,13 +28,13 @@ export function ClassListBlock({ classList }: ClassListBlockPorps) {
         <div>
             <h2 className="text-lg font-bold mb-3 border-b-2 pb-2">강의 목록</h2>
             <div>
-                <div className="grid grid-cols-[1fr_120px_120px_120px_70px]
+                {/* <div className="grid grid-cols-[1fr_120px_120px_120px_70px]
                      gap-4 px-3 py-3 border-b cursor-pointer">
                     <div className="font-bold">강의 제목</div>
                     <div className="font-bold">국가</div>
                     <div className="font-bold">언어</div>
                     <div className="font-bold">강의 소개</div>
-                </div>
+                </div> */}
                 {classList.map((list) => (
                     <div key={list.lectureId}
                         className="grid grid-cols-[1fr_120px_120px_120px_70px]
