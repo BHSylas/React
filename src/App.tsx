@@ -44,7 +44,6 @@ function App() {
                 <Route path="/board/:postId" element={<BoardViewPage />} />
                 <Route path="/board/upload" element={<BoardUploadPage />}/>
                 <Route path="/board/edit/:postId" element={<BoardEditPage />}/>
-                <Route path="/unity-test" element={<UnityTestPage />} />
                 <Route path="/metaverse/upload/:id?" element={<MetaTestUpload />} />
                 <Route path="/metaverse/page/:id" element={<MetaTestPage />} />
                 <Route path="/metaverse" element={<MetaList />}/>
@@ -54,6 +53,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<LoginForm />} />
                 <Route path="/register" element={<RegisterForm />} />
+                <Route path="/unity-test" element={<UnityTestPage />} />
               </Route>
             </Routes>
           </BrowserRouter>

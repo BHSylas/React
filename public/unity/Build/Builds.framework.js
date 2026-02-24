@@ -7745,17 +7745,28 @@ function dbg(text) {
   		Module.WebPlayer.PlayerIsInitialized();
   	}
 
+  function _NotifyCountrySelected(countryPtr) {
+      var country = UTF8ToString(countryPtr || 0);
+      console.log("국가 선택 이벤트(Web -> Unity):", country);
+  
+      // Unity로 국가 선택 이벤트 전달
+      if (typeof SendMessage === "function") {
+        SendMessage("QuizManager", "OnCountrySelectedFromWeb", country);
+      } else {
+        console.warn("SendMessage 함수가 정의되어 있지 않습니다.");
+      }
+    }
+
   function _OnCountrySelectedJS(countryPtr) {
       var country = UTF8ToString(countryPtr || 0);
       console.log("국가 선택 이벤트(Unity -> Web):", country);
   
-      window.dispatchEvent(
-        new CustomEvent("unity:country-selected", {
-          detail: {
-            country: country
-          }
-        })
-      );
+      if(typeof window.onCountrySelectedFromUnity === "function") {
+        window.onCountrySelectedFromUnity(country);
+      }
+      else {
+          console.warn("window.onCountrySelectedFromUnity 함수가 정의되어 있지 않습니다.");
+      }
     }
 
   function _OnQuestionShownJS(id) {
@@ -16421,6 +16432,7 @@ var wasmImports = {
   "JS_WebGPU_SetCommandEncoder": _JS_WebGPU_SetCommandEncoder,
   "JS_WebGPU_Setup": _JS_WebGPU_Setup,
   "JS_WebPlayer_FinishInitialization": _JS_WebPlayer_FinishInitialization,
+  "NotifyCountrySelected": _NotifyCountrySelected,
   "OnCountrySelectedJS": _OnCountrySelectedJS,
   "OnQuestionShownJS": _OnQuestionShownJS,
   "__assert_fail": ___assert_fail,

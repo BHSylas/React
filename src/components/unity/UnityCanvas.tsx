@@ -3,7 +3,6 @@ import { useEffect, useRef } from "react";
 export function UnityCanvas() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const startedRef = useRef(false);
-
   useEffect(() => {
     // React StrictMode(dev)에서 effect가 2번 실행될 수 있어 가드
     if (startedRef.current) return;
