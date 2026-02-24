@@ -9,15 +9,16 @@ export default function UnityTestPage() {
   const navigate = useNavigate();
   useEffect(() => {
     // @ts-expect-error : onUnityTick added to window
-    window.onUnityTick = (value: number) => {
-      if (value % 180 <= 2 && !modalRef.current) {
+    window.onUnityInt = (id: number) => {
+      alert(id);
+      if (!modalRef.current) {
         modalRef.current = true;
         setModalOpened(true);
       }
     };
     return () => {
       // @ts-expect-error : onUnityTick added to window
-      window.onUnityTick = undefined;
+      window.onUnityInt = undefined;
     };
   }, []);
 
