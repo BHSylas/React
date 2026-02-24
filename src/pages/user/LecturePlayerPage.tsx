@@ -20,6 +20,7 @@ export default function LecturePlayerPage() {
             videoId: data.youtubeVideoId,
           },
           lastWatchedTimeSec: progressRes.data.lastWatchedTime ?? 0,
+          videoId: data.videoId,
         });
       }).catch(err => {
         console.error("Failed to fetch progress info:", err);
@@ -32,6 +33,7 @@ export default function LecturePlayerPage() {
             videoId: data.youtubeVideoId,
           },
           lastWatchedTimeSec: 0,
+          videoId: 9999999999,
         });
       });
     }).catch(err => {
@@ -44,6 +46,7 @@ export default function LecturePlayerPage() {
           videoId: "twgC7JWKzYg",
         },
         lastWatchedTimeSec: 60 * 15,
+        videoId: 9999999999,
       });
     });
   }, [lectureId]);
