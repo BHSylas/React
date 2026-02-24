@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { CommentBlock } from "../../components/board/comment/CommentBlock";
 import { BoardActionBar } from "../../components/board/desc/BoardActionBar";
 import { BoardPostPanel, type BoardPostPanelProps } from "../../components/board/desc/BoardPostPanel";
@@ -8,6 +8,7 @@ import { AnswerBlock } from "../../components/board/Answer/AnswerBlock";
 
 
 export function BoardViewPage() {
+  const isFetched = useRef(false);
   const postId = useParams().postId;
   const navigate = useNavigate();
   const [post, setPost] = useState<BoardPostPanelProps>({
@@ -30,6 +31,9 @@ export function BoardViewPage() {
   }
 
   useEffect(() => {
+    if(isFetched.current) return;
+    isFetched.current = true;
+      
     api.get(`/boards/list/${postId}`).then((res) => {
       setPost(res.data);
     }).catch((err) => {
@@ -54,7 +58,7 @@ export function BoardViewPage() {
       </div>
     {(post.boardType === "FREE" || post.boardType === "QNA") && (
         <section id="comments">
-          <CommentBlock postId={postId || "0"} />
+          <CommentBlock postId={postId || "0"} boardType={post.boardType} />
         </section>
       )}
 
