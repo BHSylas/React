@@ -33,7 +33,7 @@ function ClassListItem({ item }: { item: ClassItem }) {
   const [thumbnailUrl, setThumbnailUrl] = useState<string | undefined>(undefined);
   api.get(`/lectures/${item.lectureId}/video`).then((res) => {
           const data = res.data;
-          if(data.sourceType === "YOUTUBE" && data.youtubeVideoId) {
+          if(data?.sourceType === "YOUTUBE" && data.youtubeVideoId) {
             setThumbnailUrl(`https://img.youtube.com/vi/${data.youtubeVideoId}/0.jpg`);
           }
         });

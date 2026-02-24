@@ -18,7 +18,6 @@ import MetaTestPage from "./pages/prof/MetaTestPage";
 import MetaList from "./pages/prof/MetaList";
 import { BoardUploadPage } from "./pages/user/BoardUploadPage";
 import AdminMainPage from "./pages/admin/AdminMainPage";
-// import AdminLecturePage from "./components/Admin/AdminLecturePage";
 import { LectureQnaListPage } from "./pages/user/LectureQnaListPage";
 import { ProfClassStudent } from "./pages/prof/profClassStudent";
 import { BoardEditPage } from "./pages/user/BoardEditPage";
@@ -50,7 +49,6 @@ function App() {
                 <Route path="/metaverse/page/:id" element={<MetaTestPage />} />
                 <Route path="/metaverse" element={<MetaList />}/>
                 <Route path="/admin" element={<AdminMainPage />} />
-                {/* <Route path="/admin/lectures" element={<AdminLecturePage />} /> */}
               </Route>
               <Route element={<Layout />}>
                 <Route path="/" element={<Home />} />

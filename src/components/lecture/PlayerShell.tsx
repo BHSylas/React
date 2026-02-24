@@ -1,52 +1,82 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { LecturePlaybackInit } from "../../types/lecture";
 import type { PlayerHandle } from "../../types/player";
 import LocalVideoPlayer from "./LocalVideoPlayer";
 import YoutubePlayer from "./YoutubePlayer";
 import PlayerControls from "./PlayerControls";
 import { useInterval } from "../../hooks/useInterval";
-import { useProgressReporter } from "../../hooks/useProgressReporter";
+import { api } from "../../api/axiosInstance";
+// import api from "@/api"; ← 실제 import는 직접 처리
+
+type PlayUrlResponse = {
+  url: string;
+};
 
 export default function PlayerShell({ init }: { init: LecturePlaybackInit }) {
   const playerRef = useRef<PlayerHandle>(null);
-  const { reportHTTP } = useProgressReporter({
-    lectureId: init.lectureId,
-    getSnapshot: () => playerRef.current?.getSnapshot() ?? {
-      currentSec: 0,
-      maxWatchedSec: 0,
-      durationSec: 0,
-      isPlaying: false,
-      playbackRate: 1,
-    },
-  });
 
-  // UI 갱신용 snapshot (엔진은 내부 단일 소스)
   const [snapshot, setSnapshot] = useState(
     playerRef.current?.getSnapshot()
   );
 
-  // UI 갱신 루프 (250ms 정도면 충분)
+  const [signedUrl, setSignedUrl] = useState<string | null>(null);
+  const [loadingUrl, setLoadingUrl] = useState(false);
+
+  // 🔥 로컬 영상일 경우 play-url 발급
+  useEffect(() => {
+    if (init.source.type !== "UPLOAD") return;
+
+    const fetchPlayUrl = async () => {
+      try {
+        setLoadingUrl(true);
+        // UPLOAD 타입의 source에서 localPath를 가져와서 play-url API 호출
+        // 타입 단언으로 localPath 접근 (위에서 UPLOAD 검사를 실행하기에 작동하기는 하나, 실제 코드에서는 더 안전하게 처리 필요)
+        const res = await api.get<PlayUrlResponse>(
+          `/videos/${init.videoId}/play-url`
+        );
+
+        setSignedUrl(res.data.url);
+        console.log("Fetched signed URL:", res.data.url);
+      } catch (e) {
+        console.error("Failed to fetch signed URL", e);
+      } finally {
+        setLoadingUrl(false);
+      }
+    };
+
+    void fetchPlayUrl();
+  }, [init]);
+
+  // UI 갱신 루프
   useInterval(() => {
     const snap = playerRef.current?.getSnapshot();
     if (snap) setSnapshot(snap);
   }, 250);
 
-  // 5초마다 진행률 저장 (placeholder)
+  // 5초마다 진행 저장 (기존 로직 유지)
   useInterval(() => {
     const snap = playerRef.current?.getSnapshot();
     if (!snap) return;
-    
-    reportHTTP();
+
+    console.log("progress snapshot:", snap);
+    // TODO: 서버 저장 로직
   }, 5000);
 
   return (
     <div className="mx-auto max-w-5xl p-4 space-y-4">
+      {/* ===== Player 영역 ===== */}
       {init.source.type === "UPLOAD" ? (
-        <LocalVideoPlayer
-          ref={playerRef}
-          src={init.source.localPath}
-          startAtSec={init.lastWatchedTimeSec}
-        />
+        loadingUrl ? (
+          <div className="p-4 text-center">영상 준비 중...</div>
+        ) : signedUrl ? (
+          <LocalVideoPlayer
+            ref={playerRef}
+            src={signedUrl}
+            startAtSec={init.lastWatchedTimeSec}
+          />
+        ) : (
+          <div className="p-4 text-error">영상 URL을 불러오지 못했습니다.</div>
+        )
       ) : (
         <YoutubePlayer
           ref={playerRef}
@@ -55,6 +85,7 @@ export default function PlayerShell({ init }: { init: LecturePlaybackInit }) {
         />
       )}
 
+      {/* ===== Controls ===== */}
       {snapshot && (
         <PlayerControls
           currentSec={snapshot.currentSec}

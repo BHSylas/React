@@ -10,6 +10,7 @@ export type LecturePlaybackInit = {
   lastWatchedTimeSec: number;
   totalDurationSec?: number;
   thumbnailUrl?: string;
+  videoId: number;
 };
 
 export type ProgressDTO = {

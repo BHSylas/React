@@ -45,12 +45,20 @@ export function useProgressReporter({ lectureId, getSnapshot }: ReporterArgs) {
       0,
       Math.min(100, (snap.maxWatchedSec / snap.durationSec) * 100)
     );
-
-    return {
-      progress: Math.round(progress * 10) / 10,
-      lastWatchedTime: Math.max(0, Math.floor(snap.maxWatchedSec)),
-      totalDuration: Math.max(1, Math.round(snap.durationSec)),
-    };
+    if(progress >= 99.5) {
+      return {
+        progress: 100,
+        lastWatchedTime: Math.max(0, Math.floor(snap.maxWatchedSec)),
+        totalDuration: Math.max(1, Math.floor(snap.durationSec)),
+      }
+    }
+    else {
+      return {
+        progress: Math.round(progress * 10) / 10,
+        lastWatchedTime: Math.max(0, Math.floor(snap.maxWatchedSec)),
+        totalDuration: Math.max(1, Math.floor(snap.durationSec)),
+      };
+    }
   }, [getSnapshot]);
 
   const reportHTTP = useCallback(async () => {
