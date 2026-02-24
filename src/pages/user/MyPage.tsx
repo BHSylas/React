@@ -86,7 +86,15 @@ export default function MyPage() {
                     case "Comment":
                         const cr = await axios.get("/api/boards/comments/me", config);
                         const commentData = cr.data.content || cr.data || [];
-                        setContentList(commentData);
+                        const seenIds = new Set();
+                        const uniqueComments = commentData.filter((item: any) => {
+                            if (seenIds.has(item.id)) {
+                                return false; // 이미 있는 ID면 제외
+                            }
+                            seenIds.add(item.id);
+                            return true;
+                        });
+                        setContentList(uniqueComments);
                         break;
                 }
             } catch (error) {
