@@ -9,7 +9,6 @@ export function CommentBlock({ postId, boardType }: { postId: string, boardType:
   const [requireRenewal, setRequireRenewal] = useState(true);
 
   const role = useContext(AuthContext).role;
-
   const canWriteComment = boardType === "FREE" || (boardType === "QNA" && role === "2");
 
   useEffect(() => {
