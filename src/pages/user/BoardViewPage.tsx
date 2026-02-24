@@ -52,13 +52,13 @@ export function BoardViewPage() {
           onDelete={() => { handleDelete(); }}
         />
       </div>
-      {post.boardType === "FREE" && (
+    {(post.boardType === "FREE" || post.boardType === "QNA") && (
         <section id="comments">
           <CommentBlock postId={postId || "0"} />
         </section>
       )}
 
-      {(post.boardType === "QNA" || post.boardType === "LECTURE_QNA") && (
+      {post.boardType === "LECTURE_QNA" && (
         <section id="answers">
           <AnswerBlock
             boardId={postId || "0"}

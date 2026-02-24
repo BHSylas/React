@@ -35,12 +35,12 @@ export function AnswerBlock({ boardId, boardType, lectureId }: AnswerBlockProps)
     const [editingId, setEditingId] = useState<number | null>(null);
     const [editContent, setEditContent] = useState("");
 
-    const isAdmin = currentUser?.role === 2; // 관리자
+    // const isAdmin = currentUser?.role === 2; // 관리자
     const isProfessor = currentUser?.role === 1; // 교수
     const isLectureOwner = isProfessor && ownerId !== null && currentUser?.sub === String(ownerId); // 아이디 비교
 
     const canWrite =
-        (boardType === "QNA" && isAdmin) || // QNA면서 관리자일 때
+        // (boardType === "QNA" && isAdmin) || // QNA면서 관리자일 때
         (boardType === "LECTURE_QNA" && isLectureOwner); // 강의 QNA면서 교수 여야하고 고유 id가 같을 때
 
     const hasAnswer = answers.length > 0; // 답변이 없는 상황
