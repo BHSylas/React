@@ -1,4 +1,5 @@
 interface BoardActionBarProps {
+  boardType?: string;
   onEdit?: () => void;
   onDelete?: () => void;
   onBack?: () => void;
@@ -6,21 +7,27 @@ interface BoardActionBarProps {
 }
 
 export function BoardActionBar({
+  boardType,
   onEdit,
   onDelete,
   onBack,
   onWrite,
 }: BoardActionBarProps) {
+
+  const showEditButton = boardType !== "LECTURE_QNA";
+
   return (
     <div className="flex justify-between items-center">
       <div className="flex gap-2">
-        <button
-          type="button"
-          onClick={onEdit}
-          className="px-3 py-1 text-sm hover:text-blue-800 hover:font-bold hover:scale-105 transition-all"
-        >
-          수정
-        </button>
+        {showEditButton && onEdit && (
+          <button
+            type="button"
+            onClick={onEdit}
+            className="px-3 py-1 text-sm hover:text-blue-800 hover:font-bold hover:scale-105 transition-all"
+          >
+            수정
+          </button>
+        )}
         <button
           type="button"
           onClick={onDelete}

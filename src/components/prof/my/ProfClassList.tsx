@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
-import { type ClassItem } from "../../types/ClassItem";
+import { type ClassItem } from "../../../types/ClassItem";
 import axios from "axios";
-import { ProfClassListBlock } from "../../components/prof/List/profClassListBlock";
+import { ClassListBlock } from "../List/profClassListBlock";
 import { useNavigate } from "react-router";
 
 export function ProfClassList() {
@@ -11,12 +11,6 @@ export function ProfClassList() {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-
-        if (!token) {
-            alert("로그인이 필요한 페이지입니다.");
-            navigate("/login");
-            return;
-        }
 
         axios.get('/api/instructor/lectures', {
             headers: {
@@ -40,14 +34,13 @@ export function ProfClassList() {
 
 
     return (
-        <main className="w-full mx-3">
-            <h3 className="my-6 font-bold text-xl">나의 강의 목록</h3>
+        <main>
             {loading ? (
                 <div className="p-5 text-center">로딩 중...</div>
             ) : (
                 <div>
                     {classList && classList.length > 0 ? (
-                        <ProfClassListBlock classList={classList} />
+                        <ClassListBlock classList={classList} />
                     ) : (
                         <div className="p-5 text-center">강의 목록이 없습니다.</div>
                     )}

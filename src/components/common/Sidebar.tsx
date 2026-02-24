@@ -1,4 +1,6 @@
 // Sidebar.tsx
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 interface SidebarProps {
@@ -7,6 +9,7 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
+  const role = useContext(AuthContext).role;
   const navigate = useNavigate();
 
   const handleNavigate = (path: string) => {
@@ -66,6 +69,15 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         >
           게시판
         </button>
+
+        {role === "2" && (
+          <button
+            className="px-3 py-4 text-left transition-all hover:bg-blue-50 hover:text-blue-800 text-lg font-bold"
+            onClick={() => handleNavigate("/admin")}
+          >
+            관리자 페이지
+          </button>
+        )}
       </aside>
     </div>
   );

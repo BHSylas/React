@@ -4,9 +4,10 @@ import type { EnrollmentItem } from "../../types/EnrollmentItem";
 import HeadRenderer from "../../components/my/HeadRenderer";
 import EnrollmentRenderer from "../../components/my/EnrollmentRenderer";
 import { useAuth } from "../../hooks/useAuth";
+import { ProfClassList } from "../../components/prof/my/ProfClassList";
+import { MyActivityRenderer } from "../../components/my/MyActivityRenderer";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import { ProfClassList } from "../prof/ProfClassList";
 
 interface TokenPayload {
     sub: string;
@@ -32,7 +33,6 @@ export default function MyPage() {
 
             setLoading(true);
             setContentList([]);
-
             const token = localStorage.getItem("token");
             let currentSub: string | null = null;
             if (token) {
@@ -51,13 +51,13 @@ export default function MyPage() {
             try {
                 switch (picked) {
                     case "Class":
-                        { const res = await axios.get("/api/me/enrollments", config);
+                        const res = await axios.get("/api/me/enrollments", config);
                         setClasses(res.data.content || []);
-                        break; }
+                        break;
                     case "QnA":
                     case "Post":
                         // QnA 게시판에서 내 닉네임으로 작성된 것만
-                        { const boardRes = await axios.get("/api/boards/searchBoard?size=1000", config);
+                        const boardRes = await axios.get("/api/boards/searchBoard?size=1000", config);
                         const boardData = boardRes.data.content || [];
                         let myLectureIds: any[] = []; // 강의 아이디 저장
                         if (Number(role) === 1 && picked === "QnA") {
@@ -82,12 +82,20 @@ export default function MyPage() {
                             return isAuthor;
                         });
                         setContentList(filtered);
-                        break; }
+                        break;
                     case "Comment":
-                        { const cr = await axios.get("/api/boards/comments/me", config);
+                        const cr = await axios.get("/api/boards/comments/me", config);
                         const commentData = cr.data.content || cr.data || [];
-                        setContentList(commentData);
-                        break; }
+                        const seenIds = new Set();
+                        const uniqueComments = commentData.filter((item: any) => {
+                            if (seenIds.has(item.id)) {
+                                return false; // 이미 있는 ID면 제외
+                            }
+                            seenIds.add(item.id);
+                            return true;
+                        });
+                        setContentList(uniqueComments);
+                        break;
                 }
             } catch (error) {
                 console.error("데이터 로딩 실패:", error);
