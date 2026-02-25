@@ -32,11 +32,11 @@ export function ClassListBlock({ classList }: ClassListBlockPorps) {
                     <div key={list.lectureId}
                         className="grid grid-cols-[1fr_120px_120px_120px_70px]
                      gap-4 px-3 py-3 border-b cursor-pointer text-gray-600"
-                     onClick={() => {navigate(`/class/${list.lectureId}`)}}>
+                        onClick={() => { navigate(`/class/${list.lectureId}`) }}>
                         <div>
                             {list.title || "제목없음"}
                         </div>
-                        <div>{LANGUAGE_COUNTRY [list.country || list.country]}</div>
+                        <div>{LANGUAGE_COUNTRY[list.country || list.country]}</div>
                         <div>{LANGUAGE_MAP[list.language || list.language]}</div>
                         <div>{list.description}</div>
                     </div>

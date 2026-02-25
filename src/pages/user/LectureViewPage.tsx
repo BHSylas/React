@@ -62,12 +62,18 @@ export default function LectureViewPage() { //현재 테스트 데이터 삽입 
 
       {isProfessor && isMyLecture && (
         <div>
-          <div className="max-w-7xl mx-auto px-6 py-3 flex justify-end">
+          <div className="max-w-7xl mx-auto px-6 py-3 flex justify-end gap-5">
             <button
               onClick={() => navigate(`/class/${classId}/edit`)}
-              className="px-5 py-2 bg-blue-600 text-white text-sm font-bold rounded-md hover:bg-blue-700 transition-all shadow-md active:scale-95"
+              className="px-5 py-2 bg-blue-600 text-white text-sm font-bold rounded-md hover:bg-blue-700 transition-all"
             >
               강의 정보 / 영상 수정
+            </button>
+            <button
+              onClick={() => navigate(`/class/${classId}/manage`)}
+              className="px-5 py-2 bg-blue-600 text-white text-sm font-bold rounded-md hover:bg-blue-700  transition-all shadow-sm"
+            >
+              수강생 통계 및 관리
             </button>
           </div>
         </div>
