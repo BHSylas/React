@@ -1,12 +1,13 @@
 import { useParams, useNavigate } from "react-router-dom";
 import Overview from "../../components/class/desc/Overview";
 import TopPanel from "../../components/class/desc/TopPanel";
-import ReviewBlock from "../../components/class/review/ReviewBlock";
+// import ReviewBlock from "../../components/class/review/ReviewBlock";
 import { useEffect, useState, useContext } from "react";
 import { api } from "../../api/axiosInstance";
 import type { ClassItem } from "../../types/ClassItem";
 import { AuthContext } from "../../context/AuthContext";
 import { getUserIdFromToken } from "../../types/decodeToken";
+import OtherLecutres from "../../components/class/desc/OtherLectures";
 
 export default function LectureViewPage() { //현재 테스트 데이터 삽입 중
   const classId = useParams().classId;
@@ -29,14 +30,16 @@ export default function LectureViewPage() { //현재 테스트 데이터 삽입 
     });
     api.get(`/lectures/${classId}/video`).then((res) => {
       const data = res.data;
-      if (data.sourceType === "YOUTUBE" && data.youtubeVideoId) {
+      if (data?.sourceType === "YOUTUBE" && data?.youtubeVideoId) {
         setThumbnailUrl(`https://img.youtube.com/vi/${data.youtubeVideoId}/0.jpg`);
+      } else {
+        setThumbnailUrl(undefined); // 데이터가 없으면 초기화
       }
     });
     api.get(`/me/enrollments/${classId}`).catch(() => {
       setEnrolling(false);
     });
-  }, []);
+  }, [classId]);
   if (page === null) {
     return <div>Loading...</div>;
   }
@@ -78,7 +81,12 @@ export default function LectureViewPage() { //현재 테스트 데이터 삽입 
           </div>
         </div>
       )}
-      <ReviewBlock />
+      {/* <ReviewBlock /> */}
+      <OtherLecutres
+        professorId={page.professorId}
+        professorNickname={page.professorNickname}
+        lectureId={page.lectureId} />
+
     </main>
   );
 }
