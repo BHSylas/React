@@ -24,6 +24,7 @@ import { BoardEditPage } from "./pages/user/BoardEditPage";
 import { LectureQnAUploadPage } from "./pages/user/LectureQnaUploadPage";
 import LecturePlayerPage from "./pages/user/LecturePlayerPage";
 import LectureEditPage from "./pages/prof/LectureEditPage";
+import LectureManagePage from "./pages/prof/LectureManagePage";
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
                 <Route path="/class/qna/:lectureId" element={<LectureQnaListPage />} />
                 <Route path="/class/qna/upload/:lectureId" element={<LectureQnAUploadPage />}/>
                 <Route path="/class/:lectureId/player" element={<LecturePlayerPage />} />
+                <Route path="/class/:classId/manage" element={<LectureManagePage />} />
                 <Route path="/board" element={<BoardListPage />} />
                 <Route path="/board/:postId" element={<BoardViewPage />} />
                 <Route path="/board/upload" element={<BoardUploadPage />}/>
