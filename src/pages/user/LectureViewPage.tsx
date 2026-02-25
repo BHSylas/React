@@ -1,37 +1,50 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Overview from "../../components/class/desc/Overview";
 import TopPanel from "../../components/class/desc/TopPanel";
 import ReviewBlock from "../../components/class/review/ReviewBlock";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { api } from "../../api/axiosInstance";
 import type { ClassItem } from "../../types/ClassItem";
+import { AuthContext } from "../../context/AuthContext";
+import { getUserIdFromToken } from "../../types/decodeToken";
 
 export default function LectureViewPage() { //현재 테스트 데이터 삽입 중
-    const classId = useParams().classId;
-    const [page, setPage] = useState<ClassItem | null>(null);
-    const [enrolling, setEnrolling] = useState(true);
-    const [thumbnailUrl, setThumbnailUrl] = useState<string | undefined>(undefined);
-    useEffect(() => {
-      api.get(`/lectures/${classId}`).then((res) => {
-        setPage(res.data);
-      });
-      api.get(`/lectures/${classId}/video`).then((res) => {
-        const data = res.data;
-        if(data.sourceType === "YOUTUBE" && data.youtubeVideoId) {
-          setThumbnailUrl(`https://img.youtube.com/vi/${data.youtubeVideoId}/0.jpg`);
-        }
-      });
-      api.get(`/me/enrollments/${classId}`).catch(() => {
-        setEnrolling(false);
-      });
-    }, []);
-    if(page === null) {
+  const classId = useParams().classId;
+  const navigate = useNavigate();
+
+  const role = useContext(AuthContext).role;
+  const token = useContext(AuthContext).token;
+
+  const [page, setPage] = useState<ClassItem | null>(null);
+  const [enrolling, setEnrolling] = useState(true);
+  const [thumbnailUrl, setThumbnailUrl] = useState<string | undefined>(undefined);
+
+  const currentUserId = getUserIdFromToken(token);
+  const isProfessor = role === "1";
+  const isMyLecture = page && currentUserId && Number(page.professorId) === Number(currentUserId);
+
+  useEffect(() => {
+    api.get(`/lectures/${classId}`).then((res) => {
+      setPage(res.data);
+    });
+    api.get(`/lectures/${classId}/video`).then((res) => {
+      const data = res.data;
+      if (data.sourceType === "YOUTUBE" && data.youtubeVideoId) {
+        setThumbnailUrl(`https://img.youtube.com/vi/${data.youtubeVideoId}/0.jpg`);
+      }
+    });
+    api.get(`/me/enrollments/${classId}`).catch(() => {
+      setEnrolling(false);
+    });
+  }, []);
+  if (page === null) {
     return <div>Loading...</div>;
-    }
-    if(classId === undefined) {
-      return <div>Invalid class ID</div>;
-    }
+  }
+  if (classId === undefined) {
+    return <div>Invalid class ID</div>;
+  }
   return (
+
     <main>
       <TopPanel
         title={page.title}
@@ -46,6 +59,19 @@ export default function LectureViewPage() { //현재 테스트 데이터 삽입 
       <Overview
         description={page.description}
       />
+
+      {isProfessor && isMyLecture && (
+        <div>
+          <div className="max-w-7xl mx-auto px-6 py-3 flex justify-end">
+            <button
+              onClick={() => navigate(`/class/${classId}/edit`)}
+              className="px-5 py-2 bg-blue-600 text-white text-sm font-bold rounded-md hover:bg-blue-700 transition-all shadow-md active:scale-95"
+            >
+              강의 정보 / 영상 수정
+            </button>
+          </div>
+        </div>
+      )}
       <ReviewBlock />
     </main>
   );

@@ -4,9 +4,10 @@ import { api } from "../../../api/axiosInstance";
 interface LectureVideoProps {
     lectureId: number;
     onSuccess: () => void;
+    isEdit?: boolean;
 }
 
-export function VideoUpload({ lectureId, onSuccess }: LectureVideoProps) {
+export function VideoUpload({ lectureId, onSuccess, isEdit = false }: LectureVideoProps) {
     const [file, setFile] = useState<File | null>(null); // 선택한 파일
     const [uploading, setUploading] = useState(false);
     const [progress, setProgress] = useState(0); // 업로드 퍼센트
@@ -38,7 +39,9 @@ export function VideoUpload({ lectureId, onSuccess }: LectureVideoProps) {
 
         setUploading(true);
         try {
-            await api.post(`/instructor/lectures/${lectureId}/video/upload`, formData, {
+            const method = isEdit ? "put" : "post";
+            const url = `/instructor/lectures/${lectureId}/video/upload`;
+            await api[method](url, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
                 onUploadProgress: (progressEvent) => {
                     const total = progressEvent.total || 1; // 0으로 나누기 방지
@@ -46,6 +49,7 @@ export function VideoUpload({ lectureId, onSuccess }: LectureVideoProps) {
                     setProgress(percentCompleted);
                 },
             });
+            alert(isEdit ? "영상이 교체되었습니다." : "영상이 업로드되었습니다.");
             onSuccess();
         } catch (err) {
             console.error("Upload Error:", err);
@@ -58,7 +62,7 @@ export function VideoUpload({ lectureId, onSuccess }: LectureVideoProps) {
     return (
         <div className="mt-6 p-6 border-2 border-dashed border-blue-200 rounded-md bg-gray-50">
             <div className="flex flex-col items-center">
-                <h2 className="text-xl font-bold">강의 영상 업로드</h2>
+                <h2 className="text-xl font-bold">{isEdit ? "강의 영상 교체 (업로드)" : "강의 영상 업로드"}</h2>
 
                 {/* multiple 속성을 제외하여 브라우저 선택창에서도 하나만 선택되도록 유도 */}
                 <input
@@ -99,7 +103,8 @@ export function VideoUpload({ lectureId, onSuccess }: LectureVideoProps) {
                             className={`w-full py-3 rounded-md font-bold text-white transition-colors
                 ${uploading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'}`}
                         >
-                            {uploading ? `업로드 중... ${progress}%` : "이 영상으로 확정하기"}
+                            {uploading ? `업로드 중... ${progress}%` : isEdit ? "이 영상으로 교체하기" : 
+                            "이 영상으로 확정하기"}
                         </button>
 
                         {!uploading && (
