@@ -17,6 +17,10 @@ export default function LectureViewPage() { //현재 테스트 데이터 삽입 
       });
       api.get(`/lectures/${classId}/video`).then((res) => {
         const data = res.data;
+        if(data === null) {
+          setThumbnailUrl(undefined);
+          return;
+        }
         if(data.sourceType === "YOUTUBE" && data.youtubeVideoId) {
           setThumbnailUrl(`https://img.youtube.com/vi/${data.youtubeVideoId}/0.jpg`);
         }

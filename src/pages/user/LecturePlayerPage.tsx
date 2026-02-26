@@ -2,15 +2,21 @@ import { useEffect, useState } from "react";
 import PlayerShell from "../../components/lecture/PlayerShell";
 import type { LecturePlaybackInit } from "../../types/lecture";
 import { api } from "../../api/axiosInstance";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 
 export default function LecturePlayerPage() {
   const lectureId = useParams<{ lectureId: string }>().lectureId;
   const [initial, setInitial] = useState<LecturePlaybackInit | null>(null);
+  const navigate = useNavigate();
   useEffect(() => {
     api.get(`/lectures/${lectureId}/video`).then(res => {
       const data = res.data;
+      if(data === null || !data.sourceType) {
+        alert("영상 정보를 불러오지 못했습니다.");
+        navigate(`/class/${lectureId}`);
+        return;
+      }
       api.get(`/me/enrollments/${lectureId}`).then(progressRes => {
         setInitial({
           lectureId: lectureId!,
