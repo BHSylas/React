@@ -39,3 +39,21 @@ export function decompileCountryCode (code : string) : string {
             return "?";
     }
 }
+
+export function compileCountryCode (country : string) : string {
+    const str = country.toLowerCase();
+    switch(str) {
+        case "germany":
+            return "GR";
+        case "usa":
+            return "US";
+        case "japan":
+            return "JP";
+        case "italy":
+            return "IT";
+        case "china":
+            return "CN";
+        default:
+            return "?";
+    }
+}

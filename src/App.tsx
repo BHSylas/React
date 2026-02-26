@@ -53,7 +53,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<LoginForm />} />
                 <Route path="/register" element={<RegisterForm />} />
-                <Route path="/unity-test" element={<UnityMetaversePage />} />
+                <Route path="/unity" element={<UnityMetaversePage />} />
               </Route>
             </Routes>
           </BrowserRouter>
