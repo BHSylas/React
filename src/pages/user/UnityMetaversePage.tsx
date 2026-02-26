@@ -23,9 +23,8 @@ export default function UnityMetaversePage() {
     return "US";
   })();
   const navigate = useNavigate();
-  const modalRef = useRef<HTMLDivElement | null>(null);
   const onModalOpened = () => {
-    if(modalRef.current) return;
+    if(modalOpened) return;
     // @ts-expect-error : unityInstance added to window
     window.unityInstance?.SendMessage("InputBinder", "NeverMove", "");
     console.log("Modal opened, sent NeverMove to Unity");
@@ -33,12 +32,11 @@ export default function UnityMetaversePage() {
     setModalOpened(true);
   }
   const onModalClosed = () => {
-    if(!modalRef.current) return;
+    if(!modalOpened) return;
     // @ts-expect-error : unityInstance added to window
     window.unityInstance?.SendMessage("InputBinder", "Moving", "");
     //InputBinder.AllowMove doesn't require any parameters, but SendMessage requires a third argument, so we pass an empty string
     setModalOpened(false);
-    modalRef.current = null;
   }
 
   useEffect(() => {
@@ -70,7 +68,7 @@ export default function UnityMetaversePage() {
       //Unity에서 문제풀이 개시 신호 수신 시 modal 오픈, 현재 대화 ID 저장
       console.log("Question shown from Unity, conversationId:", conversationId);
       currentId.current = conversationId;
-      if (modalRef.current !== null) return;
+      if (modalOpened) return;
       onModalOpened();
     };
     return () => {
@@ -98,7 +96,6 @@ export default function UnityMetaversePage() {
       <UnityCanvas />
       {modalOpened && (
         <TestModal 
-        ref={modalRef}
         currentConversation={conversations.find(c => c.conversationId === currentId.current)!} 
         onClose={() => {
           onModalClosed();
