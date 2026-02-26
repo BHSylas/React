@@ -14,6 +14,11 @@ export default function LectureViewPage() { //현재 테스트 데이터 삽입 
     const [page, setPage] = useState<ClassItem | null>(null);
     const [enrolling, setEnrolling] = useState(true);
     const [thumbnailUrl, setThumbnailUrl] = useState<string | undefined>(undefined);
+    const navigate = useNavigate();
+    const authContext = useContext(AuthContext);
+    const userId = getUserIdFromToken(authContext.token)!;
+    const isProfessor = authContext.role === '1';
+    const isMyLecture = isProfessor && page?.professorId === userId;
     useEffect(() => {
       api.get(`/lectures/${classId}`).then((res) => {
         setPage(res.data);
