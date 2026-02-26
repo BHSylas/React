@@ -38,7 +38,7 @@ export function ClassListBlock({ classList }: ClassListBlockPorps) {
                         </div>
                         <div>{LANGUAGE_COUNTRY[list.country || list.country]}</div>
                         <div>{LANGUAGE_MAP[list.language || list.language]}</div>
-                        <div>{list.description}</div>
+                        <div className="truncate whitespace-nowrap overflow-hidden">{list.description}</div>
                     </div>
                 ))}
             </div>

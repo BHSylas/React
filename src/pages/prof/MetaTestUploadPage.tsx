@@ -187,10 +187,6 @@ export function MetaTestUpload() {
     return (
         <main>
             <div className="w-full grid-cols-1 justify-start items-center m-auto">
-                <div className='w-full mb-8 mt-5'>
-                    <h3 className='text-2xl font-bold text-blue-800 mb-5'>강의 명</h3>
-                    <input className='w-full h-[35px] border border-solid border-neutral-800 rounded-md outline-none' readOnly></input>
-                </div>
                 <div className='w-full mb-8'>
                     <h3 className='text-2xl font-bold mb-5'>테스트 정보</h3>
                     <div className="w-full h-auto flex justify-evenly items-center border-y-2 border-neutral-800 flex justify-start items-center pt-5 pb-5 pl-3 pr-3">
