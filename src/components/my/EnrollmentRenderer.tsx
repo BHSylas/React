@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { decompileCountryCode } from "../../utils/decompileCountryCode";
+import { decompileLanguageCode } from "../../utils/decompileCountryCode";
 import type { EnrollmentItem } from "../../types/EnrollmentItem";
 import { useAuth } from "../../hooks/useAuth";
 
@@ -26,7 +26,7 @@ export default function EnrollmentRenderer({ classes }: { classes: EnrollmentIte
                     onClick={() => {navigate(`/class/${enrollment.lectureId}`)}}>
                         <h3 className="text-2xl font-bold mb-2">{enrollment.title}</h3>
                         <p className="text-sm text-gray-400 mb-2">{enrollment.professorNickname} 강사</p>
-                        <p className="text-sm text-gray-400">{decompileCountryCode(enrollment.language)} · {enrollment.country}</p>
+                        <p className="text-sm text-gray-400">{decompileLanguageCode(enrollment.language)} · {enrollment.country}</p>
                         <p className="text-gray-600 mb-2">{enrollment.progressRate}%</p>
                         <div className="flex w-full h-2 rounded overflow-hidden bg-gray-300">
                             <div className="bg-green-500" style={{ flexGrow: enrollment.progressRate / 100 }}></div>

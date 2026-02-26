@@ -7745,15 +7745,13 @@ function dbg(text) {
   		Module.WebPlayer.PlayerIsInitialized();
   	}
 
-  function _NotifyCountrySelected(countryPtr) {
-      var country = UTF8ToString(countryPtr || 0);
-      console.log("국가 선택 이벤트(Web -> Unity):", country);
-  
-      // Unity로 국가 선택 이벤트 전달
-      if (typeof SendMessage === "function") {
-        SendMessage("QuizManager", "OnCountrySelectedFromWeb", country);
-      } else {
-        console.warn("SendMessage 함수가 정의되어 있지 않습니다.");
+  function _OnAirportLoadedJS() {
+      console.log("공항 모델 로드 완료 이벤트(Unity -> Web)");
+      if(typeof window.onAirportLoadedFromUnity === "function") {
+        window.onAirportLoadedFromUnity();
+      }
+      else {
+          console.warn("window.onAirportLoadedFromUnity 함수가 정의되어 있지 않습니다.");
       }
     }
 
@@ -7769,8 +7767,24 @@ function dbg(text) {
       }
     }
 
+  function _OnLoadingSceneLoadedJS() {
+      console.log("씬 로드 이벤트(Unity -> Web)");
+      if(typeof window.onSceneLoadedFromUnity === "function") {
+        window.onSceneLoadedFromUnity();
+      }
+      else {
+          console.warn("window.onSceneLoadedFromUnity 함수가 정의되어 있지 않습니다.");
+      }
+    }
+
   function _OnQuestionShownJS(id) {
       console.log("퀴즈 트리거:", id);
+      if(typeof window.onQuestionShownFromUnity === "function") {
+        window.onQuestionShownFromUnity(id);
+      }
+      else {
+          console.warn("window.onQuestionShownFromUnity 함수가 정의되어 있지 않습니다.");
+      }
     }
 
   function ___assert_fail(condition, filename, line, func) {
@@ -16432,8 +16446,9 @@ var wasmImports = {
   "JS_WebGPU_SetCommandEncoder": _JS_WebGPU_SetCommandEncoder,
   "JS_WebGPU_Setup": _JS_WebGPU_Setup,
   "JS_WebPlayer_FinishInitialization": _JS_WebPlayer_FinishInitialization,
-  "NotifyCountrySelected": _NotifyCountrySelected,
+  "OnAirportLoadedJS": _OnAirportLoadedJS,
   "OnCountrySelectedJS": _OnCountrySelectedJS,
+  "OnLoadingSceneLoadedJS": _OnLoadingSceneLoadedJS,
   "OnQuestionShownJS": _OnQuestionShownJS,
   "__assert_fail": ___assert_fail,
   "__dlsym": ___dlsym,

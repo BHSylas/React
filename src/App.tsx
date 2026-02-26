@@ -11,7 +11,7 @@ import LectureViewPage from "./pages/user/LectureViewPage";
 import { BoardListPage } from "./pages/user/BoardListPage";
 import MyPage from "./pages/user/MyPage";
 import { BoardViewPage } from "./pages/user/BoardViewPage";
-import UnityTestPage from "./pages/user/UnityTestPage";
+import UnityMetaversePage from "./pages/user/UnityMetaversePage";
 import NewClassPage from "./pages/prof/NewClassPage";
 import { MetaTestUpload } from "./pages/prof/MetaTestUploadPage";
 import MetaTestPage from "./pages/prof/MetaTestPage";
@@ -53,7 +53,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<LoginForm />} />
                 <Route path="/register" element={<RegisterForm />} />
-                <Route path="/unity-test" element={<UnityTestPage />} />
+                <Route path="/unity-test" element={<UnityMetaversePage />} />
               </Route>
             </Routes>
           </BrowserRouter>

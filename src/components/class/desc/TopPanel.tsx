@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { api } from "../../../api/axiosInstance";
-import { decompileCountryCode } from "../../../utils/decompileCountryCode";
+import { decompileLanguageCode } from "../../../utils/decompileCountryCode";
 import { useState } from "react";
 import { useAuth } from "../../../hooks/useAuth";
 
@@ -74,7 +74,7 @@ export default function TopPanel({
             <div className="text-sm text-slate-300 space-y-1">
               <div>{instructor} 강사</div>
               <div>
-                {decompileCountryCode(category)} · {level}{duration}
+                {decompileLanguageCode(category)} · {level}{duration}
               </div>
             </div>
           </div>
