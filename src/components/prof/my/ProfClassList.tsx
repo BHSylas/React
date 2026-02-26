@@ -2,12 +2,12 @@ import { useState, useEffect } from "react"
 import { type ClassItem } from "../../../types/ClassItem";
 import axios from "axios";
 import { ClassListBlock } from "../List/profClassListBlock";
-import { useNavigate } from "react-router";
+// import { useNavigate } from "react-router";
 
 export function ProfClassList() {
     const [classList, setClassList] = useState<ClassItem[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem('token');

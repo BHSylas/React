@@ -1,56 +1,82 @@
-import { useState } from "react";
-import { api } from "../../api/axiosInstance";
+import { useEffect, useState } from "react";
 import { VideoUpload } from "../../components/prof/upload/VideoUpload";
 import { VideoYoutube } from "../../components/prof/upload/VideoYoutube";
+import { useNavigate, useParams } from "react-router";
+import axios from "axios";
 
 type Language = "en" | "jp" | "de" | "it" | "cn";
 
-export default function NewClassPage() {
+export default function LectureEditPage() {
+    const { classId } = useParams<{ classId: string }>();
+    const token = localStorage.getItem("token");
+    const navigate = useNavigate();
+
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [country, setCountry] = useState("USA");
     const [language, setLanguage] = useState<Language>("en");
+
     const [loading, setLoading] = useState(false);
+    const [fetching, setFetching] = useState(true);
     const [error, setError] = useState<string | null>(null);
-
-    const [createdLectureId, setCreatedLectureId] = useState<number | null>(null);
-
+    const [isInfoUpdated, setIsInfoUpdated] = useState(false);
     const [uploadMode, setUploadMode] = useState<"UPLOAD" | "YOUTUBE">("UPLOAD");
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    useEffect(() => {
+        const fechLecture = async () => {
+            try {
+                const res = await axios.get(`/api/lectures/${classId}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                const data = res.data;
+                setTitle(data.title);
+                setDescription(data.description);
+                setCountry(data.country || "USA");
+                setLanguage(data.language || "en");
+
+            } catch (e) {
+                console.error("강의 정보 불러오기 실패", e);
+                setError("강의 정보를 불러오는데 실패했습니다.");
+            } finally {
+                setFetching(false);
+            }
+        };
+        if (classId) fechLecture();
+    }, [classId]);
+
+    const handleUpdateInfo = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setError(null);
 
         try {
-            const payload = {
-                title,
-                description,
-                country,
-                language,
-            };
+            const payload = { title, description, country, language };
+            await axios.patch(`/api/instructor/lectures/${classId}`, payload, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
 
-            const res = await api.post("/instructor/lectures", payload);
-            console.log("Create class success:", res.data);
-            const lectureId = res.data.lectureId;
-            setCreatedLectureId(lectureId);
-
-            // 테스트 단계에서는 일단 alert / console 정도로 충분
-            alert("Class created successfully");
-        } catch (err) {
-            console.error(err);
-            setError("Failed to create class");
+            setIsInfoUpdated(true);
+            alert("강의 정보가 수정되었습니다. 영상 수정 단계로 넘어갑니다.");
+        } catch (e) {
+            console.error(e);
+            setError("강의 정보 수정에 실패했습니다.");
         } finally {
             setLoading(false);
         }
     };
 
+    if (fetching) return <div className="p-8 text-gray-500">로딩 중...</div>
+
     return (
         <div className="p-8 flex justify-start items-center">
             <div className="w-full border-2 rounded-md px-3 py-3">
-                <h1 className="text-2xl">New Class</h1>
-                {!createdLectureId ? (
-                    <form onSubmit={handleSubmit}
+                <h1 className="text-2xl">Edot Class</h1>
+                {!isInfoUpdated ? (
+                    <form onSubmit={handleUpdateInfo}
                         className="mt-3 border-t py-3 w-full grid">
                         <div className="mb-2">
                             <label className="text-xl font-bold">제목</label><br />
@@ -62,13 +88,6 @@ export default function NewClassPage() {
                                 placeholder="강의 제목"
                             />
                         </div>
-
-
-
-
-
-
-
 
                         <div className="mb-2">
                             <label className="text-xl font-bold">소개</label><br />
@@ -125,7 +144,7 @@ export default function NewClassPage() {
                         <div className="bg-blue-50 border border-blue-200 p-4 rounded-md mb-6 flex justify-between items-center">
                             <span className="text-blue-800 font-medium">강의 정보가 등록되었습니다.</span>
                             <button
-                                onClick={() => setCreatedLectureId(null)}
+                                onClick={() => setIsInfoUpdated(false)}
                                 className="text-xs text-gray-500 underline"
                             >
                                 정보 수정하기
@@ -145,22 +164,28 @@ export default function NewClassPage() {
                         </div>
                         {uploadMode === "UPLOAD" ? (
                             <VideoUpload
-                                lectureId={createdLectureId}
-                                onSuccess={() => {
-                                    window.location.href = "/class";
-                                }}
+                                lectureId={Number(classId)}
+                                isEdit={true}
+                                onSuccess={() => navigate(-1)}
                             />
                         ) : (
                             <VideoYoutube
-                                lectureId={createdLectureId}
-                                onSuccess={() => {
-                                    window.location.href = "/class";
-                                }}
+                                lectureId={Number(classId)}
+                                isEdit={true}
+                                onSuccess={() => navigate(-1)}
                             />
                         )}
+
+                        <div className="mt-8 pt-4 border-t flex justify-center">
+                            <button
+                                onClick={() => navigate(-1)}
+                                className="text-gray-400 hover:text-gray-600 transition-colors">
+                                영상 수정 없이 목록으로 돌아가기
+                            </button>
+                        </div>
                     </div>
                 )}
             </div>
-        </div>
+        </div >
     );
 }

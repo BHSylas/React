@@ -36,7 +36,7 @@ const MetaList = () => {
     const [totalPage, setTotalPage] = useState(0); // 총 페이지 수
     const navigate = useNavigate();
     const role = useContext(AuthContext).role;
-    if(role === '0') {
+    if (role === '0') {
         alert("No exception!");
         navigate('/');
     }
@@ -80,35 +80,40 @@ const MetaList = () => {
     if (isLoading) return <div>로딩중...</div>
 
     return (
-        <main>
-            <h3 className="font-bold text-2xl mb-5">메타 테스트 목록</h3>
-            <div>
-                <ul className="m-auto p-1">
-                    <li className="flex items-center text-center leading-8 m-auto border-b-2 border-gray-200 bg-gray-100 pt-1 pb-1">
+        <div className="flex-1">
+            <h2 className="text-lg font-bold mb-3 border-b-2 pb-2 text-gray-800">Metaverse 테스트 목록</h2>
+            <div className="min-h-[400px]">
+                {/* <li className="flex items-center text-center leading-8 m-auto border-b-2 border-gray-200 bg-gray-100 pt-1 pb-1">
                         <span className="w-[30%] font-bold">강의명</span>
                         <span className="w-[30%] font-bold">주제</span>
                         <span className="w-[10%] font-bold">언어</span>
                         <span className="w-[10%] font-bold">국가</span>
                         <span className="w-[10%] font-bold">난이도</span>
-                    </li>
-                    {listItems.length > 0 ? (
-                        listItems.map((item) => (
-                            <li key={item.id}
-                                className="flex items-center text-center leading-8  border-b border-gray-200 cursor-pointer pt-1 pb-1"
-                                onClick={() => navigate(`/metaverse/page/${item.id}`)}>
-                                <span className="w-[30%]">{item.lectureTitle}</span>
-                                <span className="w-[30%]">{item.topic || '주제 없음'}</span>
-                                <span className="w-[10%]">{getLanguageName(item.country)}</span>
-                                <span className="w-[10%]">{getCountryName(item.country)}</span>
-                                <span className="w-[10%]">{getLevelName(item.level)}</span>
-                            </li>
-                        ))
-                    ) : (
-                        <p>표시할 데이터가 없습니다.</p>
-                    )}
-                </ul>
+                    </li> */}
+                {listItems.length > 0 ? (
+                    listItems.map((item) => (
+                        <div key={item.id}
+                            className="grid grid-cols-[1fr_1.2fr_100px_100px_100px] 
+                                       gap-4 px-3 py-3 border-b cursor-pointer text-gray-600 
+                                       hover:bg-gray-50 transition-colors text-center items-center"
+                            onClick={() => navigate(`/metaverse/page/${item.id}`)}>
+                            <span className="text-left font-medium text-blue-900 truncate">{item.lectureTitle}</span>
+                            <span className="truncate text-gray-500">{item.topic || '주제 없음'}</span>
+                            <span>{getLanguageName(item.country)}</span>
+                            <span>{getCountryName(item.country)}</span>
+                            <span>{getLevelName(item.level)}</span>
+                        </div>
+                    ))
+                ) : (
+                    <p>표시할 데이터가 없습니다.</p>
+                )}
             </div>
-        </main >
+            <div className="flex justify-end">
+                <button onClick={() => navigate('/metaverse/upload')}
+                    className="btn mt-5 px-4 py-2 text-sm font-medium rounded-md
+                   bg-blue-800 text-white hover:bg-blue-900 transition-colors">문제 작성</button>
+            </div>
+        </div>
     );
 };
 
