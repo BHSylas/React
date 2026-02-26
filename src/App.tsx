@@ -11,7 +11,7 @@ import LectureViewPage from "./pages/user/LectureViewPage";
 import { BoardListPage } from "./pages/user/BoardListPage";
 import MyPage from "./pages/user/MyPage";
 import { BoardViewPage } from "./pages/user/BoardViewPage";
-import UnityTestPage from "./pages/user/UnityTestPage";
+import UnityMetaversePage from "./pages/user/UnityMetaversePage";
 import NewClassPage from "./pages/prof/NewClassPage";
 import { MetaTestUpload } from "./pages/prof/MetaTestUploadPage";
 import MetaTestPage from "./pages/prof/MetaTestPage";
@@ -47,10 +47,10 @@ function App() {
                 <Route path="/board/:postId" element={<BoardViewPage />} />
                 <Route path="/board/upload" element={<BoardUploadPage />}/>
                 <Route path="/board/edit/:postId" element={<BoardEditPage />}/>
-                <Route path="/unity-test" element={<UnityTestPage />} />
                 <Route path="/metaverse/upload/:id?" element={<MetaTestUpload />} />
                 <Route path="/metaverse/page/:id" element={<MetaTestPage />} />
                 <Route path="/admin" element={<AdminMainPage />} />
+                <Route path="/unity" element={<UnityMetaversePage />} />
               </Route>
               <Route element={<Layout />}>
                 <Route path="/" element={<Home />} />

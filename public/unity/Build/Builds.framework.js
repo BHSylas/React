@@ -7745,6 +7745,48 @@ function dbg(text) {
   		Module.WebPlayer.PlayerIsInitialized();
   	}
 
+  function _OnAirportLoadedJS() {
+      console.log("공항 모델 로드 완료 이벤트(Unity -> Web)");
+      if(typeof window.onAirportLoadedFromUnity === "function") {
+        window.onAirportLoadedFromUnity();
+      }
+      else {
+          console.warn("window.onAirportLoadedFromUnity 함수가 정의되어 있지 않습니다.");
+      }
+    }
+
+  function _OnCountrySelectedJS(countryPtr) {
+      var country = UTF8ToString(countryPtr || 0);
+      console.log("국가 선택 이벤트(Unity -> Web):", country);
+  
+      if(typeof window.onCountrySelectedFromUnity === "function") {
+        window.onCountrySelectedFromUnity(country);
+      }
+      else {
+          console.warn("window.onCountrySelectedFromUnity 함수가 정의되어 있지 않습니다.");
+      }
+    }
+
+  function _OnLoadingSceneLoadedJS() {
+      console.log("씬 로드 이벤트(Unity -> Web)");
+      if(typeof window.onSceneLoadedFromUnity === "function") {
+        window.onSceneLoadedFromUnity();
+      }
+      else {
+          console.warn("window.onSceneLoadedFromUnity 함수가 정의되어 있지 않습니다.");
+      }
+    }
+
+  function _OnQuestionShownJS(id) {
+      console.log("퀴즈 트리거:", id);
+      if(typeof window.onQuestionShownFromUnity === "function") {
+        window.onQuestionShownFromUnity(id);
+      }
+      else {
+          console.warn("window.onQuestionShownFromUnity 함수가 정의되어 있지 않습니다.");
+      }
+    }
+
   function ___assert_fail(condition, filename, line, func) {
       abort(`Assertion failed: ${UTF8ToString(condition)}, at: ` + [filename ? UTF8ToString(filename) : 'unknown filename', line, func ? UTF8ToString(func) : 'unknown function']);
     }
@@ -14271,13 +14313,7 @@ function dbg(text) {
 
   function _glViewport(x0, x1, x2, x3) { GLctx.viewport(x0, x1, x2, x3) }
 
-  /** @param {number=} ch */
-  function wgpuDecodeStrings(s, c, ch) {
-      ch = ch || 65;
-      for(c = c.split('|'); c[0];) s = s['replaceAll'](String.fromCharCode(ch++), c.pop());
-      return [,].concat(s.split(' '));
-    }
-  var GPUTextureAndVertexFormats = wgpuDecodeStrings('r8YN8Sr8UN8TNRYNRSrRUNRTNRWNg8YNg8Srg8UNg8TNKUNKTNKWNgRYNgRSrgRUNgRTNgRW V8Y V8Z V8SV8U V8T bgra8Y bgra8ZNgb9e5uWNgbJa2UNgbJa2YNg11bJuWNgKUNgKTNgKW VRY VRSVRU VRT VRW VKU VKT VKW FLRYL24plusL24plus-FLKWLKW-FM1-V-YM1-V-ZM2-V-YM2-V-ZM3-V-YM3-V-ZM4-r-YM4-r-Sbc5B-YM5B-Sbc6hBb-uWM6hBb-WM7-V-YM7-V-ZQYQZQa1YQa1Z etc2-V8Y etc2-V8ZC11YC11SeacB11YCg11snormX4G-YX4G-ZX5G-YX5G-ZX5A-YX5A-ZX6A-YX6A-ZX6x6-YX6x6-ZX8A-YX8A-ZX8x6-YX8x6-ZX8x8-YX8x8-ZXJA-YXJA-ZXJx6-YXJx6-ZXJx8-YXJx8-ZXJxJ-YXJxJ-ZX12xJ-YX12xJ-ZX12x12-YX12x12-Z U8 U8HU8G T8 T8HT8G Y8 Y8HY8GP8P8x2P8G UR URHURG TR TRHTRG YR YRHYRGPRPRx2PRG WR WRHWRG WK WKHWKx3 WKG UK UKHUKx3 UKG TK TKHTKx3 TKG YJ-J-J-2 Y8G-bgra', 'unorm-srgb|unorm| astc-|float|rgba|uint|sint|snorm |16| etc2-rgb8| snorm|-BC| r| bc| depth|32|10|-AC|x2 |x4|stencil8|-E-|Mg| eac-r|-rg|x5');
+  var GPUTextureAndVertexFormats = [,"r8unorm","r8snorm","r8uint","r8sint","r16unorm","r16snorm","r16uint","r16sint","r16float","rg8unorm","rg8snorm","rg8uint","rg8sint","r32uint","r32sint","r32float","rg16unorm","rg16snorm","rg16uint","rg16sint","rg16float","rgba8unorm","rgba8unorm-srgb","rgba8snorm","rgba8uint","rgba8sint","bgra8unorm","bgra8unorm-srgb","rgb9e5ufloat","rgb10a2uint","rgb10a2unorm","rg11b10ufloat","rg32uint","rg32sint","rg32float","rgba16unorm","rgba16snorm","rgba16uint","rgba16sint","rgba16float","rgba32uint","rgba32sint","rgba32float","stencil8","depth16unorm","depth24plus","depth24plus-stencil8","depth32float","depth32float-stencil8","bc1-rgba-unorm","bc1-rgba-unorm-srgb","bc2-rgba-unorm","bc2-rgba-unorm-srgb","bc3-rgba-unorm","bc3-rgba-unorm-srgb","bc4-r-unorm","bc4-r-snorm","bc5-rg-unorm","bc5-rg-snorm","bc6h-rgb-ufloat","bc6h-rgb-float","bc7-rgba-unorm","bc7-rgba-unorm-srgb","etc2-rgb8unorm","etc2-rgb8unorm-srgb","etc2-rgb8a1unorm","etc2-rgb8a1unorm-srgb","etc2-rgba8unorm","etc2-rgba8unorm-srgb","eac-r11unorm","eac-r11snorm","eac-rg11unorm","eac-rg11snorm","astc-4x4-unorm","astc-4x4-unorm-srgb","astc-5x4-unorm","astc-5x4-unorm-srgb","astc-5x5-unorm","astc-5x5-unorm-srgb","astc-6x5-unorm","astc-6x5-unorm-srgb","astc-6x6-unorm","astc-6x6-unorm-srgb","astc-8x5-unorm","astc-8x5-unorm-srgb","astc-8x6-unorm","astc-8x6-unorm-srgb","astc-8x8-unorm","astc-8x8-unorm-srgb","astc-10x5-unorm","astc-10x5-unorm-srgb","astc-10x6-unorm","astc-10x6-unorm-srgb","astc-10x8-unorm","astc-10x8-unorm-srgb","astc-10x10-unorm","astc-10x10-unorm-srgb","astc-12x10-unorm","astc-12x10-unorm-srgb","astc-12x12-unorm","astc-12x12-unorm-srgb","uint8","uint8x2","uint8x4","sint8","sint8x2","sint8x4","unorm8","unorm8x2","unorm8x4","snorm8","snorm8x2","snorm8x4","uint16","uint16x2","uint16x4","sint16","sint16x2","sint16x4","unorm16","unorm16x2","unorm16x4","snorm16","snorm16x2","snorm16x4","float16","float16x2","float16x4","float32","float32x2","float32x3","float32x4","uint32","uint32x2","uint32x3","uint32x4","sint32","sint32x2","sint32x3","sint32x4","unorm10-10-10-2","unorm8x4-bgra"];
   function _navigator_gpu_get_preferred_canvas_format() {
       
       assert(navigator["gpu"], "Your browser does not support WebGPU!", "assert(navigator['gpu'], 'Your browser does not support WebGPU!') failed!");
@@ -14333,17 +14369,14 @@ function dbg(text) {
       assert((options >> 2) << 2 == options);
   options >>= 2;
   
-      let gpu = navigator['gpu'],
-        powerPreference = [, 'low-power', 'high-performance'][HEAPU32[options]],
-        opts = {};
+      let gpu = navigator['gpu'], opts = options ? {
+          'featureLevel': [, 'core', 'compatibility'][HEAPU32[options]],
+          'powerPreference': [, 'low-power', 'high-performance'][HEAPU32[options+1]],
+          'forceFallbackAdapter': !!HEAPU32[options+2],
+          'xrCompatible': !!HEAPU32[options+3]
+        } : {};
   
       if (gpu) {
-        if (options) {
-          opts['forceFallbackAdapter'] = !!HEAPU32[options+1];
-          opts['xrCompatible'] = !!HEAPU32[options+2];
-          if (powerPreference) opts['powerPreference'] = powerPreference;
-        }
-  
         
         function cb(adapter) {
           
@@ -14698,7 +14731,7 @@ function dbg(text) {
       return _strftime(s, maxsize, format, tm); // no locale support yet
     }
 
-  var _wgpuFeatures = wgpuDecodeStrings('coAEeatuAs-aH-lBsF-GcontrolF32M-Iencil8ObcObLOetc2OaIcOaIL timeIamp-quDy iHiActEirI-inJ shadDE16 rg11b10uM-AHDKbgra8unorm-Iorage M32EiltDKM32CKGdiJs dual-sourceCing subgroupsN1N2 prBive-iHex', ' texture-compression-| texture-formats-tier|float|c-sliced-3d|able |stance|st|nd|clip-| depth|-f|er|-bleH|imit|re').slice(1);
+  var _wgpuFeatures = ["core-features-and-limits","depth-clip-control","depth32float-stencil8","texture-compression-bc","texture-compression-bc-sliced-3d","texture-compression-etc2","texture-compression-astc","texture-compression-astc-sliced-3d","timestamp-query","indirect-first-instance","shader-f16","rg11b10ufloat-renderable","bgra8unorm-storage","float32-filterable","float32-blendable","clip-distances","dual-source-blending","subgroups","texture-formats-tier1","texture-formats-tier2","primitive-index","texture-component-swizzle"];
   function _wgpu_adapter_or_device_get_features(adapterOrDevice) {
       
       assert(adapterOrDevice != 0, "assert(adapterOrDevice != 0) failed!");
@@ -14719,9 +14752,9 @@ function dbg(text) {
       return featuresBitMask;
     }
 
-  var _wgpu32BitLimitNames = wgpuDecodeStrings('>1D >2D >3D<5eArrayLayers<9s<9sPlus7;s<BindingsPer9<Dynamic4m=Dynamic:=Sampled5e?axSampler?ax:;?ax:5e?ax4m;?in4m;6 min:;6<7;s<7Attributes<7;ArrayStride<InterStageShaderVariables<ColorAttachments<ColorAttachmentBytesPerSample@p:Size<ComputeInvocationsPerWorkgroup@pSizeX@pSizeY@pSizeZ@psPerDimension', ' maxComputeWorkgrou|sPerShaderStage m|maxTextureDimension|BuffersPerPipelineLayout max| max|Buffer|Storage|BindGroup|s8ColorAttachmen|Vertex|OffsetAlignment|Textur|Unifor', 52).slice(1);
+  var _wgpu32BitLimitNames = ["maxTextureDimension1D","maxTextureDimension2D","maxTextureDimension3D","maxTextureArrayLayers","maxBindGroups","maxBindGroupsPlusVertexBuffers","maxBindingsPerBindGroup","maxDynamicUniformBuffersPerPipelineLayout","maxDynamicStorageBuffersPerPipelineLayout","maxSampledTexturesPerShaderStage","maxSamplersPerShaderStage","maxStorageBuffersPerShaderStage","maxStorageBuffersInVertexStage","maxStorageBuffersInFragmentStage","maxStorageTexturesPerShaderStage","maxStorageTexturesInVertexStage","maxStorageTexturesInFragmentStage","maxUniformBuffersPerShaderStage","minUniformBufferOffsetAlignment","minStorageBufferOffsetAlignment","maxVertexBuffers","maxVertexAttributes","maxVertexBufferArrayStride","maxInterStageShaderVariables","maxColorAttachments","maxColorAttachmentBytesPerSample","maxComputeWorkgroupStorageSize","maxComputeInvocationsPerWorkgroup","maxComputeWorkgroupSizeX","maxComputeWorkgroupSizeY","maxComputeWorkgroupSizeZ","maxComputeWorkgroupsPerDimension"];
   
-  var _wgpu64BitLimitNames = wgpuDecodeStrings('maxUniform4Storage4BufferSize', 'BufferBindingSize max', 52).slice(1);
+  var _wgpu64BitLimitNames = ["maxUniformBufferBindingSize","maxStorageBufferBindingSize","maxBufferSize"];
   
   function wgpuWriteI53ToU64HeapIdx(heap32Idx, number) {
       assert(heap32Idx != 0, "assert(heap32Idx != 0) failed!");
@@ -14782,10 +14815,10 @@ function dbg(text) {
   function wgpuReadFeaturesBitfield(heap32Idx) {
       let requiredFeatures = [], v = HEAPU32[heap32Idx];
   
-      assert(_wgpuFeatures.length == 21, "assert(_wgpuFeatures.length == 21) failed!");
+      assert(_wgpuFeatures.length == 22, "assert(_wgpuFeatures.length == 22) failed!");
       assert(_wgpuFeatures.length <= 30, "assert(_wgpuFeatures.length <= 30) failed!"); // We can only do up to 30 distinct feature bits here with the current code.
       
-      for(let i = 0; i < 21/*_wgpuFeatures.length*/; ++i) {
+      for(let i = 0; i < 22/*_wgpuFeatures.length*/; ++i) {
         if (v & (1 << i)) requiredFeatures.push(_wgpuFeatures[i]);
       } 
       return requiredFeatures;
@@ -14797,8 +14830,8 @@ function dbg(text) {
   
       return {
         'requiredLimits': wgpuReadSupportedLimits(descriptor),
-        'defaultQueue': wgpuReadQueueDescriptor(descriptor+34/*sizeof(WGpuSupportedLimits)*/),
-        'requiredFeatures': wgpuReadFeaturesBitfield(descriptor+36/*sizeof(WGpuSupportedLimits)+sizeof(WGpuQueueDescriptor)*/)
+        'defaultQueue': wgpuReadQueueDescriptor(descriptor+38/*sizeof(WGpuSupportedLimits)*/),
+        'requiredFeatures': wgpuReadFeaturesBitfield(descriptor+40/*sizeof(WGpuSupportedLimits)+sizeof(WGpuQueueDescriptor)*/)
       };
     }
   
@@ -14900,7 +14933,7 @@ function dbg(text) {
     }
 
   
-  var HTMLPredefinedColorSpaces = [,"srgb","display-p3"];
+  var HTMLPredefinedColorSpaces = [,"srgb","srgb-linear","display-p3","display-p3-linear"];
   
   function wgpuReadArrayOfItemsMaybeNull(itemDict, ptr, numItems) {
       assert(numItems >= 0, "assert(numItems >= 0) failed!");
@@ -15091,7 +15124,7 @@ function dbg(text) {
       assert(maxDrawCount >= 0, "assert(maxDrawCount >= 0) failed!");
   
       assert(colorAttachmentsIdx % 2 == 0, "assert(colorAttachmentsIdx % 2 == 0) failed!"); // Must be aligned at double boundary
-      assert(depthStencilAttachment == 0 || wgpu[depthStencilAttachment] instanceof GPUTextureView, "assert(depthStencilAttachment == 0 || wgpu[depthStencilAttachment] instanceof GPUTextureView) failed!"); // Must point to a valid WebGPU texture view object if nonzero
+      assert(depthStencilAttachment == 0 || wgpu[depthStencilAttachment] instanceof GPUTexture || wgpu[depthStencilAttachment] instanceof GPUTextureView, "assert(depthStencilAttachment == 0 || wgpu[depthStencilAttachment] instanceof GPUTexture || wgpu[depthStencilAttachment] instanceof GPUTextureView) failed!"); // Must point to a valid WebGPU texture or texture view object if nonzero
   
       assert(numColorAttachments >= 0, "assert(numColorAttachments >= 0) failed!");
       while(numColorAttachments--) {
@@ -15141,7 +15174,7 @@ function dbg(text) {
       wgpu[commandEncoder]['copyBufferToBuffer'](wgpu[source], sourceOffset, wgpu[destination], destinationOffset, size < 1/0 ? size : void 0);
     }
 
-  var GPUTextureAspects = wgpuDecodeStrings('all stencilA depthA', '-only');
+  var GPUTextureAspects = [,"all","stencil-only","depth-only"];
   function wgpuReadGpuTexelCopyTextureInfo(ptr) {
       assert(ptr, "assert(ptr) failed!");
       assert((ptr >> 2) << 2 == ptr);
@@ -15253,17 +15286,17 @@ function dbg(text) {
     }
 
   
-  var GPUBufferBindingTypes = wgpuDecodeStrings('uniform A read-only-A', 'storage');
+  var GPUBufferBindingTypes = [,"uniform","storage","read-only-storage"];
   
   
-  var GPUSamplerBindingTypes = wgpuDecodeStrings('Anon-Acomparison', 'filtering ');
+  var GPUSamplerBindingTypes = [,"filtering","non-filtering","comparison"];
   
-  var GPUTextureSampleTypes = wgpuDecodeStrings('Aunfilterable-Adepth sint uint', 'float ');
+  var GPUTextureSampleTypes = [,"float","unfilterable-float","depth","sint","uint"];
   
-  var GPUTextureViewDimensions = wgpuDecodeStrings('1B 2dCA AC3d', '-array |d 2d|cube');
+  var GPUTextureViewDimensions = [,"1d","2d","2d-array","cube","cube-array","3d"];
   
   
-  var GPUStorageTextureSampleTypes = wgpuDecodeStrings('A-BBA', 'only read-|write');
+  var GPUStorageTextureSampleTypes = [,"write-only","read-only","read-write"];
   function wgpuReadBindGroupLayoutDescriptor(entries, numEntries) {
       assert(numEntries >= 0, "assert(numEntries >= 0) failed!");
       assert(entries != 0 || numEntries == 0, "assert(entries != 0 || numEntries == 0) failed!"); // Must be non-null pointer
@@ -15421,9 +15454,9 @@ function dbg(text) {
       return wgpuStoreAndSetParent(device['createPipelineLayout'](desc), device);
     }
 
-  var GPUCompareFunctions = wgpuDecodeStrings('neverA equalACB notCBCalways', '-equal |greater| less');
+  var GPUCompareFunctions = [,"never","less","equal","less-equal","greater","not-equal","greater-equal","always"];
   
-  var GPUStencilOperations = wgpuDecodeStrings('keep zero replace invert inCBdeCBinCA deCA', 'crement-|clamp |wrap');
+  var GPUStencilOperations = [,"keep","zero","replace","invert","increment-clamp","decrement-clamp","increment-wrap","decrement-wrap"];
   function wgpuReadGpuStencilFaceState(idx) {
       assert(idx != 0, "assert(idx != 0) failed!");
       return {
@@ -15434,9 +15467,9 @@ function dbg(text) {
       };
     }
   
-  var GPUBlendOperations = wgpuDecodeStrings('add Areverse-Amin max', 'subtract ');
+  var GPUBlendOperations = [,"add","subtract","reverse-subtract","min","max"];
   
-  var GPUBlendFactors = wgpuDecodeStrings('zero one CFC CEFCE AFA AEFAE CE-saturated BFB DFD DEFDE', ' one-minus-|-alpha|src1|src|constant|dst');
+  var GPUBlendFactors = [,"zero","one","src","one-minus-src","src-alpha","one-minus-src-alpha","dst","one-minus-dst","dst-alpha","one-minus-dst-alpha","src-alpha-saturated","constant","one-minus-constant","src1","one-minus-src1","src1-alpha","one-minus-src1-alpha"];
   function wgpuReadGpuBlendComponent(idx) {
       assert(idx != 0, "assert(idx != 0) failed!");
       assert(GPUBlendOperations[HEAPU32[idx]], "assert(GPUBlendOperations[HEAPU32[idx]]) failed!");
@@ -15451,11 +15484,11 @@ function dbg(text) {
   
   
   
-  var GPUIndexFormats = wgpuDecodeStrings('A16 A32', 'uint');
+  var GPUIndexFormats = [,"uint16","uint32"];
   
   
   
-  var GPUPrimitiveTopologys = wgpuDecodeStrings('pointDADAB CDCB', '-list |triangle|-strip|line');
+  var GPUPrimitiveTopologys = [,"point-list","line-list","line-strip","triangle-list","triangle-strip"];
   
   function wgpuReadRenderPipelineDescriptor(descriptor) {
       assert(descriptor != 0, "assert(descriptor != 0) failed!");
@@ -15476,7 +15509,7 @@ function dbg(text) {
           depthStencilFormat = HEAPU32[depthStencilIdx],
           multisampleCount = HEAPU32[multisampleIdx],
           fragmentModule = HEAPU32[fragmentIdx+6],
-          pipelineLayoutId = HEAPU32[fragmentIdx+10], // sizeof(WGpuFragmentState)
+          pipelineLayoutId = HEAPU32[fragmentIdx+10], // sizeof(WGpuPipelineLayout)
           desc;
   
       assert(pipelineLayoutId <= 1/*"auto"*/ || wgpu[pipelineLayoutId], "assert(pipelineLayoutId <= 1/*'auto'*/ || wgpu[pipelineLayoutId]) failed!");
@@ -15579,11 +15612,11 @@ function dbg(text) {
     }
 
   
-  var GPUAddressModes = wgpuDecodeStrings('clamp-to-edge A mirror-A', 'repeat');
+  var GPUAddressModes = [,"clamp-to-edge","repeat","mirror-repeat"];
   
-  var GPUFilterModes = wgpuDecodeStrings('Aest liA', 'near');
+  var GPUFilterModes = [,"nearest","linear"];
   
-  var GPUMipmapFilterModes = wgpuDecodeStrings('Aest liA', 'near');
+  var GPUMipmapFilterModes = [,"nearest","linear"];
   
   function _wgpu_device_create_sampler(device, descriptor) {
       
@@ -15657,6 +15690,7 @@ function dbg(text) {
   
   
   
+  
   function _wgpu_device_create_texture(device, descriptor) {
       
       assert(device != 0, "assert(device != 0) failed!");
@@ -15677,7 +15711,8 @@ function dbg(text) {
         'sampleCount': HEAP32[descriptor+7],
         'dimension': HEAPU32[descriptor+8] + 'd',
         'format': GPUTextureAndVertexFormats[HEAPU32[descriptor+9]],
-        'usage': HEAPU32[descriptor+10]
+        'usage': HEAPU32[descriptor+10],
+        'textureBindingViewDimension': GPUTextureViewDimensions[HEAPU32[descriptor+11]] // Only used in WebGPU compatibility mode, ignored by core devices.
       };
       
       let texture = device['createTexture'](desc);
@@ -15851,14 +15886,6 @@ function dbg(text) {
       wgpu[o]['label'] = utf8(label);
     }
 
-  function _wgpu_pipeline_get_bind_group_layout(pipelineBase, index) {
-      
-      assert(pipelineBase != 0, "assert(pipelineBase != 0) failed!");
-      assert(wgpu[pipelineBase], "assert(wgpu[pipelineBase]) failed!");
-      assert(wgpu[pipelineBase] instanceof GPURenderPipeline || wgpu[pipelineBase] instanceof GPUComputePipeline, "assert(wgpu[pipelineBase] instanceof GPURenderPipeline || wgpu[pipelineBase] instanceof GPUComputePipeline) failed!");
-      return wgpuStore(wgpu[pipelineBase]['getBindGroupLayout'](index));
-    }
-
   
   function _wgpu_queue_submit_multiple_and_destroy(queue, commandBuffers, numCommandBuffers) {
       
@@ -15968,6 +15995,8 @@ function dbg(text) {
       // N.b. buffer may be null here, in which case the existing buffer is intended to be unbound.
       assert(buffer == 0 || wgpu[buffer], "assert(buffer == 0 || wgpu[buffer]) failed!");
       assert(buffer == 0 || wgpu[buffer] instanceof GPUBuffer, "assert(buffer == 0 || wgpu[buffer] instanceof GPUBuffer) failed!");
+      assert(buffer != 0 || offset == 0, "assert(buffer != 0 || offset == 0) failed!");
+      assert(buffer != 0 || size <= 0, "assert(buffer != 0 || size <= 0) failed!");
       assert(Number.isSafeInteger(offset), "assert(Number.isSafeInteger(offset)) failed!");
       assert(offset >= 0, "assert(offset >= 0) failed!");
       assert(Number.isSafeInteger(size), "assert(Number.isSafeInteger(size)) failed!");
@@ -16003,6 +16032,7 @@ function dbg(text) {
   
   
   
+  
   function _wgpu_texture_create_view(texture, descriptor) {
       
       assert(texture != 0, "assert(texture != 0) failed!");
@@ -16021,6 +16051,7 @@ function dbg(text) {
         'mipLevelCount': HEAP32[descriptor+5],
         'baseArrayLayer': HEAP32[descriptor+6],
         'arrayLayerCount': HEAP32[descriptor+7],
+        'swizzle': UTF8ToString(descriptor*4+32) || 'rgba'
       } : void 0;
       ;
       return wgpuStoreAndSetParent(wgpu[texture]['createView'](desc), wgpu[texture]);
@@ -16415,6 +16446,10 @@ var wasmImports = {
   "JS_WebGPU_SetCommandEncoder": _JS_WebGPU_SetCommandEncoder,
   "JS_WebGPU_Setup": _JS_WebGPU_Setup,
   "JS_WebPlayer_FinishInitialization": _JS_WebPlayer_FinishInitialization,
+  "OnAirportLoadedJS": _OnAirportLoadedJS,
+  "OnCountrySelectedJS": _OnCountrySelectedJS,
+  "OnLoadingSceneLoadedJS": _OnLoadingSceneLoadedJS,
+  "OnQuestionShownJS": _OnQuestionShownJS,
   "__assert_fail": ___assert_fail,
   "__dlsym": ___dlsym,
   "__syscall__newselect": ___syscall__newselect,
@@ -16716,7 +16751,6 @@ var wasmImports = {
   "wgpu_is_valid_object": _wgpu_is_valid_object,
   "wgpu_object_destroy": _wgpu_object_destroy,
   "wgpu_object_set_label": _wgpu_object_set_label,
-  "wgpu_pipeline_get_bind_group_layout": _wgpu_pipeline_get_bind_group_layout,
   "wgpu_queue_submit_multiple_and_destroy": _wgpu_queue_submit_multiple_and_destroy,
   "wgpu_queue_submit_one_and_destroy": _wgpu_queue_submit_one_and_destroy,
   "wgpu_queue_write_buffer": _wgpu_queue_write_buffer,
@@ -17165,7 +17199,6 @@ var unexportedSymbols = [
   'wgpuWriteI53ToU64HeapIdx',
   'wgpu_checked_shift',
   'utf8',
-  'wgpuDecodeStrings',
   'GPUTextureAndVertexFormats',
   'GPUBlendFactors',
   'GPUStencilOperations',

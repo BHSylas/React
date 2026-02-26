@@ -10,37 +10,29 @@ import { getUserIdFromToken } from "../../types/decodeToken";
 import OtherLecutres from "../../components/class/desc/OtherLectures";
 
 export default function LectureViewPage() { //현재 테스트 데이터 삽입 중
-  const classId = useParams().classId;
-  const navigate = useNavigate();
-
-  const role = useContext(AuthContext).role;
-  const token = useContext(AuthContext).token;
-
-  const [page, setPage] = useState<ClassItem | null>(null);
-  const [enrolling, setEnrolling] = useState(true);
-  const [thumbnailUrl, setThumbnailUrl] = useState<string | undefined>(undefined);
-
-  const currentUserId = getUserIdFromToken(token);
-  const isProfessor = role === "1";
-  const isMyLecture = page && currentUserId && Number(page.professorId) === Number(currentUserId);
-
-  useEffect(() => {
-    api.get(`/lectures/${classId}`).then((res) => {
-      setPage(res.data);
-    });
-    api.get(`/lectures/${classId}/video`).then((res) => {
-      const data = res.data;
-      if (data?.sourceType === "YOUTUBE" && data?.youtubeVideoId) {
-        setThumbnailUrl(`https://img.youtube.com/vi/${data.youtubeVideoId}/0.jpg`);
-      } else {
-        setThumbnailUrl(undefined); // 데이터가 없으면 초기화
-      }
-    });
-    api.get(`/me/enrollments/${classId}`).catch(() => {
-      setEnrolling(false);
-    });
-  }, [classId]);
-  if (page === null) {
+    const classId = useParams().classId;
+    const [page, setPage] = useState<ClassItem | null>(null);
+    const [enrolling, setEnrolling] = useState(true);
+    const [thumbnailUrl, setThumbnailUrl] = useState<string | undefined>(undefined);
+    useEffect(() => {
+      api.get(`/lectures/${classId}`).then((res) => {
+        setPage(res.data);
+      });
+      api.get(`/lectures/${classId}/video`).then((res) => {
+        const data = res.data;
+        if(data === null) {
+          setThumbnailUrl(undefined);
+          return;
+        }
+        if(data.sourceType === "YOUTUBE" && data.youtubeVideoId) {
+          setThumbnailUrl(`https://img.youtube.com/vi/${data.youtubeVideoId}/0.jpg`);
+        }
+      });
+      api.get(`/me/enrollments/${classId}`).catch(() => {
+        setEnrolling(false);
+      });
+    }, []);
+    if(page === null) {
     return <div>Loading...</div>;
   }
   if (classId === undefined) {

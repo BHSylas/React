@@ -2,6 +2,7 @@ import { useState } from 'react';
 import worldImg from '/worldMap.png';
 import markerIcon from '/location_pin.svg';
 import { useNavigate } from 'react-router-dom';
+import { compileCountryCode } from '../../utils/decompileCountryCode';
 
 
 interface MarkerData {
@@ -60,6 +61,11 @@ export default function WorldMap() {
         navigate(marker.courseUrl);
     }
 
+    const handlePracticeClick = (marker: MarkerData) => {
+        sessionStorage.setItem("country", compileCountryCode(marker.id));
+        navigate("/unity");
+    }
+
     const btnStyle = "w-auto px-5 h-10 rounded-md bg-[#004d80] hover:bg-[#00324e] text-sm text-white font-medium transition-colors";
 
     return (
@@ -85,7 +91,7 @@ export default function WorldMap() {
                         <p className="break-keep overflow-wrap-anywhere whitespace-pre-wrap m-0 text-xl leading-[1.5] text-[#f1f2f6]">{activeMaker.description}</p>
                         <div className="flex justify-center items-center mx-auto translate-y-[220px] gap-[10px]">
                             <button className={btnStyle} onClick={() => handleCourseClick(activeMaker)}>강의 확인하기</button>
-                            <button className={btnStyle} onClick={() => navigate(activeMaker.practiceUrl)}>실전회화 연습하기</button>
+                            <button className={btnStyle} onClick={() => {handlePracticeClick(activeMaker)}}>실전회화 연습하기</button>
                         </div>
                     </div>
                 )}
