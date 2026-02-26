@@ -5,8 +5,10 @@ import { useNavigate } from "react-router-dom";
 import type { Conversation } from "../../types/conversation";
 import { api } from "../../api/axiosInstance";
 import { decompileCountryCode } from "../../utils/decompileCountryCode";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function UnityMetaversePage() {
+  const { isLoggedIn } = useAuth();
   const [modalOpened, setModalOpened] = useState<boolean>(false);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const currentId = useRef<number | null>(null);
@@ -64,7 +66,13 @@ export default function UnityMetaversePage() {
       window.onQuestionShownFromUnity = undefined;
     };
   }, [country]);
-
+  if(!isLoggedIn) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen gap-6">
+        <p className="text-xl">로그인 전 로딩 금지</p>
+      </div>
+    );
+  }
   return (
     <div>
       <div className="flex justify-between">

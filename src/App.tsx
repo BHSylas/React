@@ -48,12 +48,12 @@ function App() {
                 <Route path="/metaverse/page/:id" element={<MetaTestPage />} />
                 <Route path="/metaverse" element={<MetaList />}/>
                 <Route path="/admin" element={<AdminMainPage />} />
+                <Route path="/unity" element={<UnityMetaversePage />} />
               </Route>
               <Route element={<Layout />}>
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<LoginForm />} />
                 <Route path="/register" element={<RegisterForm />} />
-                <Route path="/unity" element={<UnityMetaversePage />} />
               </Route>
             </Routes>
           </BrowserRouter>
