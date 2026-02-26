@@ -8,6 +8,7 @@ import { ProfClassList } from "../../components/prof/my/ProfClassList";
 import { MyActivityRenderer } from "../../components/my/MyActivityRenderer";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import MetaList from "../prof/MetaList";
 
 interface TokenPayload {
     sub: string;
@@ -15,11 +16,11 @@ interface TokenPayload {
 
 export default function MyPage() {
     const [loading, setLoading] = useState(true);
-    const [picked, setPicked] = useState<"Class" | "QnA" | "Post" | "Comment">("Class");
+    const [picked, setPicked] = useState<"Class" | "QnA" | "Post" | "Comment" | "Metaverse">("Class");
     const [classes, setClasses] = useState<EnrollmentItem[]>([]);
     const [contentList, setContentList] = useState<any[]>([]);
 
-    const handlePick = (item: "Class" | "QnA" | "Post" | "Comment") => {
+    const handlePick = (item: "Class" | "QnA" | "Post" | "Comment" | "Metaverse") => {
         setPicked(item);
     }
 
@@ -121,12 +122,17 @@ export default function MyPage() {
             </section>
             <section>
                 <div className={`flex h-screen`}>
-                    <Picker picked={picked} onPick={handlePick} />
+                    <Picker picked={picked} onPick={handlePick} role={role} />
                     {picked === "Class" && (
                         Number(role) === 1 ? <div className="flex-1 px-8"> <ProfClassList /> </div>
                             : <EnrollmentRenderer classes={classes} />
                     )}
-                    {picked !== "Class" && (
+                    {picked === "Metaverse" && (
+                        <div className="flex-1 px-8">
+                            <MetaList />
+                        </div>
+                    )}
+                    {picked !== "Class" && picked !== "Metaverse" &&  (
                         < MyActivityRenderer type={picked} data={contentList} />
                     )}
                 </div>
@@ -135,8 +141,11 @@ export default function MyPage() {
     );
 }
 
-function Picker({ picked, onPick }: { picked: string; onPick: (item: any) => void }) {
+function Picker({ picked, onPick, role }: { picked: string; onPick: (item: any) => void; role: any }) {
     const items = ["Class", "QnA", "Post", "Comment"];
+    if (Number(role) === 1) {
+        items.push("Metaverse");
+    }
     return (
         <div className="flex flex-col gap-4 mb-8">
             {items.map((item) => {
@@ -146,8 +155,7 @@ function Picker({ picked, onPick }: { picked: string; onPick: (item: any) => voi
                         key={item}
                         className={`cursor-pointer text-2xl text-center font-bold p-4 border-r-4 ${isPicked ? "border-blue-800 text-blue-800" : "border-transparent text-gray-500"
                             }`}
-                        onClick={() => onPick(item as any)}
-                    >
+                        onClick={() => onPick(item as any)}>
                         {item}
                     </div>
                 );

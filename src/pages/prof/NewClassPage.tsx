@@ -147,14 +147,14 @@ export default function NewClassPage() {
                             <VideoUpload
                                 lectureId={createdLectureId}
                                 onSuccess={() => {
-                                    window.location.href = "/class/prof";
+                                    window.location.href = "/class";
                                 }}
                             />
                         ) : (
                             <VideoYoutube
                                 lectureId={createdLectureId}
                                 onSuccess={() => {
-                                    window.location.href = "/class/prof";
+                                    window.location.href = "/class";
                                 }}
                             />
                         )}
