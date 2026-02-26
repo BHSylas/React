@@ -6,7 +6,6 @@ import YoutubePlayer from "./YoutubePlayer";
 import PlayerControls from "./PlayerControls";
 import { useInterval } from "../../hooks/useInterval";
 import { api } from "../../api/axiosInstance";
-// import api from "@/api"; ← 실제 import는 직접 처리
 
 type PlayUrlResponse = {
   url: string;
@@ -57,9 +56,15 @@ export default function PlayerShell({ init }: { init: LecturePlaybackInit }) {
   useInterval(() => {
     const snap = playerRef.current?.getSnapshot();
     if (!snap) return;
-
-    console.log("progress snapshot:", snap);
-    // TODO: 서버 저장 로직
+    const dto = {
+      progress: Math.round((snap.currentSec / snap.durationSec) * 100),
+      lastWatchedTime: Math.round(snap.currentSec),
+      totalDuration: Math.round(snap.durationSec),
+    };
+    api.put(`/me/enrollments/${init.lectureId}/progress`, dto,
+    ).catch((err) => {
+      console.error("Failed to save progress", err);
+    });
   }, 5000);
 
   return (
