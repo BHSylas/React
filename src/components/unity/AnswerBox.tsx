@@ -15,7 +15,6 @@ export default function AnswerBox({ conversation }: { conversation: Conversation
             setAttemptsLeft(Math.max(0, 3 - data.attempts));
             setIsCorrect(data.correct);
             setCorrectAnswer(data.correctAnswer);
-            console.log("Fetched conversation details:", data);
         }).catch(err => {
             console.error("Failed to fetch conversation details:", err);
         });
@@ -27,7 +26,6 @@ export default function AnswerBox({ conversation }: { conversation: Conversation
                 userAnswer: answer,
             }
         ).then(res => {
-            console.log("Answer submission response:", res.data);
             if(res.data.correct) {
                 alert("Correct answer!");
                 setIsCorrect(true);

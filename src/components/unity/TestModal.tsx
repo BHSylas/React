@@ -1,14 +1,10 @@
-import { forwardRef } from "react";
 import type { Conversation } from "../../types/conversation";
 import AnswerBox from "./AnswerBox";
 
-const TestModal = forwardRef<
-  HTMLDivElement,
-  { currentConversation: Conversation; onClose: () => void }
->(({ currentConversation, onClose }, ref) => {
+export default function TestModal({ currentConversation, onClose }: { currentConversation: Conversation; onClose: () => void }) {
   if (!currentConversation) {
     return (
-      <div ref={ref} className="modal modal-open fixed z-50 flex justify-center items-center">
+      <div className="modal modal-open fixed z-50 flex justify-center items-center">
         <div
           className="modal-box flex flex-col text-center gap-2 rounded-lg bg-base-100 min-w-64 p-3"
         >
@@ -24,7 +20,7 @@ const TestModal = forwardRef<
   }
 
   return (
-    <div ref={ref} className="modal modal-open fixed z-50 flex justify-center items-center">
+    <div className="modal modal-open fixed z-50 flex justify-center items-center">
       <div
         className="modal-box flex flex-col text-center gap-2 rounded-lg bg-base-100 min-w-64 p-3"
       >
@@ -33,6 +29,4 @@ const TestModal = forwardRef<
       </div>
     </div>
   );
-});
-
-export default TestModal;
+}
