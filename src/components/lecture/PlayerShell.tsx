@@ -63,7 +63,8 @@ export default function PlayerShell({ init }: { init: LecturePlaybackInit }) {
     };
     api.put(`/me/enrollments/${init.lectureId}/progress`, dto,
     ).then(() => {
-      console.log("Progress saved:", dto);
+      // console.log("Progress saved:", dto);
+      // 저장 성공 시 추가 처리를 여기서 실행 가능
     })
     .catch((err) => {
       console.error("Failed to save progress", err);
