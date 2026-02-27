@@ -33,7 +33,6 @@ export function MetaTestUpload() {
     const navigate = useNavigate();
 
     const role = useContext(AuthContext).role;
-    console.log(role);
         if(role === '0') {
             alert("No exception!");
             navigate('/');
@@ -140,11 +139,24 @@ export function MetaTestUpload() {
         }
 
         try {
+            let processedAnswers = Array.isArray(formData.answers) ? formData.answers.filter(a => a.trim() !== "") : [];
+
+            // INTERMEDIATE 난이도인 경우 공백으로 구분된 문자열 추가
+            if (formData.level === 'INTERMEDIATE' && processedAnswers.length > 0) {
+                processedAnswers = [...processedAnswers, processedAnswers.join(" ")];
+            }
+
+            // ADVANCED 난이도인 경우 options를 answers에 포함
+            if (formData.level === 'ADVANCED') {
+                const validOptions = Array.isArray(formData.options) ? formData.options.filter(a => a.trim() !== "") : [];
+                processedAnswers = validOptions;
+            }
+
             const payload = {
                 ...formData,
                 lectureId: Number(formData.lectureId),
                 options: Array.isArray(formData.options) ? formData.options.filter(a => a.trim() !== "") : [],
-                answers: Array.isArray(formData.answers) ? formData.answers.filter(a => a.trim() !== "") : [],
+                answers: processedAnswers,
                 nextConversationId: formData.nextConversationId,
             };
 
@@ -292,16 +304,11 @@ export function MetaTestUpload() {
                             </div>
                         )}
                         {formData.level === 'ADVANCED' && (
-                            <textarea
-                                name="answers"
-                                value={formData.answers}
-                                onChange={(e) => {
-                                    const val = e.target.value;
-                                    setFormData(prev => ({ ...prev, answers: [val] }));
-                                }}
-                                placeholder="직접 정답을 입력하세요 (고급 난이도)"
-                                className="w-full min-h-[100px] box-border border border-black rounded-md p-3 resize-none leading-[1.5] [field-sizing:content]"
-                            />
+                            <div className="p-4 border rounded-md bg-blue-50">
+                                <p className="text-sm text-gray-700">
+                                    고급 난이도에서는 <strong>답 목록의 모든 옵션</strong>이 정답으로 처리됩니다.
+                                </p>
+                            </div>
                         )}
                     </div>
                     <div className='w-full mb-8'>

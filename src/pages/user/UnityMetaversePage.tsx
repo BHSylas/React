@@ -8,7 +8,7 @@ import { decompileCountryCode } from "../../utils/decompileCountryCode";
 import { useAuth } from "../../hooks/useAuth";
 
 export default function UnityMetaversePage() {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, role } = useAuth();
   const [modalOpened, setModalOpened] = useState<boolean>(false);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const currentId = useRef<number | null>(null);
@@ -79,7 +79,17 @@ export default function UnityMetaversePage() {
       // @ts-expect-error : onQuestionShownFromUnity added to window
       window.onQuestionShownFromUnity = undefined;
     };
-  }, [country]);
+  }, [country, modalOpened]);
+  
+  if(role === "1") {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen gap-6">
+        <p className="text-xl">교수는 접근할 수 없습니다.</p>
+        <button className="btn p-4 " onClick={() => navigate("/")}>홈으로 돌아가기</button>
+      </div>
+    );
+  }
+
   if(!isLoggedIn) {
     return (
       <div className="flex flex-col items-center justify-center h-screen gap-6">

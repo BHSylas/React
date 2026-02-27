@@ -10,18 +10,28 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import MetaList from "../prof/MetaList";
 
+type MyPagePick = "Class" | "QnA" | "Post" | "Comment" | "Metaverse";
+
 interface TokenPayload {
     sub: string;
 }
 
 export default function MyPage() {
     const [loading, setLoading] = useState(true);
-    const [picked, setPicked] = useState<"Class" | "QnA" | "Post" | "Comment" | "Metaverse">("Class");
+    const [picked, setPicked] = useState<MyPagePick>(() => {
+        const savedPick = sessionStorage.getItem("recentPick");
+        if (savedPick) {
+          sessionStorage.removeItem("recentPick");
+          return savedPick as MyPagePick;
+        }
+        return "Class";
+      });
     const [classes, setClasses] = useState<EnrollmentItem[]>([]);
     const [contentList, setContentList] = useState<any[]>([]);
 
-    const handlePick = (item: "Class" | "QnA" | "Post" | "Comment" | "Metaverse") => {
+    const handlePick = (item: MyPagePick) => {
         setPicked(item);
+        sessionStorage.setItem("recentPick", item);
     }
 
     const { role, nickname } = useAuth();
