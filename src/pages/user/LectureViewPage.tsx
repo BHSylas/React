@@ -36,7 +36,7 @@ export default function LectureViewPage() { //현재 테스트 데이터 삽입 
       api.get(`/me/enrollments/${classId}`).catch(() => {
         setEnrolling(false);
       });
-    }, []);
+    }, [classId]);
     if(page === null) {
     return <div>Loading...</div>;
   }

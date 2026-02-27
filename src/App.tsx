@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/user/Home";
-import { AuthProvider } from "./components/provider/AuthProvider";
 import Layout from "./components/common/Layout";
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
 import LoginForm from "./components/Auth/LoginForm";
@@ -24,6 +23,7 @@ import { LectureQnAUploadPage } from "./pages/user/LectureQnaUploadPage";
 import LecturePlayerPage from "./pages/user/LecturePlayerPage";
 import LectureEditPage from "./pages/prof/LectureEditPage";
 import LectureManagePage from "./pages/prof/LectureManagePage";
+import AuthProvider from "./components/provider/AuthProvider";
 
 function App() {
   return (
@@ -33,6 +33,11 @@ function App() {
           <BrowserRouter>
             <Routes>
               <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+                <Route path="/home" element={<Home />} /> 
+                {/* 
+                기존 Home과 타 페이지의 Root Route가 달라서 Sidebar가 제대로 적용되지 않는 문제를 발견
+                Home의 Route를 /home으로 변경하여 임시로 해결, 향후 전체적인 Route 구조 재검토 필요 (예: /user/home, /prof/home 등)
+                */}
                 <Route path="/my" element={<MyPage />} />
                 <Route path="/class" element={<LectureListPage />} />
                 <Route path="/class/:classId" element={<LectureViewPage />} />

@@ -12,7 +12,7 @@ interface TokenPayload extends JwtPayload {
     role: number | string; // 0, 1, 2 숫자로 들어오면 number
 }
 
-export const AuthProvider = ({ children }: AuthProviderProps) => {
+export default function AuthProvider ({ children }: AuthProviderProps){
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [token, setToken] = useState<string | null>(null);
   const [name, setName] = useState<string | null>(null);

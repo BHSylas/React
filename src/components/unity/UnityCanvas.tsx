@@ -24,7 +24,6 @@ export function UnityCanvas() {
         },
         (progress: number) => console.log("Unity loading:", progress)
       ).then((instance: never) => {
-        // @ts-expect-error : unityInstance added to window
         window.unityInstance = instance;
       });
     };

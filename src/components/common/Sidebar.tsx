@@ -51,7 +51,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         </div>
         <button
           className="px-3 py-4 text-left transition-all hover:bg-blue-50 hover:text-blue-800 text-lg font-bold"
-          onClick={() => handleNavigate("/")}
+          onClick={() => handleNavigate("/home")}
         >
           홈
         </button>

@@ -17,7 +17,7 @@ export default function ClassList({ classList, dimmed, viewType = "list" }: Clas
         } ${viewType === "card" ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" : "space-y-4"} `}
     >
       {classList.map((item) => (
-        <div className="block" key={item.lectureId}>
+        <div className="block cursor-pointer" key={item.lectureId}>
           {viewType === "list" ? (<ClassListItem key={item.lectureId} item={item} />) :
             (<ClassCardItem key={item.lectureId} item={item} />)}
         </div>

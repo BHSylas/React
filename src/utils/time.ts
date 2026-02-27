@@ -3,11 +3,12 @@ export function clamp(n: number, min: number, max: number) {
 }
 
 export function formatTime(sec: number) {
-  if (!Number.isFinite(sec) || sec < 0) return "0:00";
+  if (!Number.isFinite(sec) || sec < 0) return "0:00:00";
   const s = Math.floor(sec);
-  const m = Math.floor(s / 60);
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
   const r = s % 60;
-  return `${m}:${r.toString().padStart(2, "0")}`;
+  return `${h}:${m.toString().padStart(2, "0")}:${r.toString().padStart(2, "0")}`;
 }
 
 export function secondsToCeilMinutes(sec: number) {
