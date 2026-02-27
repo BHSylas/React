@@ -33,7 +33,6 @@ export function MetaTestUpload() {
     const navigate = useNavigate();
 
     const role = useContext(AuthContext).role;
-    console.log(role);
         if(role === '0') {
             alert("No exception!");
             navigate('/');
@@ -140,11 +139,18 @@ export function MetaTestUpload() {
         }
 
         try {
+            let processedAnswers = Array.isArray(formData.answers) ? formData.answers.filter(a => a.trim() !== "") : [];
+
+            // INTERMEDIATE 난이도인 경우 공백으로 구분된 문자열 추가
+            if (formData.level === 'INTERMEDIATE' && processedAnswers.length > 0) {
+                processedAnswers = [...processedAnswers, processedAnswers.join(" ")];
+            }
+
             const payload = {
                 ...formData,
                 lectureId: Number(formData.lectureId),
                 options: Array.isArray(formData.options) ? formData.options.filter(a => a.trim() !== "") : [],
-                answers: Array.isArray(formData.answers) ? formData.answers.filter(a => a.trim() !== "") : [],
+                answers: processedAnswers,
                 nextConversationId: formData.nextConversationId,
             };
 

@@ -9,6 +9,7 @@ export function useTestLogic(data: any) {
 
     useEffect(() => {
         if(data) {
+            console.log(data);
             setUserChoice(data.level === 'INTERMEDIATE' ? [] : '');
         }
     }, [data]);
