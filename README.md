@@ -25,6 +25,8 @@
 3. CMD에 taskkill -f -pid 를 입력하고, 기억한 숫자를 그 다음에 쓰십시오.
 예를 들어 LISTENING 오른쪽의 숫자가 4128이었다면 아래처럼 입력하면 됩니다:
 taskkill -f -pid 4128
+
+4. Enter를 눌러 위 명령어를 실행하고, npm run dev부터 다시 시작해보세요.
 ```
 
 # WebGL 빌드 포함시키기
