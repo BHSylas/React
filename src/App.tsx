@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/user/Home";
-import { AuthProvider } from "./components/provider/AuthProvider";
 import Layout from "./components/common/Layout";
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
 import LoginForm from "./components/Auth/LoginForm";
@@ -24,6 +23,7 @@ import { LectureQnAUploadPage } from "./pages/user/LectureQnaUploadPage";
 import LecturePlayerPage from "./pages/user/LecturePlayerPage";
 import LectureEditPage from "./pages/prof/LectureEditPage";
 import LectureManagePage from "./pages/prof/LectureManagePage";
+import AuthProvider from "./components/provider/AuthProvider";
 
 function App() {
   return (

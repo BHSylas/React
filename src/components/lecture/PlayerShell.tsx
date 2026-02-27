@@ -62,7 +62,10 @@ export default function PlayerShell({ init }: { init: LecturePlaybackInit }) {
       totalDuration: Math.round(snap.durationSec),
     };
     api.put(`/me/enrollments/${init.lectureId}/progress`, dto,
-    ).catch((err) => {
+    ).then(() => {
+      console.log("Progress saved:", dto);
+    })
+    .catch((err) => {
       console.error("Failed to save progress", err);
     });
   }, 5000);

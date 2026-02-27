@@ -61,7 +61,7 @@ export default function AnswerBox({ conversation }: { conversation: Conversation
                     <h3 className="text-2xl font-bold text-center">Answer Box</h3>
                     <p className="text-3xl font-bold">{conversation.question}?</p>
                     <p className="">{conversation.topic}</p>
-                    <p className="text-sm opacity-70">{isCorrect ? `정답: ${correctAnswer?.join(" ")}` : `남은 기회: ${attemptsLeft}`}</p>
+                    <p className="text-sm opacity-70">{isCorrect ? `정답: ${correctAnswer?.join(", ")}` : `남은 기회: ${attemptsLeft}`}</p>
                     {explanation && (
                         <div className="mt-2 p-2 bg-red-100 text-red-700 rounded">
                             <p className="font-bold">Explanation:</p>

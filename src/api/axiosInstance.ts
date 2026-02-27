@@ -15,6 +15,20 @@ api.interceptors.request.use((config) => {
     // 요청 전에 직접 만료 체크
     if (isTokenExpired(token)) {
       localStorage.removeItem("token");
+      console.log("Access token expired, attempting to refresh...");
+      axios.post("/api/auth/refresh", {}, { withCredentials: true })
+        .then((res) => {
+          const newToken = res.data.accessToken;
+          localStorage.setItem("token", newToken);
+          config.headers.Authorization = `Bearer ${newToken}`;
+          console.log("Token refreshed successfully!");
+          return config;
+        })
+        .catch(() => {
+          // 리프레시 실패 시 로그인 페이지로 이동
+          window.location.href = "/";
+          console.error("NO");
+        });
       return Promise.reject("Token expired before request.");
     }
 
