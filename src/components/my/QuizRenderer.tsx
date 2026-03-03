@@ -144,7 +144,7 @@ export default function QuizRenderer({ data }: { data: unknown }) {
 										</p>
 										<p className="text-gray-600">풀어본 문제 {levelStat.solvedProblems}개</p>
 										<p className="text-gray-700 font-medium">전체 문제 정답률 {levelStat.officialAccuracy}%</p>
-                                        <p className="text-gray-700 font-medium">푼 문제 정답률 {Math.round((levelStat.correctProblems / levelStat.solvedProblems) * 100)}%</p>
+                    <p className="text-gray-700 font-medium">푼 문제 정답률 {Math.round((levelStat.correctProblems / levelStat.solvedProblems) * 100)}%</p>
 									</div>
 								</div>
 							))}
