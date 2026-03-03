@@ -18,7 +18,7 @@ export default function Home() {
   useEffect(() => {
     const fetchFreeBoards = async () => {
       try {
-        const response = await axios.get('/api/boards/searchBoard', {
+        const response = await axios.get('/api/boards/searchBoard?size=1000', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }
@@ -28,7 +28,7 @@ export default function Home() {
         // 필터 적용(FREE(자유게시판)) 후 잘라서 5개만 보이기
         const filtered = boardData.filter((board: Board) => board.boardType === "FREE")
           .slice(0, 5);
-        setFreeBoards(filtered)
+        setFreeBoards(filtered);
       } catch (error) {
         console.log("게시판 데이터를 가져오는데 실패", error);
       }
@@ -57,72 +57,97 @@ export default function Home() {
 
 
   return (
-    <div className="p-7 rounded-xl">
-      <header className="text-center">
-        <h1 className="text-7xl text-blue-800 font-bold m-10">LMS</h1>
-        <p>프로토타입 페이지</p>
+    <div className="min-h-screen bg-white p-6 font-sans text-slate-900">
+      <header className="flex flex-col md:flex-row justify-between items-center bg-slate-50 border border-slate-100 rounded-2xl p-8 mb-10 overflow-hidden relative">
+        <div className="z-10 text-center md:text-left">
+          <p className="text-blue-600 font-bold text-xs tracking-tighter uppercase mb-1">Learning Metaverse System</p>
+          <h1 className="text-4xl font-black text-slate-800 tracking-tight">LMS</h1>
+        </div>
+        <div className="z-10 mt-4 md:mt-0 hidden md:block text-right">
+          <p className="text-sm font-medium text-slate-600">오늘도 즐거운 학습 되세요!</p>
+        </div>
+        <div className="absolute right-0 top-0 w-32 h-32 bg-blue-100 rounded-full -mr-16 -mt-16 opacity-50"></div>
       </header>
-      <div className="divider" />
-      <div className='mainboard'>
+
+      <main className="max-w-7xl mx-auto space-y-12">
         <section>
-          < WorldMap />
+          <div className="mb-5 px-2">
+            <h3 className="text-xl font-bold flex items-center gap-2 text-slate-800">
+              <span className="w-1.5 h-5 bg-blue-600 rounded-full"></span>
+              Learning World
+            </h3>
+            <p className="text-sm text-slate-500 mt-1">세계지도 안에서 내가 원하는 국가를 선택해 그 강의를 확인할 수 있어요.</p>
+          </div>
+          <div className="shadow-sm">
+            <WorldMap />
+          </div>
         </section>
-        <section className='flex flex-col gap-5 mt-5'>
-          {/* <h3 className="text-lg font-bold pl-2">추천 강좌</h3>
-          <div className="flex justify-start text-start align-center">
-            <div className='bg-cyan-200 rounded-xl pt-4'>
-              <div className="py-5 pl-4 pr-36 flex flex-col gap-1">
-                <h3 className="text-lg font-bold">모두에게 추천받는 <br />인기 강좌 신청하기</h3>
-                <button className="bg-sky-800 rounded-xl font-bold text-slate-100 px-8 py-2 my-2 hover:shadow">전체 보기</button>
-              </div>
+
+        <section>
+          <div className="flex justify-between items-end mb-6 px-2">
+            <div>
+              <h3 className="text-xl font-bold flex items-center gap-2 text-slate-800">
+                <span className="w-1.5 h-5 bg-blue-600 rounded-full"></span>
+                New Arrivals
+              </h3>
+              <p className="text-sm text-slate-500 mt-1">최신 강의를 미리 볼 수 있어요.</p>
             </div>
-            <div className='topPickClassList'>
-              <div> */}
-          {/*Placeholder of list*/}
-          {/* </div>
+            <button
+              className="text-sm font-bold text-blue-600 hover:text-blue-800 transition-colors"
+              onClick={() => navigate('/class')}
+            >
+              전체 보기 &rarr;
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
+            <div className="bg-blue-600 rounded-2xl p-7 text-white flex flex-col justify-between shadow-lg shadow-blue-100 relative overflow-hidden">
+              <h4 className="text-lg font-bold leading-tight z-10">따끈따끈<br />바로 올라온<br />최신 강의</h4>
+              <div className="text-4xl opacity-20 font-black z-10 self-end">NEW</div>
+              <div className="absolute -bottom-4 -left-4 w-20 h-20 bg-white opacity-10 rounded-full"></div>
             </div>
-          </div> */}
-          <h3 className="text-lg font-bold pl-2 mt-3">최신 강좌</h3>
-          <div className="flex justify-start text-start items-stretch">
-            <div className='grid bg-cyan-100 w-[300px] h-[270px] h-auto rounded-xl items-end mr-6'>
-              <div className="py-5 px-4 flex flex-col gap-1">
-                <h3 className="text-lg font-bold pb-3">따끈따끈 새 강좌 <br />가장 먼저 신청하기</h3>
-                <button className="bg-blue-800 rounded-xl font-bold text-slate-100 px-8 py-2 my-2 hover:shadow self-end"
-                  onClick={() => navigate('/class')}>전체 보기</button>
-              </div>
-            </div>
-            <div className='flex-grow'>
+            <div className="md:col-span-3">
               {newClasses.length > 0 ? (
                 <ClassList classList={newClasses} viewType="card" />
               ) : (
-                <div className="flex items-center justify-center h-full border-2 border-dashed border-gray-200 rounded-xl text-gray-400">
-                  등록된 최신 강좌가 없습니다.
+                <div className="flex items-center justify-center h-48 border border-dashed border-slate-200 rounded-2xl text-slate-400 bg-slate-50/30">
+                  표시할 강의가 없습니다.
                 </div>
               )}
             </div>
           </div>
         </section>
+
         <section>
-          <div className="flex justify-between items-center mt-10 mb-2 px-2">
-            <h3 className="text-lg font-bold">자유게시판</h3>
+          <div className="flex justify-between items-end mb-6 px-2">
+            <div>
+              <h3 className="text-xl font-bold flex items-center gap-2 text-slate-800">
+                <span className="w-1.5 h-6 bg-blue-600 rounded-full"></span>
+                Community
+              </h3>
+              <p className="text-sm text-slate-500 mt-1">다양한 학습자와 소통해보세요.</p>
+            </div>
             <button
-              className="text-sm text-gray-500 hover:text-blue-600 font-medium"
-              onClick={() => navigate('/board')}>더보기 +
+              className="text-sm font-bold text-blue-600 hover:text-blue-800 transition-colors"
+              onClick={() => navigate('/board')}
+            >
+              더 보기 &rarr;
             </button>
           </div>
-          {/* 구분선 */}
-          <div className="divider bg-blue-950 h-0.5 rounded-xl mb-0" />
-          <div className="mx-2">
+
+          <div className="bg-white shadow-[0_10px_40px_rgb(0,0,0,0.03)] overflow-hidden">
             {freeBoards.length > 0 ? (
-              <BoardListBlock boards={freeBoards} />
+              <div className="p-0">
+                <BoardListBlock boards={freeBoards} />
+              </div>
             ) : (
-              <div className="py-20 text-center text-gray-400 bg-gray-50 rounded-b-xl">
-                최신 게시글이 없습니다.
+              <div className="py-24 text-center text-slate-300 font-medium">
+                작성된 게시글이 없습니다.
               </div>
             )}
           </div>
         </section>
-      </div>
+      </main>
     </div>
   );
 }
