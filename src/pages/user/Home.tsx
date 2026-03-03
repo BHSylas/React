@@ -57,16 +57,21 @@ export default function Home() {
 
 
   return (
-    <div className="min-h-screen bg-white p-6 font-sans text-slate-900">
-      <header className="flex flex-col md:flex-row justify-between items-center bg-slate-50 border border-slate-100 rounded-2xl p-8 mb-10 overflow-hidden relative">
-        <div className="z-10 text-center md:text-left">
-          <p className="text-blue-600 font-bold text-xs tracking-tighter uppercase mb-1">Learning Metaverse System</p>
-          <h1 className="text-4xl font-black text-slate-800 tracking-tight">LMS</h1>
+    <div className="min-h-screen font-sans text-slate-900">
+      <header className="max-w-7xl mx-auto pt-14 pb-10 border-b border-gray-100 mb-10 flex flex-col md:flex-row justify-between items-baseline">
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <span className="w-10 h-[2px] bg-blue-600"></span>
+            <p className="text-blue-600 font-bold text-xs uppercase tracking-[0.4em]">Learning System</p>
+          </div>
+          <h1 className="text-7xl font-black text-gray-900 tracking-tighter leading-none">
+            LMS<span className="text-blue-600">.</span>
+          </h1>
+          <p className="text-gray-400 font-medium max-w-md leading-relaxed pt-2">
+            메타버스 환경에서 즐기는 <br />
+            차세대 글로벌 학습 플랫폼에 오신 것을 환영합니다.
+          </p>
         </div>
-        <div className="z-10 mt-4 md:mt-0 hidden md:block text-right">
-          <p className="text-sm font-medium text-slate-600">오늘도 즐거운 학습 되세요!</p>
-        </div>
-        <div className="absolute right-0 top-0 w-32 h-32 bg-blue-100 rounded-full -mr-16 -mt-16 opacity-50"></div>
       </header>
 
       <main className="max-w-7xl mx-auto space-y-12">
@@ -76,7 +81,7 @@ export default function Home() {
               <span className="w-1.5 h-5 bg-blue-600 rounded-full"></span>
               Learning World
             </h3>
-            <p className="text-sm text-slate-500 mt-1">세계지도 안에서 내가 원하는 국가를 선택해 그 강의를 확인할 수 있어요.</p>
+            <p className="text-sm text-gray-400 mt-1">세계지도 안에서 내가 원하는 국가를 선택해 그 강의를 확인할 수 있어요.</p>
           </div>
           <div className="shadow-sm">
             <WorldMap />
@@ -90,7 +95,7 @@ export default function Home() {
                 <span className="w-1.5 h-5 bg-blue-600 rounded-full"></span>
                 New Arrivals
               </h3>
-              <p className="text-sm text-slate-500 mt-1">최신 강의를 미리 볼 수 있어요.</p>
+              <p className="text-sm text-gray-400 mt-1">최신 강의를 미리 볼 수 있어요.</p>
             </div>
             <button
               className="text-sm font-bold text-blue-600 hover:text-blue-800 transition-colors"
@@ -125,7 +130,7 @@ export default function Home() {
                 <span className="w-1.5 h-6 bg-blue-600 rounded-full"></span>
                 Community
               </h3>
-              <p className="text-sm text-slate-500 mt-1">다양한 학습자와 소통해보세요.</p>
+              <p className="text-sm text-gray-400 mt-1">다양한 학습자와 소통해보세요.</p>
             </div>
             <button
               className="text-sm font-bold text-blue-600 hover:text-blue-800 transition-colors"
