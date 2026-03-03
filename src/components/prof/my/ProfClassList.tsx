@@ -2,12 +2,12 @@ import { useState, useEffect } from "react"
 import { type ClassItem } from "../../../types/ClassItem";
 import axios from "axios";
 import { ClassListBlock } from "../List/profClassListBlock";
-// import { useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 
 export function ProfClassList() {
     const [classList, setClassList] = useState<ClassItem[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -46,6 +46,11 @@ export function ProfClassList() {
                     )}
                 </div>
             )}
+            <div className="flex justify-end">
+                <button onClick={() => navigate('/class/new')}
+                    className="btn mt-5 px-4 py-2 text-sm font-medium rounded-md
+                   bg-blue-800 text-white hover:bg-blue-900 transition-colors">강의 작성</button>
+            </div>
         </main>
     )
 }

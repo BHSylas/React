@@ -39,6 +39,8 @@ export function AdminStatsView() {
     }, []);
 
     const filterStats = stats.filter(item => {
+        if (item.totalNpcCount === 0) return false;
+
         const countryMath = selectedCountry === "ALL" || item.country === selectedCountry; // 전체 혹은 선택한 국가
         const levelMath = selectedLevel === "ALL" || item.level === selectedLevel; // 전체 혹은 선택한 레벨
         return countryMath && levelMath;
@@ -53,7 +55,7 @@ export function AdminStatsView() {
     const indexOfLastItem = currentPage * itemsPerPage; // 현재 페이지의 마지막 인덱스
     const indexOfFirstItem = indexOfLastItem - itemsPerPage; // 현재 페이지의 첫 인덱스
     const currentItems = filterStats.slice(indexOfFirstItem, indexOfLastItem) // 현재 페이지에 보여줄 데이터(필터링 포함)
-    const totalPages = Math.ceil(stats.length / itemsPerPage); // 전체 페이지 수
+    const totalPages = Math.ceil(filterStats.length / itemsPerPage); // 전체 페이지 수
 
     return (
         <div className="p-6 min-h-screen">
@@ -81,7 +83,7 @@ export function AdminStatsView() {
                             <th className="py-4">국가</th>
                             <th className="py-4">난이도</th>
                             <th className="py-4">NPC 수</th>
-                            <th className="py-4">유저 정답 / 전체 문제</th>
+                            <th className="py-4">전체 문제</th>
                             <th className="py-4">정답률</th>
                             <th className="py-4">전체 문제 정답률</th>
                         </tr>
@@ -97,7 +99,7 @@ export function AdminStatsView() {
                                         <td className="py-4">{item.country}</td>
                                         <td className="py-4">{item.level}</td>
                                         <td className="py-4">{item.totalNpcCount}</td>
-                                        <td className="py-4">{item.correctCount} / {item.solvedCount}</td>
+                                        <td className="py-4">{item.solvedCount}</td>
                                         <td className={`py-4 font-bold ${isLowAccuracy ? 'text-red-600' : 'text-gray-700'
                                             }`}>{item.accuracy}%</td>
                                         <td className={`py-4 font-medium ${isLowOffAccuracy ? 'text-red-500' : 'text-green-500'}`}>

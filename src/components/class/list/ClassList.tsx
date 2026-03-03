@@ -9,6 +9,8 @@ interface ClassListProps {
   viewType?: "list" | "card";
 }
 
+const SERVER_URL = "http://localhost:8080";
+
 export default function ClassList({ classList, dimmed, viewType = "list" }: ClassListProps) {
 
   return (
@@ -38,7 +40,9 @@ function ClassListItem({ item }: { item: ClassItem }) {
       if (data?.sourceType === "YOUTUBE" && data.youtubeVideoId) {
         setThumbnailUrl(`https://img.youtube.com/vi/${data.youtubeVideoId}/0.jpg`);
       } else if (data.thumbnailUrl) {
-        setThumbnailUrl(data.thumbnailUrl);
+        const fullPath = data.thumbnailUrl.startsWith('http')
+          ? data.thumbnailUrl : `${SERVER_URL}${data.thumbnailUrl}`;
+        setThumbnailUrl(fullPath);
       } else {
         setThumbnailUrl(undefined);
       }
@@ -87,7 +91,9 @@ function ClassCardItem({ item }: { item: ClassItem }) {
       if (data?.sourceType === "YOUTUBE" && data.youtubeVideoId) {
         setThumbnailUrl(`https://img.youtube.com/vi/${data.youtubeVideoId}/0.jpg`);
       } else if (data.thumbnailUrl) {
-        setThumbnailUrl(data.thumbnailUrl);
+        const fullPath = data.thumbnailUrl.startsWith('http')
+          ? data.thumbnailUrl : `${SERVER_URL}${data.thumbnailUrl}`;
+        setThumbnailUrl(fullPath);
       } else {
         setThumbnailUrl(undefined);
       }

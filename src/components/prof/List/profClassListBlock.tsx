@@ -42,11 +42,6 @@ export function ClassListBlock({ classList }: ClassListBlockPorps) {
                     </div>
                 ))}
             </div>
-            <div className="flex justify-end">
-                <button onClick={() => navigate('/class/new')}
-                    className="btn mt-5 px-4 py-2 text-sm font-medium rounded-md
-                   bg-blue-800 text-white hover:bg-blue-900 transition-colors">강의 작성</button>
-            </div>
         </div>
     );
 
