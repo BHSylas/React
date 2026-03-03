@@ -14,11 +14,11 @@ import { useNavigate } from "react-router-dom";
 ========================= */
 
 const LANGUAGE_MAP: Record<string, string> = {
-  "Japan" : "jp",
-  "USA" : "en",
-  "Germany" : "de",
-  "Italy" : "it",
-  "China" : "cn",
+  "Japan": "jp",
+  "USA": "en",
+  "Germany": "de",
+  "Italy": "it",
+  "China": "cn",
 };
 async function fetchClasses(params: {
   categoryId: string;
@@ -41,7 +41,7 @@ async function fetchClasses(params: {
 
 
 export function LectureListPage() {
-  const {role} = useAuth();
+  const { role } = useAuth();
   const navigate = useNavigate();
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>(() => {
     const savedLang = sessionStorage.getItem("language");
@@ -89,44 +89,56 @@ export function LectureListPage() {
   const handlePageChange = (newPage: number) => {
     if (isLoading || newPage < 0 || newPage >= totalPages) return;
     setCurrentPage(newPage);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
-    <div className="flex mx-auto gap-6 py-6">
-      {/* Sidebar */}
-      <ClassBoardSidebar
-        selectedCategoryId={selectedCategoryId}
-        onSelectCategory={handleSelectCategory}
-      />
+    <div className="max-w-7xl mx-auto flex gap-10 py-12 px-6">
+      {/* 사이드바 영역 */}
+      <aside className="w-64 shrink-0">
+        <ClassBoardSidebar
+          selectedCategoryId={selectedCategoryId}
+          onSelectCategory={handleSelectCategory}
+        />
+      </aside>
 
-      {/* List 영역 */}
-      <div className="flex-1 relative">
-        {role === '1' && 
-          <div className="w-full flex justify-end mb-4">
-            <button className="transition hover:text-blue-800 hover:font-bold hover:scale-105" onClick={() => {navigate("/class/new")}}>+ 새 강의</button>
+      {/* 메인 콘텐츠 영역 */}
+      <div className="flex-1 min-w-0 relative">
+
+        {/* 상단 액션바 */}
+        <header className="flex justify-between items-end mb-8 px-2">
+          <div>
+            <p className="text-blue-600 font-bold text-[10px] uppercase tracking-[0.2em] mb-1">Explore</p>
+            <h1 className="text-2xl font-black text-gray-900 tracking-tight">강좌 목록</h1>
           </div>
-        }
-        {/* 에러 */}
-        {error && (
-          <div className="p-4 text-red-600 font-semibold">
-            {error}
+
+          {role === '1' && (
+            <button
+              className="group relative flex items-center gap-2 px-6 py-2.5 
+                   bg-blue-600 text-white text-sm font-bold rounded-full
+                   hover:bg-blue-700 hover:shadow-[0_8px_20px_rgba(37,99,235,0.3)]
+                   transition-all duration-300 active:scale-95"
+              onClick={() => navigate("/class/new")}
+            >
+              새 강의 등록
+            </button>
+          )}
+        </header>
+
+        {/* 에러/결과 없음 상태 */}
+        {(error || (!isLoading && classList.length === 0)) && (
+          <div className="flex flex-col items-center justify-center py-24 bg-gray-50/50 rounded-[2rem] border border-dashed border-gray-200">
+            <p className="text-gray-400 font-medium text-sm">
+              {error || "조건에 맞는 강의가 아직 없습니다."}
+            </p>
           </div>
         )}
 
-        {/* 결과 없음 */}
-        {!isLoading && !error && classList.length === 0 && (
-          <div className="p-4 text-gray-500">
-            조건에 맞는 강의가 없습니다.
-          </div>
-        )}
-
-        {/* 리스트 */}
+        {/* 강의 리스트 */}
         {classList.length > 0 && (
           <div
-            className={`transition-opacity ${
-              isLoading ? "opacity-40 pointer-events-none" : "opacity-100"
-            }`}
+            className={`transition-all duration-500 ${isLoading ? "opacity-30 blur-[2px] pointer-events-none" : "opacity-100"
+              }`}
           >
             <ClassList classList={classList} />
           </div>
@@ -134,81 +146,75 @@ export function LectureListPage() {
 
         {/* 페이지네이션 */}
         {!isLoading && !error && classList.length > 0 && totalPages > 1 && (
-          <div className="flex justify-center items-center gap-2 mt-6">
-            {/* 첫 페이지 */}
+          <nav className="flex justify-center items-center gap-1.5 mt-16">
+            {/* 이전 버튼 그룹 */}
             <button
               onClick={() => handlePageChange(0)}
               disabled={currentPage === 0}
-              className="px-3 py-1 rounded border disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-100 transition"
+              className="p-2 text-gray-400 hover:text-gray-900 disabled:opacity-20 transition-colors"
             >
-              ««
+              <span className="sr-only">First</span>
+              «
             </button>
-            
-            {/* 이전 페이지 */}
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 0}
-              className="px-3 py-1 rounded border disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-100 transition"
+              className="p-2 text-gray-400 hover:text-gray-900 disabled:opacity-20 transition-colors mr-2"
             >
               ‹
             </button>
 
-            {/* 페이지 번호들 */}
-            {Array.from({ length: totalPages }, (_, i) => i)
-              .filter((page) => {
-                // 현재 페이지 주변 2개씩만 표시
-                return (
-                  page === 0 ||
-                  page === totalPages - 1 ||
-                  Math.abs(page - currentPage) <= 2
-                );
-              })
-              .map((page, index, array) => {
-                // 페이지 간격이 있을 경우 ... 표시
-                const prevPage = array[index - 1];
-                const showEllipsis = prevPage !== undefined && page - prevPage > 1;
+            {/* 페이지 번호 */}
+            <div className="flex items-center gap-1">
+              {Array.from({ length: totalPages }, (_, i) => i)
+                .filter((page) => (
+                  page === 0 || page === totalPages - 1 || Math.abs(page - currentPage) <= 2
+                ))
+                .map((page, index, array) => {
+                  const prevPage = array[index - 1];
+                  const isCurrent = currentPage === page;
 
-                return (
-                  <div key={page} className="flex items-center gap-2">
-                    {showEllipsis && <span className="px-2 text-gray-400">...</span>}
-                    <button
-                      onClick={() => handlePageChange(page)}
-                      className={`px-3 py-1 rounded border transition ${
-                        currentPage === page
-                          ? "bg-blue-800 text-white border-blue-500 font-semibold"
-                          : "hover:bg-gray-100"
-                      }`}
-                    >
-                      {page + 1}
-                    </button>
-                  </div>
-                );
-              })}
+                  return (
+                    <div key={page} className="flex items-center gap-1">
+                      {prevPage !== undefined && page - prevPage > 1 && (
+                        <span className="px-1 text-gray-300 text-xs">...</span>
+                      )}
+                      <button
+                        onClick={() => handlePageChange(page)}
+                        className={`w-9 h-9 flex items-center justify-center rounded-lg text-xs transition-all ${isCurrent
+                            ? "font-bold scale-110"
+                            : "text-gray-400 hover:font-bold hover:text-gray-900"
+                          }`}
+                      >
+                        {page + 1}
+                      </button>
+                    </div>
+                  );
+                })}
+            </div>
 
-            {/* 다음 페이지 */}
+            {/* 다음 버튼 그룹 */}
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage >= totalPages - 1}
-              className="px-3 py-1 rounded border disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-100 transition"
+              className="p-2 text-gray-400 hover:text-gray-900 disabled:opacity-20 transition-colors ml-2"
             >
               ›
             </button>
-
-            {/* 마지막 페이지 */}
             <button
               onClick={() => handlePageChange(totalPages - 1)}
               disabled={currentPage >= totalPages - 1}
-              className="px-3 py-1 rounded border disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-100 transition"
+              className="p-2 text-gray-400 hover:text-gray-900 disabled:opacity-20 transition-colors"
             >
-              »»
+              »
             </button>
-          </div>
+          </nav>
         )}
 
-        {/* 로딩 오버레이 (선택) */}
+        {/* 로딩 스피너 (Overlay 지우고 중앙 고정) */}
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center text-sm text-gray-500">
-            로딩 중...
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            <div className="w-8 h-8 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin"></div>
           </div>
         )}
       </div>

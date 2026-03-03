@@ -167,7 +167,7 @@ const YoutubePlayer = forwardRef<PlayerHandle, Props>(
 
     return (
       <div className="w-full rounded-2xl bg-black shadow">
-        <div ref={containerRef} className="aspect-video w-full" />
+        <div ref={containerRef} className="aspect-video w-full h-auto" />
       </div>
     );
   }

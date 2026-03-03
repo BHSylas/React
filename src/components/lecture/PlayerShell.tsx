@@ -72,7 +72,7 @@ export default function PlayerShell({ init }: { init: LecturePlaybackInit }) {
   }, 5000);
 
   return (
-    <div className="mx-auto max-w-5xl p-4 space-y-4">
+    <div className="mx-auto max-w-6xl p-4 space-y-4">
       {/* ===== Player 영역 ===== */}
       {init.source.type === "UPLOAD" ? (
         loadingUrl ? (
