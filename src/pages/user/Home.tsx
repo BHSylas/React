@@ -59,8 +59,8 @@ export default function Home() {
   return (
     <div className="p-7 rounded-xl">
       <header className="text-center">
-        <h1 className="text-7xl text-blue-800 font-bold m-10">LMS</h1>
-        <p>프로토타입 페이지</p>
+        <p className="text-xs font-semibold mt-10">Learning Metaverse System</p>
+        <h1 className="text-7xl text-blue-800 font-bold mb-20">LMS</h1>
       </header>
       <div className="divider" />
       <div className='mainboard'>
@@ -84,7 +84,7 @@ export default function Home() {
           </div> */}
           <h3 className="text-lg font-bold pl-2 mt-3">최신 강좌</h3>
           <div className="flex justify-start text-start items-stretch">
-            <div className='grid bg-cyan-100 w-[300px] h-[270px] h-auto rounded-xl items-end mr-6'>
+            <div className='grid bg-cyan-100 w-[300px] h-auto rounded-xl items-end mr-6'>
               <div className="py-5 px-4 flex flex-col gap-1">
                 <h3 className="text-lg font-bold pb-3">따끈따끈 새 강좌 <br />가장 먼저 신청하기</h3>
                 <button className="bg-blue-800 rounded-xl font-bold text-slate-100 px-8 py-2 my-2 hover:shadow self-end"
