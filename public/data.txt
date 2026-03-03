@@ -1,0 +1,108 @@
+{userId: 6, stats: Array(7)}
+stats
+: 
+Array(7)
+0
+: 
+country
+: 
+"USA"
+levels
+: 
+Array(3)
+0
+: 
+{level: 'BEGINNER', totalProblems: 4, correctProblems: 0, officialAccuracy: 0, solvedProblems: 2, …}
+1
+: 
+{level: 'INTERMEDIATE', totalProblems: 3, correctProblems: 2, officialAccuracy: 67, solvedProblems: 2, …}
+2
+: 
+{level: 'ADVANCED', totalProblems: 3, correctProblems: 2, officialAccuracy: 67, solvedProblems: 2, …}
+length
+: 
+3
+[[Prototype]]
+: 
+Array(0)
+[[Prototype]]
+: 
+Object
+1
+: 
+country
+: 
+"UK"
+levels
+: 
+(3) [{…}, {…}, {…}]
+[[Prototype]]
+: 
+Object
+2
+: 
+country
+: 
+"JAPAN"
+levels
+: 
+(3) [{…}, {…}, {…}]
+[[Prototype]]
+: 
+Object
+3
+: 
+country
+: 
+"GERMANY"
+levels
+: 
+(3) [{…}, {…}, {…}]
+[[Prototype]]
+: 
+Object
+4
+: 
+country
+: 
+"ITALY"
+levels
+: 
+(3) [{…}, {…}, {…}]
+[[Prototype]]
+: 
+Object
+5
+: 
+country
+: 
+"FRANCE"
+levels
+: 
+(3) [{…}, {…}, {…}]
+[[Prototype]]
+: 
+Object
+6
+: 
+country
+: 
+"CHINA"
+levels
+: 
+(3) [{…}, {…}, {…}]
+[[Prototype]]
+: 
+Object
+length
+: 
+7
+[[Prototype]]
+: 
+Array(0)
+userId
+: 
+6
+[[Prototype]]
+: 
+Object
