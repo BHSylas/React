@@ -28,7 +28,9 @@ export function VideoUpload({ lectureId, onSuccess, isEdit = false }: LectureVid
 
         const videoUrl = URL.createObjectURL(selectedFile); // 임시 URL 생성
         const video = document.createElement("video");
-        video.src = videoUrl;
+        video.preload = "metadata";
+        video.muted = true;
+        video.playsInline = true;
 
         video.onloadeddata = () => {
             video.currentTime = 1; // 영상 업로드 1초지점으로 이동
@@ -40,6 +42,7 @@ export function VideoUpload({ lectureId, onSuccess, isEdit = false }: LectureVid
             canvas.height = video.videoHeight; // 가로세로 이미지 맞춤
             const ctx = canvas.getContext("2d");
             ctx?.drawImage(video, 0, 0, canvas.width, canvas.height);
+            console.log("Canvas Size:", canvas.width, canvas.height);
 
             canvas.toBlob((blob) => {
                 if (blob) {
@@ -53,7 +56,9 @@ export function VideoUpload({ lectureId, onSuccess, isEdit = false }: LectureVid
                 video.src = ""; // 비디오 소스 비우기
                 video.load();   // 비디오 리소스 완전 정리
             }, "image/jpeg", 0.8);
-        }
+        };
+
+        video.src = videoUrl;
     };
 
     const handleUpload = async () => {

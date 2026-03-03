@@ -75,7 +75,9 @@ export function Navbar({onMenuClick} : NavbarProps) {
           <div className="flex flex-col">
             {isLoggedIn ? 
             <div className="flex gap-2 p-2">
-              <div className="text-xl cursor-pointer" onClick={() => {navigate("/my")}}>{nickname !== null ? textLimiter(nickname, 20) + "님" : "사용자"}</div>
+              <div onClick={() => {navigate("/my")}} className="text-xl cursor-pointer">My Page</div>
+              <div>|</div> 
+              <div className="text-xl">{nickname !== null ? textLimiter(nickname, 20) + "님" : "사용자"}</div>
               <div>|</div> 
               <div className="text-lg cursor-pointer text-blue-800" onClick={logout}>로그아웃</div> 
             </div>
