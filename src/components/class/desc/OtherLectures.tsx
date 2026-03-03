@@ -30,11 +30,6 @@ export default function OtherLecutres({ professorId, professorNickname, lectureI
 
     return (
         <section className="max-w-7xl mx-auto px-6 mt-16 mb-20">
-            <hr className="mb-12 border-gray-100" />
-            <h2 className="text-2xl font-bold mb-8">
-                <span className="text-blue-600">{professorNickname}</span> 강사님의 다른 강의
-            </h2>
-
             <div className="grid grid-cols-3 gap-4">
                 {lectures.map((lecture: any) => (
                     <div
