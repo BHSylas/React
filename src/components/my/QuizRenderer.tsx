@@ -136,7 +136,7 @@ export default function QuizRenderer({ data }: { data: unknown }) {
 						<div className="grid grid-cols-1 md:grid-cols-3 gap-3">
 							{countryStat.levels.map((levelStat) => (
 								<div key={`${countryStat.country}-${levelStat.level}`} className="border border-gray-100 rounded-lg p-3 flex items-center gap-3">
-									<CircleProgress correct={levelStat.correctProblems} total={Math.min(levelStat.totalProblems, levelStat.solvedProblems)} />
+									<CircleProgress correct={levelStat.correctProblems} total={levelStat.totalProblems} />
 									<div className="flex-1 text-sm space-y-1">
 										<p className="font-semibold text-gray-800">{toKoreanLevel(levelStat.level)}</p>
 										<p className="text-gray-600">
