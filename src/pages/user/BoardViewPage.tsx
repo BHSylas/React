@@ -53,7 +53,7 @@ export function BoardViewPage() {
           <div className="flex-1" />
         </div>
 
-        <div className="px-8 py-6 bg-gray-50 border-t border-gray-100 mt-auto">
+        <div>
           <BoardActionBar
             boardType={post.boardType}
             onBack={() => { navigate(-1); }}

@@ -17,21 +17,26 @@ export function BoardPostPanel({
   content,
 }: BoardPostPanelProps) {
   return (
-    <section className="rounded-lg space-y-4">
-      {/* Header */}
-      <div className="space-y-1">
-        <h1 className="text-2xl font-semibold">{title}</h1>
-        <div className="text-sm text-gray-500 flex gap-2">
-          <span className="mt-2">{writerName}</span>
-          <span className="mt-2">·</span>
-          <span className="mt-2">{displayCategory(boardType)}</span>
-          <span className="mt-2">·</span>
-          <span className="mt-2">{new Date(createdAt).toLocaleDateString()}</span>
+    <section className="space-y-6">
+      <div className="space-y-3">
+        <h1 className="text-3xl font-black text-gray-900 tracking-tight leading-snug">
+          {title}
+        </h1>
+
+        <div className="text-[14px] flex items-center gap-2 font-bold text-gray-400">
+          <span className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md text-[12px] uppercase tracking-wider">
+            {displayCategory(boardType)}
+          </span>
+          <span className="text-gray-300">|</span>
+          <span className="text-gray-700">{writerName}</span>
+          <span className="font-light text-gray-300">·</span>
+          <span className="font-medium text-gray-400">
+            {new Date(createdAt).toLocaleDateString()}
+          </span>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="p-4 text-sm text-gray-800 leading-relaxed whitespace-pre-line border rounded-md  min-h-[500px]">
+      <div className="min-h-[500px] p-8 text-[16px] text-gray-800 leading-[1.8] whitespace-pre-line bg-gray-50 rounded-[1rem] font-medium">
         {content}
       </div>
     </section>
