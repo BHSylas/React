@@ -2,13 +2,13 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 interface NpcStats {
-    country: string;
-    level: string;
-    totalNpcCount: number;
-    solvedCount: number;
-    correctCount: number;
-    officialAccuracy: number;
-    accuracy: number;
+    country: string; // 나라
+    level: string; // 레벨
+    totalNpcCount: number; // 전체 NPC(문제) 수
+    solvedCount: number; // 사용자가 푼 문제
+    correctCount: number; // 사용자가 맞춘 문제
+    officialAccuracy: number; // 전체 문제 대비 정답률
+    accuracy: number; // 푼 문제대비 정답률
 }
 
 export function AdminStatsView() {
@@ -18,6 +18,9 @@ export function AdminStatsView() {
     // 페이지네이션 상태 추가
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
     const itemsPerPage = 10;
+
+    const [selectedCountry, setSelectedCountry] = useState<string>("ALL"); // 국가 선택
+    const [selectedLevel, setSelectedLevel] = useState<string>("ALL"); // 레벨 선택
 
     const token = localStorage.getItem("token");
 
@@ -35,16 +38,21 @@ export function AdminStatsView() {
         fetchStats();
     }, []);
 
+    const filterStats = stats.filter(item => {
+        const countryMath = selectedCountry === "ALL" || item.country === selectedCountry; // 전체 혹은 선택한 국가
+        const levelMath = selectedLevel === "ALL" || item.level === selectedLevel; // 전체 혹은 선택한 레벨
+        return countryMath && levelMath;
+    });
+
     if (loading) return <div>데이터 로딩 중...</div>
 
     const totalNpcs = stats.reduce((acc, curr) => acc + curr.totalNpcCount, 0); // 문제 횟수(NPC횟수)
     const totalSolved = stats.reduce((acc, curr) => acc + curr.solvedCount, 0); // 풀이횟수
     const avgAccuracy = (stats.reduce((acc, curr) => acc + curr.accuracy, 0) / (stats.length || 1)).toFixed(2);
-    // 정답률
 
     const indexOfLastItem = currentPage * itemsPerPage; // 현재 페이지의 마지막 인덱스
     const indexOfFirstItem = indexOfLastItem - itemsPerPage; // 현재 페이지의 첫 인덱스
-    const currentItems = stats.slice(indexOfFirstItem, indexOfLastItem); // 현재 페이지에 보여줄 데이터만 자르기
+    const currentItems = filterStats.slice(indexOfFirstItem, indexOfLastItem) // 현재 페이지에 보여줄 데이터(필터링 포함)
     const totalPages = Math.ceil(stats.length / itemsPerPage); // 전체 페이지 수
 
     return (
@@ -73,33 +81,56 @@ export function AdminStatsView() {
                             <th className="py-4">국가</th>
                             <th className="py-4">난이도</th>
                             <th className="py-4">NPC 수</th>
-                            <th className="py-4">정답 / 전체 풀이</th>
+                            <th className="py-4">유저 정답 / 전체 문제</th>
                             <th className="py-4">정답률</th>
-                            <th className="py-4">대비 편차</th>
+                            <th className="py-4">전체 문제 정답률</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 text-gray-500">
-                        {currentItems.map((item, index) => {
-                            const diff = item.accuracy - item.officialAccuracy;
-                            const isLowAccuracy = item.accuracy < 30; // 정답률 30퍼 빨간색
+                        {currentItems.length > 0 ? (
+                            currentItems.map((item, index) => {
+                                const isLowAccuracy = item.accuracy < 30; // 정답률 30퍼 빨간색
+                                const isLowOffAccuracy = item.officialAccuracy < 30; // 전체 정답률 30퍼 미만 빨간색
 
-                            return (
-                                <tr key={index}>
-                                    <td className="py-4">{item.country}</td>
-                                    <td className="py-4">{item.level}</td>
-                                    <td className="py-4">{item.totalNpcCount}</td>
-                                    <td className="py-4">{item.correctCount} / {item.solvedCount}</td>
-                                    <td className={`py-4 font-bold ${isLowAccuracy ? 'text-red-600' : 'text-gray-700'
-                                        }`}>{item.accuracy}%</td>
-                                    <td className={`py-4 font-medium ${diff < 0 ? 'text-red-500' : 'text-green-500'}`}>
-                                        {diff > 0 ? '+' : ''}{diff.toFixed(1)}%
-                                    </td>
-                                    {/* 대비편차가 음수일 때(마이너스 일 때 붉은색 */}
-                                </tr>
-                            );
-                        })}
+                                return (
+                                    <tr key={index}>
+                                        <td className="py-4">{item.country}</td>
+                                        <td className="py-4">{item.level}</td>
+                                        <td className="py-4">{item.totalNpcCount}</td>
+                                        <td className="py-4">{item.correctCount} / {item.solvedCount}</td>
+                                        <td className={`py-4 font-bold ${isLowAccuracy ? 'text-red-600' : 'text-gray-700'
+                                            }`}>{item.accuracy}%</td>
+                                        <td className={`py-4 font-medium ${isLowOffAccuracy ? 'text-red-500' : 'text-green-500'}`}>
+                                            {item.officialAccuracy}%
+                                        </td>
+                                    </tr>
+                                );
+                            })
+                        ) : (
+                            <div className="px-8 text-gray-400">검색 조건의 맞는 내용이 없습니다.</div>
+                        )}
                     </tbody>
                 </table>
+                <div className="flex justify-end gap-6 mb-8 p-4 border-t">
+                    <div>
+                        <select
+                            value={selectedCountry}
+                            onChange={(e) => { setSelectedCountry(e.target.value); setCurrentPage(1); }}
+                            className="p-2 border rounded border-gray-400 outline-none">
+                            <option value="ALL">전체 국가</option>
+                            {[...new Set(stats.map(s => s.country))].map(c => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                    </div>
+                    <div>
+                        <select
+                            value={selectedLevel}
+                            onChange={(e) => { setSelectedLevel(e.target.value); setCurrentPage(1); }}
+                            className="p-2 border rounded border-gray-400 outline-none">
+                            <option value="ALL">전체 레벨</option>
+                            {[...new Set(stats.map(s => s.level))].map(c => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                    </div>
+                </div>
                 {stats.length > itemsPerPage && (
                     <div className="flex justify-center mt-5 border-t-2 py-5 gap-5">
                         <button onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
