@@ -30,6 +30,7 @@ export default function MyPage() {
       });
     const [classes, setClasses] = useState<EnrollmentItem[]>([]);
     const [contentList, setContentList] = useState<any[]>([]);
+    const [quizStats, setQuizStats] = useState<any>(null); // 퀴즈 통계 데이터 상태 추가
 
     const handlePick = (item: MyPagePick) => {
         setPicked(item);
@@ -114,7 +115,7 @@ export default function MyPage() {
                             //Add quiz related API call and state update here when quiz feature is implemented
                             api.get("/myPage/learning-stats").then(res => {
                                 console.log("학습 통계 데이터: ", res.data);
-                                setContentList(res.data);
+                                setQuizStats(res.data);
                                 // Assuming the response data is an array of quiz stats; adjust as necessary
                                 // But using any? I guess it is better to define types for the content,
                                 // or seperate the resposibilities into different components,
@@ -164,7 +165,7 @@ export default function MyPage() {
                     {picked !== "Class" && picked !== "Metaverse" && picked !== "Quiz" &&  (
                         < MyActivityRenderer type={picked} data={contentList} />
                     )}
-                    {picked === "Quiz" && <QuizRenderer data={contentList} />}
+                    {picked === "Quiz" && <QuizRenderer data={quizStats} />}
                     
                 </div>
             </section>
