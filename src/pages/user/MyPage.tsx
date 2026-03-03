@@ -6,11 +6,13 @@ import EnrollmentRenderer from "../../components/my/EnrollmentRenderer";
 import { useAuth } from "../../hooks/useAuth";
 import { ProfClassList } from "../../components/prof/my/ProfClassList";
 import { MyActivityRenderer } from "../../components/my/MyActivityRenderer";
+import QuizRenderer from "../../components/my/QuizRenderer";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import MetaList from "../prof/MetaList";
+import { api } from "../../api/axiosInstance";
 
-type MyPagePick = "Class" | "QnA" | "Post" | "Comment" | "Metaverse";
+type MyPagePick = "Class" | "QnA" | "Post" | "Comment" | "Metaverse" | "Quiz";
 
 interface TokenPayload {
     sub: string;
@@ -107,6 +109,23 @@ export default function MyPage() {
                         });
                         setContentList(uniqueComments);
                         break; }
+                    case "Quiz":
+                        {
+                            //Add quiz related API call and state update here when quiz feature is implemented
+                            api.get("/myPage/learning-stats").then(res => {
+                                console.log("학습 통계 데이터: ", res.data);
+                                setContentList(res.data);
+                                // Assuming the response data is an array of quiz stats; adjust as necessary
+                                // But using any? I guess it is better to define types for the content,
+                                // or seperate the resposibilities into different components,
+                                // so that we don't have to do type checking and conditional rendering based on the picked item. 
+                                // For now, just set it to contentList and handle the rendering in MyActivityRenderer.
+                                // Not quite clean but it works for now, and should be done like that either. No over-engineering...
+                            }).catch(err => {
+                                console.error("학습 통계 로드 실패: ", err);
+                            });
+                            break;
+                        }
                 }
             } catch (error) {
                 console.error("데이터 로딩 실패:", error);
@@ -142,9 +161,11 @@ export default function MyPage() {
                             <MetaList />
                         </div>
                     )}
-                    {picked !== "Class" && picked !== "Metaverse" &&  (
+                    {picked !== "Class" && picked !== "Metaverse" && picked !== "Quiz" &&  (
                         < MyActivityRenderer type={picked} data={contentList} />
                     )}
+                    {picked === "Quiz" && <QuizRenderer data={contentList} />}
+                    
                 </div>
             </section>
         </div>
@@ -155,6 +176,9 @@ function Picker({ picked, onPick, role }: { picked: string; onPick: (item: any) 
     const items = ["Class", "QnA", "Post", "Comment"];
     if (Number(role) === 1) {
         items.push("Metaverse");
+    }
+    else {
+        items.push("Quiz"); // 퀴즈 탭 추가: 교수는 퀴즈 못 푸니까 안 보이게
     }
     return (
         <div className="flex flex-col gap-4 mb-8">
