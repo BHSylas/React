@@ -128,80 +128,116 @@ export function AnswerBlock({ boardId, boardType, lectureId }: AnswerBlockProps)
     }, [boardId, lectureId]);
 
     return (
-        <div className="border rounded-md p-6">
-            <div className="flex-1 border-b-2 pb-3 mb-5">
-                {answers.length > 0 ? (answers.map((ans, idx) => (
-                    <div key={ans.id || idx}>
-                        <div className="grid gap-1 mt-3">
-                            <span className="font-bold ">
-                                {boardType === "QNA" ? "관리자" : `교수 : ${ans.writerName}`} 답변
-                            </span>
-                            <span className="text-sm text-gray-500">
-                                {new Date(ans.createdAt).toLocaleDateString()}
-                            </span>
-                            <div className="mt-3">
-                                {editingId === ans.writerId ? (
-                                    <textarea
-                                        className="w-full border rounded-md p-2 resize-none"
-                                        value={editContent}
-                                        onChange={(e) => setEditContent(e.target.value)}
-                                        rows={4}
-                                    />
-                                ) : (
-                                    <p className="py-2 whitespace-pre-wrap">
-                                        {ans.content}
-                                    </p>
+        <div className="space-y-6">
+            {/* 1. 답변 리스트 영역 */}
+            <div className="space-y-6">
+                {answers.length > 0 ? (
+                    answers.map((ans, idx) => (
+                        <div key={ans.id || idx} className="bg-white border border-gray-100 rounded-md p-8 shadow-sm transition-all">
+                            <div className="flex flex-col gap-4">
+                                {/* 답변자 정보 헤더 */}
+                                <div className="flex justify-between items-start border-b border-gray-50 pb-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                                            {boardType === "QNA" ? "AD" : "PF"}
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <span className="font-black text-gray-900 leading-tight">
+                                                {boardType === "QNA" ? "관리자 답변" : `${ans.writerName} 교수님`}
+                                            </span>
+                                            <span className="text-[11px] font-bold text-gray-400 uppercase tracking-tighter">
+                                                Official Response · {new Date(ans.createdAt).toLocaleDateString()}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* 답변 내용 영역 */}
+                                <div className="py-2">
+                                    {editingId === ans.writerId ? (
+                                        <textarea
+                                            className="w-full border border-blue-200 rounded-2xl p-4 text-sm leading-relaxed focus:ring-2 focus:ring-blue-100 outline-none resize-none transition-all"
+                                            value={editContent}
+                                            onChange={(e) => setEditContent(e.target.value)}
+                                            rows={6}
+                                        />
+                                    ) : (
+                                        <p className="text-[15px] leading-relaxed text-gray-800 whitespace-pre-wrap px-1">
+                                            {ans.content}
+                                        </p>
+                                    )}
+                                </div>
+
+                                {/* 수정/삭제 버튼 (교수 권한 시) */}
+                                {canWrite && (
+                                    <div className="pt-4 border-t border-gray-50">
+                                        <AnswerButtons
+                                            isEditing={editingId === ans.writerId}
+                                            onEditStart={() => {
+                                                setEditingId(ans.writerId);
+                                                setEditContent(ans.content);
+                                            }}
+                                            onEditCancel={() => setEditingId(null)}
+                                            onEditSubmit={() => handleUpdate(ans.answerId)}
+                                            onDelete={() => { handleDelete(String(ans.writerId), String(ans.answerId)); }}
+                                        />
+                                    </div>
                                 )}
                             </div>
                         </div>
-                        {canWrite && (
-                            <div className="my-3 border-t-2">
-                                <AnswerButtons
-                                    isEditing={editingId === ans.writerId}
-                                    onEditStart={() => {
-                                        setEditingId(ans.writerId);
-                                        setEditContent(ans.content);
-                                    }}
-                                    onEditCancel={() => setEditingId(null)}
-                                    onEditSubmit={() => handleUpdate(ans.answerId)}
-                                    onDelete={() => {handleDelete(String(ans.writerId), String(ans.answerId));}} />
-                            </div>
-                        )}
+                    ))
+                ) : (
+                    /* 답변이 없을 때의 상태 */
+                    <div className="py-5 text-center bg-gray-50/50 rounded-md border border-dashed border-gray-200">
+                        <p className="text-gray-400 font-medium italic">아직 등록된 답변이 없습니다.</p>
                     </div>
-                ))) : (
-                    <div className="text-sm text-gray-400">아직 등록된 답변이 없습니다. </div>
                 )}
             </div>
 
-            {showWriteArea ? (
-                <div>
-                    <div>
-                        <textarea
-                            className="w-full border rounded-lg p-2 resize-none"
-                            value={newAnswer} // 들어가는 값이 답변 값으로
-                            onChange={(e) => setNewAnswer(e.target.value)}
-                            disabled={isLoading}></textarea>
+            {/* 2. 답변 작성 영역 (권한이 있고 답변이 없을 때만) */}
+            {showWriteArea && (
+                <div className="bg-blue-50/30 border border-blue-100 rounded-[2rem] p-8 space-y-4">
+                    <div className="flex items-center gap-2 mb-2">
+                        <span className="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></span>
+                        <span className="text-xs font-black text-blue-600 uppercase tracking-widest">Write Official Answer</span>
                     </div>
-                    <div className="flex ml-4 justify-end">
+                    <textarea
+                        className="w-full bg-white border border-blue-100 rounded-2xl p-5 text-sm leading-relaxed focus:border-blue-500 focus:ring-4 focus:ring-blue-500/5 outline-none resize-none transition-all placeholder:text-gray-300 shadow-inner"
+                        placeholder="학생의 질문에 대한 답변을 입력해주세요."
+                        value={newAnswer}
+                        onChange={(e) => setNewAnswer(e.target.value)}
+                        disabled={isLoading}
+                        rows={5}
+                    />
+                    <div className="flex justify-end">
                         <button
-                            className="hover:text-blue-800 hover:font-bold hover:scale-105 mr-3 mt-2"
+                            className="px-8 py-3 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-100 transition-all active:scale-95 disabled:bg-gray-300"
                             onClick={handleReplySubmit}
-                            disabled={isLoading}>
-                            {isLoading ? "등록 중..." : "답변 게시"}</button>
+                            disabled={isLoading}
+                        >
+                            {isLoading ? "등록 중..." : "답변"}
+                        </button>
                     </div>
                 </div>
-            ) : hasAnswer ? (
-                <div>
-                    <p className="text-sm text-gray-500">
-                        답변이 등록되었습니다.
-                    </p>
+            )}
+
+            {/* 3. 하단 안내 메시지 (답변 완료 혹은 권한 없음) */}
+            {!showWriteArea && (
+                <div className="px-6 py-4">
+                    {hasAnswer ? (
+                        <div className="flex items-center gap-2 text-gray-400">
+                            <span className="text-[10px] font-bold bg-gray-100 px-1.5 py-0.5 rounded">STATUS</span>
+                            <p className="text-xs font-medium">답변이 완료된 게시글입니다.</p>
+                        </div>
+                    ) : (
+                        <p className="text-xs text-gray-400 italic">
+                            {isProfessor && !isLectureOwner
+                                ? "※ 본 강의의 담당 교수자만 공식 답변을 작성할 권한이 있습니다."
+                                : "※ 답변 작성을 기다리고 있는 질문입니다."}
+                        </p>
+                    )}
                 </div>
-            ) : (
-                <div className="text-sm text-gray-400"> {isProfessor && !isLectureOwner
-                    ? "공식 답변 권한이 없는 계정입니다."
-                    : "이 강의의 담당 교수자만 답변을 작성할 수 있습니다."} </div>
-            )
-            }
-        </div >
-    )
+            )}
+        </div>
+    );
 }

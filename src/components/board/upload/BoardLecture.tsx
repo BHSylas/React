@@ -34,11 +34,10 @@ export function BoardLecture({ selectedId, onSelect }: BoardLectureProps) {
     }, []);
 
     return (
-        <div className="flex">
-            <p className="font-bold text-lg mr-3">강의 선택</p>
+        <div>
             <select value={selectedId || ""}
                 onChange={(e) => onSelect(Number(e.target.value))}
-                className="px-2 border border-gray-500 rounded-md"
+                className="pl-4 pr-8 py-2 bg-white border border-gray-200 rounded-xl text-sm font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-100 cursor-pointer appearance-none shadow-sm"
             >
                 {lectures && lectures.map((i) => (
                     <option key={i.lectureId} value={i.lectureId}>{i.title}</option>
