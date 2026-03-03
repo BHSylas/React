@@ -77,14 +77,14 @@ export function BoardListBlock({ boards }: BoardListBlockProps) {
             {board.answered && (
               <div
                 onClick={() => navigate(`/board/${board.boardId}`)}
-                className="flex items-center w-full px-6 py-4 bg-gray-50/40 hover:bg-gray-100/60 transition-colors cursor-pointer border-b border-gray-100"
+                className="flex items-center w-full px-6 py-4 bg-blue-50/30 hover:bg-blue-50/60 transition-colors cursor-pointer border-b border-gray-100"
               >
                 <div className="ml-6 mr-4 flex items-center text-gray-300">
                   <span className="text-lg">└</span>
                 </div>
                 <div className="flex items-center gap-2 overflow-hidden">
-                  <span className="text-xs font-bold text-blue-400 uppercase tracking-widest">Answer</span>
-                  <span className="truncate text-[14px] text-gray-500">
+                  <span className="text-xs font-bold text-blue-600 uppercase tracking-widest">Answer</span>
+                  <span className="truncate text-[14px] font-semibold">
                     {board.title} 에 대한 답변입니다.
                   </span>
                 </div>
