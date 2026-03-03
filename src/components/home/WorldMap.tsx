@@ -66,10 +66,10 @@ export default function WorldMap() {
         navigate("/unity");
     }
 
-    const btnStyle = "w-auto px-5 h-10 rounded-md bg-[#004d80] hover:bg-[#00324e] text-sm text-white font-medium transition-colors";
+    const btnStyle = "w-auto px-5 h-10 rounded-md bg-blue-800 hover:bg-blue-900 text-sm text-white font-medium transition-colors";
 
     return (
-        <div className='relative flex justify-center align-center overflow-hidden text-center bg-[#d2f7ff] rounded-xl p-3 mb-3"'>
+        <div className='relative flex justify-center items-center overflow-hidden text-center bg-gradient-to-b from-[#f0fdff] via-[#d2f7ff] to-[#a6eaff] rounded-xl p-3 mb-3'>
             <div
               onClick={() => {
                 setSelectedId(null);
