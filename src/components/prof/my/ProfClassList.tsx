@@ -18,7 +18,10 @@ export function ProfClassList() {
             }
         }).then(res => {
             if (res.data && Array.isArray(res.data.content)) {
-                setClassList(res.data.content);
+                const filteredList = res.data.content.filter(
+                    (item: ClassItem) => item.status !== 'REJECTED'
+                );
+                setClassList(filteredList);
             } else {
                 setClassList([]);
             }
