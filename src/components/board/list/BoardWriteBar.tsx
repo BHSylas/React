@@ -1,16 +1,16 @@
 import { useNavigate } from "react-router";
 
-interface BoardWriteBarProps {
-  onWrite?: () => void;
-}
+// interface BoardWriteBarProps {
+//   onWrite?: () => void;
+// }
 
-export function BoardWriteBar({ onWrite }: BoardWriteBarProps) {
+export function BoardWriteBar({ activeTab }: { activeTab: string }) {
   const navigate = useNavigate();
   return (
     <div className="flex justify-end">
       <button
         type="button"
-        onClick={() => navigate('/board/upload')}
+        onClick={() => navigate('/board/upload' , { state: { category: activeTab } })}
         className="group relative flex items-center gap-2 px-6 py-2.5 
                    bg-blue-600 text-white text-sm font-bold rounded-full
                    hover:bg-blue-700 hover:shadow-[0_8px_20px_rgba(37,99,235,0.3)]
