@@ -4,9 +4,9 @@ import axios from 'axios';
 
 import TestAnswer from '../../components/metaverse/TestAnswerSheet';
 import NpcInput from '../../components/metaverse/NpcInput';
-import NpcPreview from '../../components/metaverse/NpcPreview';
+// import NpcPreview from '../../components/metaverse/NpcPreview';
 import UserInput from '../../components/metaverse/UserInput';
-import UserPreview from '../../components/metaverse/UserPreview';
+// import UserPreview from '../../components/metaverse/UserPreview';
 import { AuthContext } from '../../context/AuthContext';
 
 interface Lecture {
@@ -169,10 +169,10 @@ export function MetaTestUpload() {
                 processedAnswers = formData.answers;
             } else if (formData.level === 'INTERMEDIATE') {
                 if (formData.answers.length > 0) {
-                    processedAnswers = [...formData.answers, formData.answers.join(" ")];
+                    processedAnswers = formData.answers.filter(a => a && String(a).trim() !== "");
                 }
             } else if (formData.level === 'ADVANCED') {
-                processedAnswers = formData.answers.filter(a => a && String(a).trim() !== "");
+                processedAnswers = formData.answers.filter(a => a && String(a).trim());
             }
 
             // 서버 전송 전 최종 체크
@@ -305,11 +305,11 @@ export function MetaTestUpload() {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         <div className="space-y-4">
                             <NpcInput name="npcScript" value={formData.npcScript} onChange={handleInputChange} />
-                            <NpcPreview text={formData.npcScript} />
+                            {/* <NpcPreview text={formData.npcScript} /> */}
                         </div>
                         <div className="space-y-4">
                             <UserInput name="question" value={formData.question} onChange={handleInputChange} />
-                            <UserPreview text={formData.question} />
+                            {/* <UserPreview text={formData.question} /> */}
                         </div>
                     </div>
 
