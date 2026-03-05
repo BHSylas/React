@@ -21,16 +21,16 @@ export default function ProtectedRoute({ children }: { children: JSX.Element }) 
     }
   }, [isLoggedIn, isAuthReady, navigate]);
 
-  // 1. 로딩 중일 때
+  // 로딩 중일 때
   if (!isAuthReady) {
     return <div className="p-6">인증 상태 확인 중...</div>;
   }
 
-  // 2. 비로그인 상태일 때 (아무것도 렌더링하지 않음 - useEffect에서 이동 처리)
+  // 비로그인 상태일 때 (아무것도 렌더링하지 않음 - useEffect에서 이동 처리)
   if (!isLoggedIn) {
     return null;
   }
 
-  // 3. 로그인 완료 시에만 자식 컴포넌트 보여줌
+  // 로그인 완료 시에만 자식 컴포넌트 보여줌
   return children;
 }

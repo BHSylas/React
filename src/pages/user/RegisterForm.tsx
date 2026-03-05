@@ -12,14 +12,19 @@ export default function RegisterForm() {
 
   const navigate = useNavigate();
 
+  // 영어, 숫자, 특수문자 포함 / 8~16자
+  const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/;
+  // 위의 조건과 맞지 않는 비밀번호
+  const isPasswordValid = passwordRegex.test(password);
+  // 비밀번호와 비밀번호 확인이 동일하지 않음
+  const isPasswordMatch = password === confirmPassword && confirmPassword !== "";
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-    if (password !== confirmPassword) {
-      setError("비밀번호가 일치하지 않습니다.");
-      return;
-    }
+    if (!isPasswordValid) return; // 유효하지 않으면 제출 방지
+    if (!isPasswordMatch) return; // 이하동문
 
     try {
       await api.post("/auth/signup", {
@@ -90,6 +95,12 @@ export default function RegisterForm() {
             className={inputStyle}
             required
           />
+          {password && !isPasswordValid && (
+            <p className="text-red-500 text-[11px] font-bold ml-2">
+              * 영문, 숫자, 특수문자 포함 8~16자로 입력해주세요.
+            </p>
+          )}
+
         </div>
         <div className="space-y-1">
           <input
@@ -100,6 +111,11 @@ export default function RegisterForm() {
             className={inputStyle}
             required
           />
+          {confirmPassword && !isPasswordMatch && (
+            <p className="text-red-500 text-[11px] font-bold ml-2">
+              * 비밀번호가 일치하지 않습니다.
+            </p>
+          )}
         </div>
 
         {error && (
