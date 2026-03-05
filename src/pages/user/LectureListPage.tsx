@@ -46,8 +46,8 @@ export function LectureListPage() {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>(() => {
     const savedLang = sessionStorage.getItem("language");
     if (savedLang && LANGUAGE_MAP[savedLang]) {
-      sessionStorage.removeItem("language");
       return LANGUAGE_MAP[savedLang];
+      sessionStorage.removeItem("language");
     }
     return "ALL";
   });

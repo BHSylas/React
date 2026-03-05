@@ -12,7 +12,7 @@ import OtherLecutres from "../../components/class/desc/OtherLectures";
 export default function LectureViewPage() { //현재 테스트 데이터 삽입 중
   const classId = useParams().classId;
   const [page, setPage] = useState<ClassItem | null>(null);
-  const [enrolling, setEnrolling] = useState(true);
+  const [enrolling, setEnrolling] = useState(false);
   const [thumbnailUrl, setThumbnailUrl] = useState<string | undefined>(undefined);
   const navigate = useNavigate();
   const authContext = useContext(AuthContext);
@@ -36,9 +36,12 @@ export default function LectureViewPage() { //현재 테스트 데이터 삽입 
         setThumbnailUrl(data.thumbnailUrl);
       }
     });
-    api.get(`/me/enrollments/${classId}`).catch(() => {
-      setEnrolling(false);
-    });
+    api.get(`/me/enrollments/${classId}`).then(() => {
+      setEnrolling(true);
+    })
+      .catch(() => {
+        setEnrolling(false);
+      });
   }, [classId]);
   if (page === null) {
     return <div>Loading...</div>;

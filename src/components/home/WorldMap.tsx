@@ -36,7 +36,8 @@ export default function WorldMap() {
     const activeMaker = markers.find(m => m.id === selectedId);
 
     // 클릭 시 확대 함수
-    const handleZoom = (marker: MarkerData) => {
+    const handleZoom = (e: React.MouseEvent, marker: MarkerData) => {
+        e.stopPropagation();
         if (selectedId === marker.id) {
             setSelectedId(null);
             setZoomStyle({ x: 0, y: 0, scale: 1 });
@@ -71,11 +72,11 @@ export default function WorldMap() {
     return (
         <div className='relative flex justify-center items-center overflow-hidden text-center bg-gradient-to-b from-[#f0fdff] via-[#d2f7ff] to-[#a6eaff] rounded-xl p-3 mb-3'>
             <div
-              onClick={() => {
-                setSelectedId(null);
-                setZoomStyle({ x: 0, y: 0, scale: 1 });
-              }}
-              className={`absolute inset-0 z-[5]
+                onClick={() => {
+                    setSelectedId(null);
+                    setZoomStyle({ x: 0, y: 0, scale: 1 });
+                }}
+                className={`absolute inset-0 z-[5]
                 bg-[radial-gradient(circle_at_center,transparent_10%,rgba(0,0,0,0.5)_80%)]
                 transition-opacity duration-700
                 ${selectedId ? "opacity-100" : "opacity-0 pointer-events-none"}`}
@@ -91,7 +92,7 @@ export default function WorldMap() {
                         <p className="break-keep overflow-wrap-anywhere whitespace-pre-wrap m-0 text-xl leading-[1.5] text-[#f1f2f6]">{activeMaker.description}</p>
                         <div className="flex justify-center items-center mx-auto translate-y-[220px] gap-[10px]">
                             <button className={btnStyle} onClick={() => handleCourseClick(activeMaker)}>강의 확인하기</button>
-                            <button className={btnStyle} onClick={() => {handlePracticeClick(activeMaker)}}>실전회화 연습하기</button>
+                            <button className={btnStyle} onClick={() => { handlePracticeClick(activeMaker) }}>실전회화 연습하기</button>
                         </div>
                     </div>
                 )}
@@ -102,10 +103,25 @@ export default function WorldMap() {
                     const isVisible = selectedId === null || selectedId === marker.id;
 
                     return (
-                        <div key={marker.id} className={`absolute w-6 h-auto cursor-pointer z-[5] -translate-x-1/2 -translate-y-1/2
-                        transition-opacity duration-300 ease-in-out ${isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-                            style={{ top: marker.top, left: marker.left, }}
-                            onClick={() => handleZoom(marker)}><img src={markerIcon} alt="marker" className="w-[24px]" /></div>
+                        <div
+                            key={marker.id}
+                            // 'group' 클래스 추가
+                            className={`absolute w-6 h-auto cursor-pointer z-[5] -translate-x-1/2 -translate-y-1/2 group
+            transition-opacity duration-300 ease-in-out ${isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                            style={{ top: marker.top, left: marker.left }}
+                            onClick={(e) => handleZoom(e, marker)}
+                        >
+                            {/* 국가 이름 툴팁 */}
+                            {selectedId === null && (
+                                <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 
+                    px-2 py-1 bg-black/70 text-white text-xs rounded whitespace-nowrap
+                    opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                                    {marker.name}
+                                </span>
+                            )}
+
+                            <img src={markerIcon} alt="marker" className="w-[24px]" />
+                        </div>
                     );
                 })}
             </div>

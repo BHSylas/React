@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { api } from "../../../api/axiosInstance";
 import { decompileLanguageCode } from "../../../utils/decompileCountryCode";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../../hooks/useAuth";
 
 interface TopPanelProps {
@@ -27,6 +27,11 @@ export default function TopPanel({
 }: TopPanelProps) {
   const navigate = useNavigate();
   const [enrollment, setEnrollment] = useState(isEnrolling);
+
+  useEffect(() => {
+    setEnrollment(isEnrolling);
+  }, [isEnrolling]); // 부모의 enrolling 상태가 바뀌면 여기도 바뀌게 함
+
   const { role } = useAuth();
 
   const finalThumbnail = thumbnailUrl?.startsWith('http')
