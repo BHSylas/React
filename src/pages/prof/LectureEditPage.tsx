@@ -4,6 +4,15 @@ import { VideoYoutube } from "../../components/prof/upload/VideoYoutube";
 import { useNavigate, useParams } from "react-router";
 import axios from "axios";
 
+// 국가별 기본 언어 매핑 객체
+const COUNTRY_LANGUAGE_MAP: Record<string, Language> = {
+    USA: "en",
+    JAPAN: "jp",
+    GERMANY: "de",
+    ITALY: "it",
+    CHINA: "cn",
+};
+
 type Language = "en" | "jp" | "de" | "it" | "cn";
 
 export default function LectureEditPage() {
@@ -14,7 +23,7 @@ export default function LectureEditPage() {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [country, setCountry] = useState("USA");
-    const [language, setLanguage] = useState<Language>("en");
+    // const [language, setLanguage] = useState<Language>("en");
 
     const [loading, setLoading] = useState(false);
     const [fetching, setFetching] = useState(true);
@@ -34,7 +43,7 @@ export default function LectureEditPage() {
                 setTitle(data.title);
                 setDescription(data.description);
                 setCountry(data.country || "USA");
-                setLanguage(data.language || "en");
+                // setLanguage(data.language || "en");
 
             } catch (e) {
                 console.error("강의 정보 불러오기 실패", e);
@@ -52,7 +61,7 @@ export default function LectureEditPage() {
         setError(null);
 
         try {
-            const payload = { title, description, country, language };
+            const payload = { title, description, country, language: COUNTRY_LANGUAGE_MAP[country] || "en" };
             await axios.patch(`/api/instructor/lectures/${classId}`, payload, {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -121,7 +130,7 @@ export default function LectureEditPage() {
                                 </select>
                             </div>
 
-                            <div className="space-y-2">
+                            {/* <div className="space-y-2">
                                 <label className="text-sm font-black text-gray-900 ml-1">강의 사용 언어</label>
                                 <select
                                     className="w-full p-4 bg-gray-50 border-none rounded-2xl font-bold text-gray-700 outline-none cursor-pointer"
@@ -133,7 +142,7 @@ export default function LectureEditPage() {
                                     <option value="it">이탈리아어</option>
                                     <option value="cn">중국어</option>
                                 </select>
-                            </div>
+                            </div> */}
                         </div>
 
                         {error && (
