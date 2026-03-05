@@ -172,7 +172,9 @@ export function MetaTestUpload() {
                     processedAnswers = formData.answers.filter(a => a && String(a).trim() !== "");
                 }
             } else if (formData.level === 'ADVANCED') {
-                processedAnswers = formData.answers.filter(a => a && String(a).trim());
+                processedAnswers = formData.answers
+                    .map(a => String(a).trim()) // 앞뒤 공백만 제거 (문장 안의 공백은 유지됨)
+                    .filter(a => a !== ""); // 빈 입력 방지
             }
 
             // 서버 전송 전 최종 체크
