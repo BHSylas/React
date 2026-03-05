@@ -1,17 +1,23 @@
 import { useState, type ChangeEvent } from "react"
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import axios from "axios";
 import { BOARD_ROLE_OPTION, BOARD_FORM } from "../../components/board/upload/BoardOptions";
 import { jwtDecode, type JwtPayload } from "jwt-decode";
-// import { BoardLecture } from "../../components/board/upload/BoardLecture";
+// import { BoardLecture } from "../../components/board/upload/BoardLecture"
 
 interface MyTokenPayload extends JwtPayload {
     role: number | string; // 0, 1, 2 숫자로 들어오면 number
 }
 
 export function BoardUploadPage() {
-    const [formData, setFormData] = useState(BOARD_FORM);
+    const location = useLocation();
     const navigate = useNavigate();
+
+    const initialCategory = location.state?.category || "FREE"; // 전달받은 카테고리 값 확인, 없으면 자유게시판
+
+    const [formData, setFormData] = useState({
+        ...BOARD_FORM,
+    boardType: initialCategory});
 
     const token = localStorage.getItem("token");
     let userRole = ""; // 기본은 학생으로 설정

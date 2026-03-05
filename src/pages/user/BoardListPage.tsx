@@ -7,6 +7,25 @@ import TagManu from "./BoardTag";
 import type { CategoryValue } from "./BoardTag";
 import { BoardPagination } from "../../components/board/list/BoardPagination";
 import { api } from "../../api/axiosInstance";
+import { BOARD_ROLE_OPTION } from "../../components/board/upload/BoardOptions";
+
+const getUserRoleFromToken = () => {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+
+  try {
+    const payload = token.split(".")[1]; // 페이로드 부분 추출
+    const decodePayload = JSON.parse(atob(payload));
+
+    return {
+      role: decodePayload.role
+    };
+
+  } catch (error) {
+    console.error("토큰 파싱 실패:", error);
+    return null;
+  }
+}
 
 export function BoardListPage() {
   // const [boards, setBoards] = useState<Board[]>([]);
@@ -25,6 +44,17 @@ export function BoardListPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPage] = useState(0);
   const postsPerPage = 10; // 한 페이지에 보여줄 게시글 수
+
+ // 1. 현재 사용자의 Role 가져오기
+  const userAuth = getUserRoleFromToken();
+  const currentUserRole = userAuth?.role; // 예: "0", "1", "2" 또는 undefined
+
+  const canWrite = () => {
+    const currentOption = BOARD_ROLE_OPTION.find(opt => opt.value === activeTab); // BOARD_ROLE_OPTION의 값이랑 activeTab비교
+    if (!currentOption) return false;
+
+    return currentOption.roles.includes(String(currentUserRole));
+  }
 
   const fetchBoards = () => {
     setLoading(true);
@@ -78,7 +108,7 @@ export function BoardListPage() {
         <BoardListBlock boards={allBoards} />
       )}
       {/* 상단 액션 */}
-      <BoardWriteBar />
+      {canWrite() && <BoardWriteBar activeTab={activeTab}/>}
       {/* Pagination (placeholder) */}
       {/* <div className="flex justify-center text-sm text-gray-400">
         Pagination 영역 (구현 예정) */}
