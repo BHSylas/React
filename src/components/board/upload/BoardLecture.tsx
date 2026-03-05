@@ -11,21 +11,13 @@ export function BoardLecture({ selectedId, onSelect }: BoardLectureProps) {
 
     useEffect(() => {
         const token = localStorage.getItem("token");
-        // 나중에 확인하여 백엔드로 호출함
         const fetchLectures = async () => {
             try {
                 const res = await axios.get('/api/me/enrollments', {
-                    headers: {
-                        Authorization: `Bearer ${token}` // 토큰 규격에 맞춰 수정 필요
-                    }
+                    headers: { Authorization: `Bearer ${token}` }
                 });
                 const content = res.data.content || [];
-
                 setLectures(content);
-                if (content.length > 0 && !selectedId) {
-                    onSelect(content[0].lectureId);
-                }
-
             } catch (err) {
                 console.error("강의 목록 로드 실패", err);
             }
@@ -33,16 +25,27 @@ export function BoardLecture({ selectedId, onSelect }: BoardLectureProps) {
         fetchLectures();
     }, []);
 
+    // 목록이 로드된 후, selectedId가 없으면 첫 번째 강의를 선택
+    useEffect(() => {
+        if (lectures.length > 0 && !selectedId) {
+            onSelect(lectures[0].lectureId);
+        }
+    }, [lectures, selectedId, onSelect]);
+    // lectures가 로드 완료되었을 때 + selectedId가 없을 때만 작동
+
     return (
         <div>
-            <select value={selectedId || ""}
+            <select
+                value={selectedId || ""}
                 onChange={(e) => onSelect(Number(e.target.value))}
                 className="pl-4 pr-8 py-2 bg-white border border-gray-200 rounded-xl text-sm font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-100 cursor-pointer appearance-none shadow-sm"
             >
-                {lectures && lectures.map((i) => (
+                {lectures.length === 0 && <option value="">강의 로딩 중...</option>}
+
+                {lectures.map((i) => (
                     <option key={i.lectureId} value={i.lectureId}>{i.title}</option>
                 ))}
             </select>
         </div>
-    )
+    );
 }

@@ -1,25 +1,35 @@
-import { useState, type ChangeEvent } from "react"
-import { useNavigate } from "react-router";
+import { useState, type ChangeEvent, useEffect } from "react"
+import { useNavigate, useParams } from "react-router";
 import axios from "axios";
 import { QNA_FORM } from "../../components/board/upload/BoardOptions";
 import { BoardLecture } from "../../components/board/upload/BoardLecture";
 
 export function LectureQnAUploadPage() {
+    const { lectureId: urlLectureId } = useParams(); // URL 파라미터 추출
     const [formData, setFormData] = useState({
         ...QNA_FORM
     });
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
 
+    useEffect(() => {
+        if (urlLectureId) {
+            setFormData(prev => ({
+                ...prev,
+                lectureId: Number(urlLectureId)
+            }));
+        }
+    }, [urlLectureId]);
+
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
 
-            setFormData((prev) => ({
-                ...prev,
-                [name]: value,
-            }));
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
 
-        }
+    }
 
     const handleLectureSelect = (id: number) => {
         setFormData(prev => ({
@@ -75,11 +85,11 @@ export function LectureQnAUploadPage() {
             {/* 메인 폼 컨테이너: 연한 테두리와 미세한 그림자로 영역 명확화 */}
             <section className="bg-white border border-gray-200 rounded-[2.5rem] p-8 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
                 <div className="space-y-10">
-                    
+
                     {/* 제목 입력 영역: 밑줄 스타일로 가독성 확보 */}
                     <div className="space-y-2">
                         <label className="text-[11px] font-black text-gray-400 uppercase ml-1 tracking-widest">Question Title</label>
-                        <input 
+                        <input
                             name="title"
                             value={formData.title}
                             onChange={handleChange}
@@ -95,9 +105,9 @@ export function LectureQnAUploadPage() {
                             <label className="text-[11px] font-black text-gray-700 uppercase tracking-widest">Select Your Lecture</label>
                         </div>
                         <div>
-                            <BoardLecture 
+                            <BoardLecture
                                 selectedId={formData.lectureId}
-                                onSelect={handleLectureSelect} 
+                                onSelect={handleLectureSelect}
                             />
                         </div>
                     </div>
@@ -105,7 +115,7 @@ export function LectureQnAUploadPage() {
                     {/* 본문 영역: 내부 테두리와 연한 배경으로 영역 가두기 */}
                     <div className="space-y-2">
                         <label className="text-[11px] font-black text-gray-400 uppercase ml-1 tracking-widest">Content</label>
-                        <textarea 
+                        <textarea
                             name="content"
                             value={formData.content}
                             onChange={handleChange}
@@ -118,21 +128,21 @@ export function LectureQnAUploadPage() {
                 {/* 하단 버튼 바: 정돈된 간격과 반응형 대응 */}
                 <div className="mt-12 pt-8 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
                     <div className="flex gap-3 w-full md:w-auto">
-                        <button 
+                        <button
                             onClick={handleSave}
                             className="flex-1 md:flex-none px-10 py-3.5 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-200 transition-all active:scale-95"
                         >
                             질문 등록
                         </button>
-                        <button 
+                        <button
                             onClick={handleReset}
                             className="px-6 py-3.5 bg-white text-gray-400 text-sm font-bold rounded-xl border border-gray-100 hover:bg-red-50 hover:text-red-500 hover:border-red-100 transition-all"
                         >
                             초기화
                         </button>
                     </div>
-                    
-                    <button 
+
+                    <button
                         onClick={() => navigate(-1)}
                         className="w-full md:w-auto px-6 py-3.5 text-gray-400 text-sm font-bold hover:text-gray-900 transition-all"
                     >

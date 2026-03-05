@@ -93,7 +93,13 @@ export function BoardViewPage() {
             isAuthor={isAuthor}
             canDelete={canDelete}
             onBack={() => { navigate(-1); }}
-            onWrite={() => { navigate('/board/upload') }}
+            onWrite={() => {
+              if (post.boardType === "LECTURE_QNA" && post.lectureId) {
+                navigate(`/class/qna/upload/${post.lectureId}`);
+              } else {
+                navigate('/board/upload');
+              }
+            }}
             onEdit={() => { navigate(`/board/edit/${postId}`) }}
             onDelete={() => { handleDelete(); }}
           />
