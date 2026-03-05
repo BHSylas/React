@@ -1,11 +1,53 @@
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { api } from "../../../api/axiosInstance";
+import axios from "axios";
+
+const getUserInfoFromToken = () => {
+    const token = localStorage.getItem("token");
+    if (!token) return null;
+
+    try {
+        const payload = token.split(".")[1]; // 페이로드 부분 추출
+        const decodePayload = JSON.parse(atob(payload));
+
+        return {
+            userId: decodePayload.sub || null, // ID
+            role: decodePayload.role // 권한 (예: 2는 관리자)
+        };
+
+    } catch (error) {
+        console.error("토큰 파싱 실패:", error);
+        return null;
+    }
+}
 
 export default function CommentElement({ comment }: { comment: Comment }) {
     const [edit, setEdit] = useState(false);
     const [deleted, setDeleted] = useState(false);
     const [content, setContent] = useState(comment.content);
     const originalContent = useRef(comment.content);
+
+    // console.log(comment);
+    // console.log(comment.writerId);
+
+    const userInfo = useMemo(() => getUserInfoFromToken(), []);
+
+    const isAuthor = useMemo(() => {
+        if (!comment.writerId || !userInfo?.userId) return false; // 만약 아이디가 다르면 false
+        return String(comment.writerId).trim() === String(userInfo.userId).trim(); // string으로 변환하고 문자열 확인  
+    }, [comment.writerId, userInfo?.userId]);  // 다른 게시글 갈 때마다 업데이트
+
+    const canDelete = useMemo(() => {
+        const isAdmin = String(userInfo?.role) === "2"; // 권환 확인
+        return isAuthor || isAdmin; // 위의 isAuthor과 동일로 두기(본인 혹은 관리자일 경우)
+    }, [isAuthor, userInfo?.role]);
+
+    const token = localStorage.getItem("token");
+
+    const config = {
+        headers: { Authorization: `Bearer ${token}` }
+    };
+
     const handleEdit = () => {
         if (edit) {
             setContent(originalContent.current);
@@ -15,6 +57,7 @@ export default function CommentElement({ comment }: { comment: Comment }) {
     const update = () => {
         api.put(`/boards/comments/update/${comment.commentId}`, {
             content: content,
+
         }).then(() => {
             setEdit(false);
             originalContent.current = content;
@@ -27,7 +70,7 @@ export default function CommentElement({ comment }: { comment: Comment }) {
     }
     const remove = () => {
         alert("삭제하시겠습니까?");
-        api.delete(`/boards/comments/delete/${comment.commentId}`)
+        axios.delete(`/api/boards/comments/delete/${comment.commentId}`, config )
             .then((res) => {
                 console.log(res.data);
                 setDeleted(true);
@@ -83,19 +126,23 @@ export default function CommentElement({ comment }: { comment: Comment }) {
 
                         {/* 오른쪽 상단: 액션 버튼 (호버 시에만 깔끔하게 노출) */}
                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 shrink-0">
-                            <button
-                                className="px-2 py-1 text-[10px] font-black text-gray-400 hover:text-blue-600 transition-all uppercase tracking-widest"
-                                onClick={handleEdit}
-                            >
-                                Edit
-                            </button>
+                            {isAuthor && (
+                                <button
+                                    className="px-2 py-1 text-[10px] font-black text-gray-400 hover:text-blue-600 transition-all uppercase tracking-widest"
+                                    onClick={handleEdit}
+                                >
+                                    Edit
+                                </button>
+                            )}
                             <span className="text-gray-100 text-[8px]">|</span>
-                            <button
-                                className="px-2 py-1 text-[10px] font-black text-gray-400 hover:text-red-500 transition-all uppercase tracking-widest"
-                                onClick={remove}
-                            >
-                                Delete
-                            </button>
+                            {canDelete && (
+                                <button
+                                    className="px-2 py-1 text-[10px] font-black text-gray-400 hover:text-red-500 transition-all uppercase tracking-widest"
+                                    onClick={remove}
+                                >
+                                    Delete
+                                </button>
+                            )}
                         </div>
                     </div>
                 )}
