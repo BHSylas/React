@@ -5,11 +5,20 @@ import { VideoYoutube } from "../../components/prof/upload/VideoYoutube";
 
 type Language = "en" | "jp" | "de" | "it" | "cn";
 
+// 국가별 기본 언어 매핑 객체
+const COUNTRY_LANGUAGE_MAP: Record<string, Language> = {
+    USA: "en",
+    JAPAN: "jp",
+    GERMANY: "de",
+    ITALY: "it",
+    CHINA: "cn",
+};
+
 export default function NewClassPage() {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [country, setCountry] = useState("USA");
-    const [language, setLanguage] = useState<Language>("en");
+    // const [language, setLanguage] = useState<Language>("en"); // 국가의 종속됨으로 필요없음
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -27,7 +36,7 @@ export default function NewClassPage() {
                 title,
                 description,
                 country,
-                language,
+                language: COUNTRY_LANGUAGE_MAP[country] || "en", // 선택된 언어의 맞추기 (없으면 기본 영어)
             };
 
             const res = await api.post("/instructor/lectures", payload);
@@ -85,6 +94,7 @@ export default function NewClassPage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <label className="text-sm font-black text-gray-900 ml-1">국가 카테고리</label>
+                                <p className="text-xs text-gray-400 mb-2 ml-1">* 국가를 선택하면 해당 국가의 언어로 자동 설정됩니다.</p>
                                 <select
                                     className="w-full p-4 bg-gray-50 border-none rounded-2xl font-bold text-gray-700 outline-none appearance-none cursor-pointer hover:bg-gray-100 transition-colors"
                                     value={country}
@@ -97,7 +107,7 @@ export default function NewClassPage() {
                                 </select>
                             </div>
 
-                            <div className="space-y-2">
+                            {/* <div className="space-y-2">
                                 <label className="text-sm font-black text-gray-900 ml-1">강의 사용 언어</label>
                                 <select
                                     className="w-full p-4 bg-gray-50 border-none rounded-2xl font-bold text-gray-700 outline-none appearance-none cursor-pointer hover:bg-gray-100 transition-colors"
@@ -110,7 +120,7 @@ export default function NewClassPage() {
                                     <option value="it">이탈리아어</option>
                                     <option value="cn">중국어</option>
                                 </select>
-                            </div>
+                            </div> */}
                         </div>
 
                         {error && (
@@ -149,16 +159,16 @@ export default function NewClassPage() {
                             <button
                                 onClick={() => setUploadMode("UPLOAD")}
                                 className={`py-4 rounded-2xl text-[14px] font-black transition-all ${uploadMode === "UPLOAD"
-                                        ? "bg-blue-600 text-white shadow-lg shadow-gray-300 scale-[1.02]"
-                                        : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                                    ? "bg-blue-600 text-white shadow-lg shadow-gray-300 scale-[1.02]"
+                                    : "bg-gray-100 text-gray-500 hover:bg-gray-200"
                                     }`}>
                                 직접 파일 업로드
                             </button>
                             <button
                                 onClick={() => setUploadMode("YOUTUBE")}
                                 className={`py-4 rounded-2xl text-[14px] font-black transition-all ${uploadMode === "YOUTUBE"
-                                        ? "bg-red-600 text-white shadow-lg shadow-red-100 scale-[1.02]"
-                                        : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                                    ? "bg-red-600 text-white shadow-lg shadow-red-100 scale-[1.02]"
+                                    : "bg-gray-100 text-gray-500 hover:bg-gray-200"
                                     }`}>
                                 유튜브 링크 연결
                             </button>

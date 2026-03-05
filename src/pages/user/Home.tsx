@@ -67,7 +67,7 @@ export default function Home() {
           <h1 className="text-7xl font-black text-gray-900 tracking-tighter leading-none">
             LMS<span className="text-blue-600">.</span>
           </h1>
-          <p className="text-gray-400 font-medium max-w-md leading-relaxed pt-2">
+          <p className="text-gray-600 font-medium max-w-md leading-relaxed pt-2">
             메타버스 환경에서 즐기는 <br />
             차세대 글로벌 학습 플랫폼에 오신 것을 환영합니다.
           </p>
@@ -81,7 +81,7 @@ export default function Home() {
               <span className="w-1.5 h-5 bg-blue-600 rounded-full"></span>
               Learning World
             </h3>
-            <p className="text-sm text-gray-400 mt-1">세계지도 안에서 내가 원하는 국가를 선택해 그 강의를 확인할 수 있어요.</p>
+            <p className="text-sm text-gray-600 mt-1">세계지도 안에서 내가 원하는 국가를 선택해 그 강의를 확인할 수 있어요.</p>
           </div>
           <div className="shadow-sm">
             <WorldMap />
@@ -95,7 +95,7 @@ export default function Home() {
                 <span className="w-1.5 h-5 bg-blue-600 rounded-full"></span>
                 New Arrivals
               </h3>
-              <p className="text-sm text-gray-400 mt-1">최신 강의를 미리 볼 수 있어요.</p>
+              <p className="text-sm text-gray-600 mt-1">최신 강의를 미리 볼 수 있어요.</p>
             </div>
             <button
               className="text-sm font-bold text-blue-600 hover:text-blue-800 transition-colors"
@@ -130,7 +130,7 @@ export default function Home() {
                 <span className="w-1.5 h-6 bg-blue-600 rounded-full"></span>
                 Community
               </h3>
-              <p className="text-sm text-gray-400 mt-1">다양한 학습자와 소통해보세요.</p>
+              <p className="text-sm text-gray-600 mt-1">다양한 학습자와 소통해보세요.</p>
             </div>
             <button
               className="text-sm font-bold text-blue-600 hover:text-blue-800 transition-colors"
@@ -146,7 +146,7 @@ export default function Home() {
                 <BoardListBlock boards={freeBoards} />
               </div>
             ) : (
-              <div className="py-24 text-center text-slate-300 font-medium">
+              <div className="py-24 text-center text-slate-500 font-medium">
                 작성된 게시글이 없습니다.
               </div>
             )}

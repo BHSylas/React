@@ -20,8 +20,18 @@ export function VideoYoutube({ lectureId, onSuccess, isEdit = false }: LectureYo
             const payload = { youtubeUrlOrId: youtubeUrl };
             const method = isEdit ? "put" : "post";
             const url = `/instructor/lectures/${lectureId}/video/youtube`;
-            await api[method](url, payload);
 
+            const response = await api[method](url, payload);
+            const videoData = response.data; // 서버에서 반환한 LectureVideoResponseDTO
+
+            console.log(response.data);
+
+            if (!videoData.durationSec || videoData.durationSec === 0 || !videoData.thumbnailUrl) {
+                // 데이터가 null로 들어왔다면 사용자에게 알리고 갱신 시도 제안
+                alert("유튜브 정보를 불러오는 데 실패했습니다. 잠시 후 '메타 갱신'을 시도하거나 URL을 다시 확인해주세요.");
+                // 실패했으므로 여기서 멈춤
+                return;
+            }
             alert(isEdit ? "유튜브 링크가 교체되었습니다." : "유튜브 영상이 연결되었습니다.");
             onSuccess();
         } catch (err) {

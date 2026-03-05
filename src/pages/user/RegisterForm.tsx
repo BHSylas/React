@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { api } from "../../api/axiosInstance";
+// import { api } from "../../api/axiosInstance";
+import axios from "axios";
 
 export default function RegisterForm() {
   const [email, setEmail] = useState("");
@@ -27,26 +28,35 @@ export default function RegisterForm() {
     if (!isPasswordMatch) return; // 이하동문
 
     try {
-      await api.post("/auth/signup", {
+      const response = await axios.post("/api/auth/signup", {
         email,
         password,
         name,
         nickname,
-      }).then((response) => {
-        alert("회원가입이 완료되었습니다.");
-        console.log("회원가입 성공:", response.data);
       });
-      navigate("/");
+
+      if (response.status === 200 || response.status === 201) {
+        alert("회원가입이 완료되었습니다.");
+        navigate("/");
+      }
+
     } catch (err: any) {
-      console.error(err);
-      setError(
-        err.response?.data?.message ||
-        "회원가입 중 오류가 발생했습니다."
-      );
+      console.error("회원가입 실패 로그:", err);
+
+      const status = err.response?.status;
+      const serverMessage = err.response?.data?.message;
+
+      if (status === 409) {
+        setError("이미 가입된 동일한 이메일이 존재합니다.");
+      } else if (status === 400) {
+        setError(serverMessage || "입력 형식을 다시 확인해주세요.");
+      } else {
+        setError(serverMessage || "회원가입 중 오류가 발생했습니다.");
+      }
     }
   };
 
-  const inputStyle = "w-full px-5 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all text-sm font-medium placeholder:text-gray-300";
+  const inputStyle = "w-full px-5 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all text-sm font-medium placeholder:text-blue-500";
 
   return (
     <div className="max-w-[400px] mx-auto bg-white border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.05)] rounded-[2.5rem] p-10 mt-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -96,7 +106,7 @@ export default function RegisterForm() {
             required
           />
           {password && !isPasswordValid && (
-            <p className="text-red-500 text-[11px] font-bold ml-2">
+            <p className="text-red-500 text-[13px] font-bold ml-2">
               * 영문, 숫자, 특수문자 포함 8~16자로 입력해주세요.
             </p>
           )}
@@ -112,14 +122,14 @@ export default function RegisterForm() {
             required
           />
           {confirmPassword && !isPasswordMatch && (
-            <p className="text-red-500 text-[11px] font-bold ml-2">
+            <p className="text-red-500 text-[13px] font-bold ml-2">
               * 비밀번호가 일치하지 않습니다.
             </p>
           )}
         </div>
 
         {error && (
-          <p className="text-red-500 text-[13px] font-bold ml-1 animate-bounce">
+          <p className="text-red-500 text-[13px] font-bold ml-1">
             {error}
           </p>
         )}
@@ -129,7 +139,7 @@ export default function RegisterForm() {
             type="submit"
             className="w-full py-4 bg-blue-600 text-white text-[15px] font-black rounded-2xl shadow-lg shadow-blue-100 hover:bg-blue-700 hover:-translate-y-0.5 active:scale-95 transition-all"
           >
-            시작하기
+            회원가입
           </button>
         </div>
       </form>
