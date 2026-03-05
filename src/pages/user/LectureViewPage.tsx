@@ -8,6 +8,7 @@ import type { ClassItem } from "../../types/ClassItem";
 import { AuthContext } from "../../context/AuthContext";
 import { getUserIdFromToken } from "../../types/decodeToken";
 import OtherLecutres from "../../components/class/desc/OtherLectures";
+import axios from "axios";
 
 export default function LectureViewPage() { //현재 테스트 데이터 삽입 중
   const classId = useParams().classId;
@@ -19,6 +20,12 @@ export default function LectureViewPage() { //현재 테스트 데이터 삽입 
   const userId = getUserIdFromToken(authContext.token)!;
   const isProfessor = authContext.role === '1';
   const isMyLecture = isProfessor && page?.professorId === userId;
+
+  const token = localStorage.getItem("token");
+  const config = {
+    headers: { Authorization: `Bearer ${token}` }
+  };
+
   useEffect(() => {
     api.get(`/lectures/${classId}`).then((res) => {
       setPage(res.data);
@@ -43,6 +50,28 @@ export default function LectureViewPage() { //현재 테스트 데이터 삽입 
         setEnrolling(false);
       });
   }, [classId]);
+
+  const handleDeleteLecture = async () => {
+    if (!window.confirm("정말로 강의를 삭제하시겠습니까? 삭제 후에는 복구할 수 없습니다.")) {
+      return;
+    }
+
+    try {
+      await axios.delete(`/api/instructor/lectures/${classId}`, config);
+      alert("강의가 삭제되었습니다.");
+      navigate(-1);
+
+    } catch (e: any) {
+      const serverMessage = e.response?.data?.message;
+      console.error("삭제 실패:", e.response);
+
+      if (e.response?.status === 400) {
+        alert(`삭제할 수 없습니다: ${serverMessage || "수강생이 있거나 조건이 맞지 않습니다."}`);
+      } else {
+        alert("강의 삭제 중 오류가 발생하였습니다.");
+      }
+    }
+  }
   if (page === null) {
     return <div>Loading...</div>;
   }
@@ -79,16 +108,22 @@ export default function LectureViewPage() { //현재 테스트 데이터 삽입 
               </div>
               <div className="flex gap-3 w-full md:w-auto">
                 <button
+                  onClick={() => navigate(`/class/${classId}/manage`)}
+                  className="flex-1 md:flex-none px-6 py-3.5 bg-blue-600 text-white text-xs font-black rounded-xl hover:bg-blue-700 transition-all active:scale-95 shadow-lg shadow-gray-200 mr-5"
+                >
+                  수강생 관리
+                </button>
+                <button
                   onClick={() => navigate(`/class/${classId}/edit`)}
                   className="flex-1 md:flex-none px-6 py-3.5 bg-white border border-gray-200 text-gray-700 text-xs font-black rounded-xl hover:border-blue-400 hover:text-blue-600 transition-all active:scale-95"
                 >
                   내용 수정
                 </button>
                 <button
-                  onClick={() => navigate(`/class/${classId}/manage`)}
-                  className="flex-1 md:flex-none px-6 py-3.5 bg-blue-600 text-white text-xs font-black rounded-xl hover:bg-blue-700 transition-all active:scale-95 shadow-lg shadow-gray-200"
+                  onClick={handleDeleteLecture}
+                  className="px-6 py-3.5 bg-red-50 text-red-600 border border-red-100 text-xs font-black rounded-xl hover:bg-red-600 hover:text-white transition-all active:scale-95"
                 >
-                  수강생 관리
+                  강의 삭제
                 </button>
               </div>
             </div>

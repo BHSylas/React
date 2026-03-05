@@ -100,24 +100,25 @@ export default function TopPanel({
 
           {/* 버튼 영역: 둥근 모서리와 호버 효과 강화 */}
           <div className="mt-8 flex flex-wrap justify-center md:justify-start gap-3">
-            {enrollment ? (
-              <>
-                <button
-                  type="button"
-                  className="px-8 py-3.5 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-700 hover:scale-[1.02] transition-all active:scale-95 shadow-lg shadow-blue-900/20"
-                  onClick={video}
-                >
-                  수강하기
-                </button>
-                <button
-                  type="button"
-                  className="px-8 py-3.5 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-700 hover:scale-[1.02] transition-all active:scale-95 shadow-lg shadow-blue-900/20"
-                  onClick={() => navigate("/class/qna/" + classId)}
-                >
-                  Q&A 바로가기
-                </button>
-              </>
-            ) : (
+            {enrollment && (
+              <button
+                type="button"
+                className="px-8 py-3.5 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-700 hover:scale-[1.02] transition-all active:scale-95 shadow-lg shadow-blue-900/20"
+                onClick={video}
+              >
+                수강하기
+              </button>
+            )}
+            {(enrollment || role === '1' || role === '2') && (
+              <button
+                type="button"
+                className="px-8 py-3.5 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-700 hover:scale-[1.02] transition-all active:scale-95 shadow-lg shadow-blue-900/20"
+                onClick={() => navigate("/class/qna/" + classId)}
+              >
+                Q&A 바로가기
+              </button>
+            )}
+            {!enrollment && role !== '1' && role !== '2' && (
               <button
                 type="button"
                 className="w-full md:w-auto px-10 py-4 bg-blue-600 text-white text-sm font-black rounded-xl hover:bg-blue-700 hover:shadow-xl transition-all active:scale-95 shadow-lg shadow-blue-900/20"
