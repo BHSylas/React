@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 // import { useNavigate } from "react-router-dom";
 // import { AuthContext } from "../../context/AuthContext";
-import { api } from "../../api/axiosInstance";
+// import { api } from "../../api/axiosInstance";
 import type { ClassItem } from "../../types/ClassItem";
+import axios from "axios";
 
 export default function AdminLecture() {
     // const role = useContext(AuthContext).role;
@@ -14,31 +15,33 @@ export default function AdminLecture() {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
 
+    // 로컬 스토리지 키 확인
+    const token = localStorage.getItem("token");
+
+    const config = {
+        headers: { Authorization: `Bearer ${token}` }
+    };
+
     useEffect(() => {
-        api.get(`/admin/lectures?status=${state}`).then((res) => {
-            setLectures(res.data.content);
-        });
+        axios.get(`/api/admin/lectures?status=${state}`, config).then((res) => {
+            setLectures(res.data.content || []);
+            setCurrentPage(1); // 상태 변경 시 페이지 초기화
+        }).catch(err => console.error(err));
     }, [state]);
+
     const approveLecture = (lectureId: string) => {
-        api.patch(`/admin/lectures/${lectureId}/approval`).then(() => {
+        axios.patch(`/api/admin/lectures/${lectureId}/approval`, {}, config).then(() => {
             alert("승인되었습니다.");
-            setLectures(lectures.filter(lec => lec.lectureId !== lectureId));
-        });
+            setLectures(prev => prev.filter(lec => lec.lectureId !== lectureId));
+        }).catch(err => alert("승인 실패: " + err.response?.status));
     }
+
     const rejectLecture = (lectureId: string) => {
-        api.patch(`/admin/lectures/${lectureId}/rejection`, { reason: "거지같음" }).then(() => {
+        axios.patch(`/api/admin/lectures/${lectureId}/rejection`, { reason: "거절되었음" }, config).then(() => {
             alert("반려되었습니다.");
-            setLectures(lectures.filter(lec => lec.lectureId !== lectureId));
-        });
+            setLectures(prev => prev.filter(lec => lec.lectureId !== lectureId));
+        }).catch(err => alert("반려 실패: " + err.response?.status));
     }
-    // if (role === null) {
-    //     console.log("No role, probably waiting for auth...");
-    //     return <div>Loading...</div>;
-    // }
-    // else if (role !== '2') {
-    //     alert("No exception!");
-    //     navigate('/');
-    // }
 
     // 페이지네이션 계산 로직
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -87,9 +90,7 @@ function AdminClassList({ classList, approveLecture, rejectLecture }: { classLis
         return <div className="text-center py-10">해당하는 강의가 없습니다.</div>;
     }
     return (
-        <div
-            className={`space-y-4 transition-opacity opacity-100`}
-        >
+        <div className={`space-y-4 transition-opacity opacity-100`}>
             {classList.map((item) => (
                 <div className="block" key={item.lectureId}>
                     <ClassListItem key={item.lectureId} item={item} approveLecture={approveLecture} rejectLecture={rejectLecture} />
