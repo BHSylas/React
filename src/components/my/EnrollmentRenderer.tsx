@@ -68,19 +68,19 @@ export default function EnrollmentRenderer({ classes }: { classes: EnrollmentIte
                                         {enrollment.professorNickname} 강사
                                     </span>
                                     <span className="w-1.5 h-1.5 bg-gray-100 rounded-full"></span>
-                                    <span>{decompileLanguageCode(enrollment.language)} · {COUNTRY_NAMES[enrollment.country]}</span>
+                                    <span className="text-black">{decompileLanguageCode(enrollment.language)} · {COUNTRY_NAMES[enrollment.country]}</span>
                                 </div>
                             </div>
 
                             <div className="flex items-baseline gap-1 bg-gray-50 px-4 py-2 rounded-2xl shrink-0">
                                 <span className="text-3xl font-black text-gray-900">{enrollment.progressRate}</span>
-                                <span className="text-[11px] font-black text-gray-400 uppercase">%</span>
+                                <span className="text-2xl font-black uppercase">%</span>
                             </div>
                         </div>
 
                         <div className="space-y-3">
                             <div className="flex justify-between items-center text-[11px] font-black text-gray-400 uppercase tracking-widest">
-                                <span>Progress Status</span>
+                                <span className="text-black">Progress Status</span>
                                 <span className={enrollment.progressRate === 100 ? "text-green-500" : "text-blue-600"}>
                                     {enrollment.progressRate === 100 ? "Completed" : "On Going"}
                                 </span>
