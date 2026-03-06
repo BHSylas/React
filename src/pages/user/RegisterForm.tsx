@@ -10,6 +10,7 @@ export default function RegisterForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
 
   const navigate = useNavigate();
 
@@ -27,6 +28,7 @@ export default function RegisterForm() {
     if (!isPasswordValid) return; // 유효하지 않으면 제출 방지
     if (!isPasswordMatch) return; // 이하동문
 
+    setIsLoading(true); // 로딩 시작
     try {
       const response = await axios.post("/api/auth/signup", {
         email,
@@ -36,7 +38,7 @@ export default function RegisterForm() {
       });
 
       if (response.status === 200 || response.status === 201) {
-        alert("회원가입이 완료되었습니다.");
+        alert("회원가입이 완료되었습니다. 이메일 인증 후 로그인해주세요.");
         navigate("/");
       }
 
@@ -53,6 +55,8 @@ export default function RegisterForm() {
       } else {
         setError(serverMessage || "회원가입 중 오류가 발생했습니다.");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -139,7 +143,7 @@ export default function RegisterForm() {
             type="submit"
             className="w-full py-4 bg-blue-600 text-white text-[15px] font-black rounded-2xl shadow-lg shadow-blue-100 hover:bg-blue-700 hover:-translate-y-0.5 active:scale-95 transition-all"
           >
-            회원가입
+            {isLoading ? "처리 중..." : "회원가입"}
           </button>
         </div>
       </form>

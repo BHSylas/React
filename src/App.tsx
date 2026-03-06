@@ -24,6 +24,7 @@ import LecturePlayerPage from "./pages/user/LecturePlayerPage";
 import LectureEditPage from "./pages/prof/LectureEditPage";
 import LectureManagePage from "./pages/prof/LectureManagePage";
 import AuthProvider from "./components/provider/AuthProvider";
+import VerifyEmail from "./pages/user/VerifyEmail";
 
 function App() {
   return (
@@ -33,7 +34,7 @@ function App() {
           <BrowserRouter>
             <Routes>
               <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
-                <Route path="/home" element={<Home />} /> 
+                <Route path="/home" element={<Home />} />
                 {/* 
                 기존 Home과 타 페이지의 Root Route가 달라서 Sidebar가 제대로 적용되지 않는 문제를 발견
                 Home의 Route를 /home으로 변경하여 임시로 해결, 향후 전체적인 Route 구조 재검토 필요 (예: /user/home, /prof/home 등)
@@ -43,15 +44,15 @@ function App() {
                 <Route path="/class/:classId" element={<LectureViewPage />} />
                 <Route path="/class/new" element={<NewClassPage />} />
                 <Route path="/class/:classId/edit" element={<LectureEditPage />} />
-                <Route path="/class/prof/:lectureId/enrollments" element={<ProfClassStudent />}/>
+                <Route path="/class/prof/:lectureId/enrollments" element={<ProfClassStudent />} />
                 <Route path="/class/qna/:lectureId" element={<LectureQnaListPage />} />
-                <Route path="/class/qna/upload/:lectureId" element={<LectureQnAUploadPage />}/>
+                <Route path="/class/qna/upload/:lectureId" element={<LectureQnAUploadPage />} />
                 <Route path="/class/:lectureId/player" element={<LecturePlayerPage />} />
                 <Route path="/class/:classId/manage" element={<LectureManagePage />} />
                 <Route path="/board" element={<BoardListPage />} />
                 <Route path="/board/:postId" element={<BoardViewPage />} />
-                <Route path="/board/upload" element={<BoardUploadPage />}/>
-                <Route path="/board/edit/:postId" element={<BoardEditPage />}/>
+                <Route path="/board/upload" element={<BoardUploadPage />} />
+                <Route path="/board/edit/:postId" element={<BoardEditPage />} />
                 <Route path="/metaverse/upload/:id?" element={<MetaTestUpload />} />
                 <Route path="/metaverse/page/:id" element={<MetaTestPage />} />
                 <Route path="/admin" element={<AdminMainPage />} />
@@ -61,6 +62,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<LoginForm />} />
                 <Route path="/register" element={<RegisterForm />} />
+                <Route path="/verify-email" element={<VerifyEmail />} />
               </Route>
             </Routes>
           </BrowserRouter>
