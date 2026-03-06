@@ -25,6 +25,7 @@ export default function LecturePlayerPage() {
   useEffect(() => {
     const fetchLectureData = async () => {
       try {
+
         const videoRes = await axios.get(`/api/lectures/${lectureId}/video`, {
           headers: {
             Authorization: `Bearer ${token}` // 토큰 전달
@@ -38,8 +39,8 @@ export default function LecturePlayerPage() {
           return;
         }
 
-        const userRole = getUserRole();
         let lastWatchedTime = 0;
+        const userRole = getUserRole();
 
         if (userRole === 0) {
           try {
@@ -49,16 +50,7 @@ export default function LecturePlayerPage() {
               }
             });
 
-            setInitial({
-              lectureId: lectureId!,
-              source: {
-                type: data.sourceType,
-                localPath: data.localPath,
-                videoId: data.youtubeVideoId,
-              },
-              lastWatchedTimeSec: progressRes.data.lastWatchedTime ?? 0,
-              videoId: data.videoId,
-            });
+            lastWatchedTime = progressRes.data.lastWatchedTime ?? 0;
 
           } catch (e) {
             console.error("수강 정보 로드 실패 (403 가능성):", e);
