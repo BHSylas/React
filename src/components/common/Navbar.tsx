@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-import { textLimiter } from "../../utils/textLimiter";
+// import { textLimiter } from "../../utils/textLimiter";
 import { useContext, useEffect, useRef, useState } from "react";
 import { AuthModalContext } from "../../context/AuthModalContext";
 import "../../global.css";
@@ -12,7 +12,7 @@ interface NavbarProps {
 export function Navbar({ onMenuClick }: NavbarProps) {
   const [visible, setVisible] = useState(true);
   const lastScrollY = useRef(0);
-  const { isLoggedIn, nickname: nickname, logout } = useAuth();
+  const { isLoggedIn, logout } = useAuth();
   const { openLogin } = useContext(AuthModalContext);
   const navigate = useNavigate();
 

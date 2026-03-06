@@ -3,6 +3,14 @@ import { decompileLanguageCode } from "../../utils/decompileCountryCode";
 import type { EnrollmentItem } from "../../types/EnrollmentItem";
 import { useAuth } from "../../hooks/useAuth";
 
+const COUNTRY_NAMES: Record<string, string> = {
+  USA: "미국",
+  JAPAN: "일본",
+  CHINA: "중국",
+  GERMANY: "독일",
+  ITALY: "이탈리아",
+};
+
 export default function EnrollmentRenderer({ classes }: { classes: EnrollmentItem[] }) {
     const navigate = useNavigate();
     const { role } = useAuth();
@@ -60,7 +68,7 @@ export default function EnrollmentRenderer({ classes }: { classes: EnrollmentIte
                                         {enrollment.professorNickname} 강사
                                     </span>
                                     <span className="w-1.5 h-1.5 bg-gray-100 rounded-full"></span>
-                                    <span>{decompileLanguageCode(enrollment.language)} · {enrollment.country}</span>
+                                    <span>{decompileLanguageCode(enrollment.language)} · {COUNTRY_NAMES[enrollment.country]}</span>
                                 </div>
                             </div>
 

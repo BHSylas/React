@@ -11,6 +11,14 @@ interface ClassListProps {
 
 const SERVER_URL = "http://localhost:8080";
 
+const COUNTRY_NAMES: Record<string, string> = {
+  USA: "미국",
+  JAPAN: "일본",
+  CHINA: "중국",
+  GERMANY: "독일",
+  ITALY: "이탈리아",
+};
+
 export default function ClassList({ classList, dimmed, viewType = "list" }: ClassListProps) {
 
   return (
@@ -73,7 +81,7 @@ function ClassListItem({ item }: { item: ClassItem }) {
       <div className="flex flex-col justify-center min-w-0 py-1">
         <div className="flex items-center gap-2 mb-1">
           <span className="px-2 py-0.5 bg-blue-50 text-blue-600 text-[10px] font-black rounded-full uppercase tracking-tighter">
-            {item.country}
+            {COUNTRY_NAMES[item.country]}
           </span>
           <span className="text-[11px] font-bold text-gray-400">{item.professorNickname}</span>
         </div>

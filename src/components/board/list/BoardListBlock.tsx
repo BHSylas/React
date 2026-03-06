@@ -90,6 +90,23 @@ export function BoardListBlock({ boards }: BoardListBlockProps) {
                 </div>
               </div>
             )}
+
+            {(board.boardType === "QNA") && board.commentCount > 0 && (
+              <div
+                onClick={() => navigate(`/board/${board.boardId}`)}
+                className="flex items-center w-full px-6 py-4 bg-blue-50/30 hover:bg-blue-50/60 transition-colors cursor-pointer border-b border-gray-100"
+              >
+                <div className="ml-6 mr-4 flex items-center text-gray-300">
+                  <span className="text-lg">└</span>
+                </div>
+                <div className="flex items-center gap-2 overflow-hidden">
+                  <span className="text-xs font-bold text-blue-600 uppercase tracking-widest">Answer</span>
+                  <span className="truncate text-[14px] font-semibold">
+                    {board.title} 에 대한 답변입니다.
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>

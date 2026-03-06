@@ -18,7 +18,7 @@ export function BoardActionBar({
   canDelete,
 }: BoardActionBarProps) {
 
-  const showEditButton = boardType !== "LECTURE_QNA";
+  const showEditButton = boardType !== "LECTURE_QNA" && boardType !== "QNA";
 
   const baseBtnStyle = "px-5 py-2.5 text-[13px] font-black transition-all duration-200 rounded-xl active:scale-95 flex items-center justify-center";
 

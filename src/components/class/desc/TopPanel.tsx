@@ -15,12 +15,19 @@ interface TopPanelProps {
   isEnrolling?: boolean;
 }
 
+const COUNTRY_NAMES: Record<string, string> = {
+  USA: "미국",
+  JAPAN: "일본",
+  CHINA: "중국",
+  GERMANY: "독일",
+  ITALY: "이탈리아",
+};
+
 export default function TopPanel({
   title,
   instructor,
   category,
   level,
-  duration,
   thumbnailUrl,
   classId,
   isEnrolling = false,
@@ -62,7 +69,6 @@ export default function TopPanel({
     <section className="bg-slate-800 text-white py-10 md:py-14  rounded-md shadow-md">
       <div className="max-w-5xl mx-auto px-8 flex flex-col md:flex-row gap-10 items-center">
 
-        {/* Thumbnail: 기존 사이즈를 유지하되 모서리 곡률만 최적화 */}
         <div className="w-full md:w-[380px] aspect-video bg-slate-700 rounded-[1rem] flex-shrink-0 overflow-hidden shadow-xl">
           {finalThumbnail ? (
             <img
@@ -77,7 +83,6 @@ export default function TopPanel({
           )}
         </div>
 
-        {/* Summary: 텍스트 간격과 버튼의 시각적 위계 조정 */}
         <div className="flex-1 flex flex-col justify-between py-1 text-center md:text-left">
           <div className="space-y-3">
             {/* 카테고리 정보 */}
@@ -86,7 +91,7 @@ export default function TopPanel({
                 {decompileLanguageCode(category)}
               </span>
               <span className="opacity-30">|</span>
-              <span>{level}{duration}</span>
+              <span>{COUNTRY_NAMES[level]}</span>
             </div>
 
             <h1 className="text-3xl md:text-4xl font-black leading-tight tracking-tight">
@@ -98,7 +103,6 @@ export default function TopPanel({
             </div>
           </div>
 
-          {/* 버튼 영역: 둥근 모서리와 호버 효과 강화 */}
           <div className="mt-8 flex flex-wrap justify-center md:justify-start gap-3">
             {(enrollment || role === '1' || role === '2') && (
               <div className="flex gap-3">

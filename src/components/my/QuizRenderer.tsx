@@ -16,6 +16,14 @@ type QuizStatsResponse = {
 	stats: QuizCountryStat[];
 };
 
+const COUNTRY_NAMES: Record<string, string> = {
+  USA: "미국",
+  JAPAN: "일본",
+  CHINA: "중국",
+  GERMANY: "독일",
+  ITALY: "이탈리아",
+};
+
 function isQuizLevel(value: unknown): value is QuizLevel {
 	if (typeof value !== "object" || value === null) return false;
 	const entry = value as Partial<QuizLevel>;
@@ -143,7 +151,7 @@ export default function QuizRenderer({ data }: { data: unknown }) {
 					<div key={countryStat.country} className="bg-white border border-gray-100 rounded-[2.5rem] p-8">
 						<h3 className="text-[20px] font-black text-gray-900 mb-6 flex items-center gap-2">
 							<span className="w-2 h-6 bg-blue-600 rounded-full"></span>
-							{countryStat.country}
+							{COUNTRY_NAMES[countryStat.country]}
 						</h3>
 
 						<div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
