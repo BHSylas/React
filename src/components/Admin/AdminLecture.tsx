@@ -31,7 +31,7 @@ export default function AdminLecture() {
     };
 
     useEffect(() => {
-        axios.get(`/api/admin/lectures?status=${state}`, config).then((res) => {
+        axios.get(`/api/admin/lectures/cards?status=${state}&size=1000`, config).then((res) => {
             setLectures(res.data.content || []);
             setCurrentPage(1); // 상태 변경 시 페이지 초기화
         }).catch(err => console.error(err));
