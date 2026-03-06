@@ -107,7 +107,7 @@ export function AdminStatsView() {
                     <tbody className="divide-y divide-gray-200 text-gray-500">
                         {currentItems.length > 0 ? (
                             currentItems.map((item, index) => {
-                                const isLowAccuracy = item.accuracy < 30; // 정답률 30퍼 빨간색
+                                // const isLowAccuracy = item.accuracy < 30; // 정답률 30퍼 빨간색
                                 const isLowOffAccuracy = item.officialAccuracy < 30; // 전체 정답률 30퍼 미만 빨간색
 
                                 return (
