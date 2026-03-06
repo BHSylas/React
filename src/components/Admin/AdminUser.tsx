@@ -62,8 +62,8 @@ export function AdminUserList() {
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
                 <div>
                     <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">사용자 관리</h2>
-                    <p className="text-gray-500 mt-1">
-                        전체 사용자 <span className="text-blue-600 font-bold">{data?.totalElements.toLocaleString() || 0}</span>명
+                    <p className="mt-1">
+                        전체 사용자 <span className="text-black font-bold">{data?.totalElements.toLocaleString() || 0}</span>명
                     </p>
                 </div>
 
@@ -83,11 +83,11 @@ export function AdminUserList() {
             </div>
 
             {/* 테이블 카드 영역 */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-500 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-widest border-b border-gray-200">
+                            <tr className="bg-gray-50 text-xs uppercase tracking-widest border-b border-gray-200">
                                 <th className="px-6 py-4 font-bold text-center">ID</th>
                                 <th className="px-6 py-4 font-bold">사용자 정보</th>
                                 <th className="px-6 py-4 font-bold">권한</th>
@@ -95,7 +95,7 @@ export function AdminUserList() {
                                 <th className="px-6 py-4 font-bold text-right">가입일</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100 text-sm">
+                        <tbody className="divide-y divide-gray-100 text-black text-sm">
                             {loading ? (
                                 <tr>
                                     <td colSpan={5} className="px-6 py-20 text-center text-gray-400 font-medium">데이터 로딩 중...</td>
@@ -109,13 +109,13 @@ export function AdminUserList() {
                                     <tr key={user.userId} 
                                     onClick={() => setSelectedUser(user)}
                                     className="hover:bg-gray-50 transition-colors cursor-pointer">
-                                        <td className="px-6 py-4 text-gray-500 text-center">{user.userId}</td>
+                                        <td className="px-6 py-4 text-center">{user.userId}</td>
                                         <td className="px-6 py-4">
                                             <div className="flex flex-col">
                                                 <span className="font-bold text-gray-900">
-                                                    {user.nickname} <span className="text-gray-400 text-xs font-normal ml-1">({user.name})</span>
+                                                    {user.nickname} <span className=" text-xs font-normal ml-1">({user.name})</span>
                                                 </span>
-                                                <span className="text-xs text-gray-500">{user.email}</span>
+                                                <span className="text-xs">{user.email}</span>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
@@ -131,7 +131,7 @@ export function AdminUserList() {
                                                 {user.status}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-right text-gray-500">
+                                        <td className="px-6 py-4 text-right">
                                             {new Date(user.createdAt).toLocaleDateString()}
                                         </td>
                                     </tr>
@@ -146,7 +146,7 @@ export function AdminUserList() {
                         <button
                             onClick={() => setPage(prev => Math.max(prev - 1, 0))}
                             disabled={page === 0}
-                            className="px-3 py-1 border border-gray-300 text-gray-500 rounded hover:bg-gray-100"
+                            className="px-3 py-1 border border-gray-500 rounded hover:bg-gray-100"
                         >
                             이전
                         </button>
@@ -167,7 +167,7 @@ export function AdminUserList() {
                         <button
                             onClick={() => setPage(prev => Math.min(prev + 1, data.totalPages - 1))}
                             disabled={page + 1 >= data.totalPages}
-                            className="px-3 py-1 border border-gray-300 text-gray-500 rounded hover:bg-gray-100"
+                            className="px-3 py-1 border border-gray-500 rounded hover:bg-gray-100"
                         >
                             다음
                         </button>
