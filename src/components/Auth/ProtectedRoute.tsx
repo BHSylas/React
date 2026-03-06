@@ -9,16 +9,27 @@ export default function ProtectedRoute({ children }: { children: JSX.Element }) 
   const navigate = useNavigate();
 
   const hasAlerted = useRef(false); // 알람 떴는지 확인
+  const prevIsLoggout = useRef<boolean | null>(null);
 
   useEffect(() => {
+    if (!isAuthReady) return;
+
     // 인증 확인이 끝났는데 로그인이 안 되어 있다면
-    if (isAuthReady && !isLoggedIn) {
-      if(!hasAlerted.current) { // 알람이 안 떳으면
+    if (!isLoggedIn && !hasAlerted.current && prevIsLoggout.current === null) {
         alert("로그인이 필요한 서비스입니다.");
         hasAlerted.current = true;
         navigate("/", { replace: true }); // 메인으로 강제 이동
-      }
+        return;
     }
+
+    if(prevIsLoggout.current === true && !isLoggedIn) {
+      alert("로그아웃 되었습니다.");
+      navigate("/", { replace: true });
+      return;
+    }
+
+    prevIsLoggout.current = isLoggedIn;
+
   }, [isLoggedIn, isAuthReady, navigate]);
 
   // 로딩 중일 때
