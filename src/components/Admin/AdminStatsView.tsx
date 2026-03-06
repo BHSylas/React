@@ -66,7 +66,7 @@ export function AdminStatsView() {
 
     const totalNpcs = stats.reduce((acc, curr) => acc + curr.totalNpcCount, 0); // 문제 횟수(NPC횟수)
     const totalSolved = stats.reduce((acc, curr) => acc + curr.solvedCount, 0); // 풀이횟수
-    const avgAccuracy = (stats.reduce((acc, curr) => acc + curr.accuracy, 0) / (stats.length || 1)).toFixed(2);
+    const avgAccuracy = (stats.reduce((acc, curr) => acc + curr.officialAccuracy, 0) / (stats.length || 1)).toFixed(2);
 
     const indexOfLastItem = currentPage * itemsPerPage; // 현재 페이지의 마지막 인덱스
     const indexOfFirstItem = indexOfLastItem - itemsPerPage; // 현재 페이지의 첫 인덱스
@@ -78,30 +78,30 @@ export function AdminStatsView() {
             <div>
                 <h2 className="text-3xl font-bold text-center">메타버스 학습 통계</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 mt-5">
-                    <div className="p-5 rounded-md shadow">
-                        <p className="text-sm text-gray-500 font-medium">총 문제 수</p>
+                    <div className="p-5 rounded-md shadow border border-gray-400">
+                        <p className="text-[17px] font-medium">총 문제 수</p>
                         <span className="text-2xl font-bold text-blue-600">{totalNpcs.toLocaleString()}</span>
                     </div>
-                    <div className="p-5 rounded-md shadow">
-                        <p className="text-sm text-gray-500 font-medium">풀이 횟수</p>
+                    <div className="p-5 rounded-md shadow border border-gray-400">
+                        <p className="text-[17px] font-medium">풀이 횟수</p>
                         <span className="text-2xl font-bold text-blue-600">{totalSolved.toLocaleString()}</span>
                     </div>
-                    <div className="p-5 rounded-md shadow">
-                        <p className="text-sm text-gray-500 font-medium">평균 정답률</p>
+                    <div className="p-5 rounded-md shadow border border-gray-400">
+                        <p className="text-[17px] font-medium">평균 정답률</p>
                         <span className="text-2xl font-bold text-blue-600">{avgAccuracy}%</span>
                     </div>
                 </div>
             </div>
-            <div className="rounded-lg shadow overflow-hidden p-4">
+            <div className="rounded-lg shadow overflow-hidden p-4 border border-gray-400">
                 <table className="w-full text-center border-collapse">
                     <thead>
                         <tr>
                             <th className="py-4">국가</th>
                             <th className="py-4">난이도</th>
-                            <th className="py-4">NPC 수</th>
                             <th className="py-4">전체 문제</th>
+                            {/* <th className="py-4">사용자가 푼 문제</th> */}
+                            {/* <th className="py-4">정답률</th> */}
                             <th className="py-4">정답률</th>
-                            <th className="py-4">전체 문제 정답률</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 text-gray-500">
@@ -112,12 +112,12 @@ export function AdminStatsView() {
 
                                 return (
                                     <tr key={index}>
-                                        <td className="py-4">{COUNTRY_NAMES[item.country]}</td>
-                                        <td className="py-4">{LEVEL_NAMES[item.level]}</td>
-                                        <td className="py-4">{item.totalNpcCount}</td>
-                                        <td className="py-4">{item.solvedCount}</td>
-                                        <td className={`py-4 font-bold ${isLowAccuracy ? 'text-red-600' : 'text-gray-700'
-                                            }`}>{item.accuracy}%</td>
+                                        <td className="py-4 text-black">{COUNTRY_NAMES[item.country]}</td>
+                                        <td className="py-4 text-black">{LEVEL_NAMES[item.level]}</td>
+                                        <td className="py-4 text-black">{item.totalNpcCount}</td>
+                                        {/* <td className="py-4">{item.solvedCount}</td> */}
+                                        {/* <td className={`py-4 font-bold ${isLowAccuracy ? 'text-red-600' : 'text-gray-700'
+                                            }`}>{item.accuracy}%</td> */}
                                         <td className={`py-4 font-medium ${isLowOffAccuracy ? 'text-red-500' : 'text-green-500'}`}>
                                             {item.officialAccuracy}%
                                         </td>
@@ -153,7 +153,7 @@ export function AdminStatsView() {
                     <div className="flex justify-center mt-5 border-t-2 py-5 gap-5">
                         <button onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                             disabled={currentPage === 1}
-                            className="px-3 py-1 border border-gray-300 text-gray-500 rounded hover:bg-gray-100">
+                            className="px-3 py-1 border border-gray-500 rounded hover:bg-gray-100">
                             이전
                         </button>
                         {[...Array(totalPages)].map((_, i) => (
@@ -168,7 +168,7 @@ export function AdminStatsView() {
                         <button
                             onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                             disabled={currentPage === totalPages}
-                            className="px-3 py-1 border border-gray-300 text-gray-500 rounded hover:bg-gray-100"
+                            className="px-3 py-1 border border-gray-500 rounded hover:bg-gray-100"
                         >
                             다음
                         </button>
