@@ -137,11 +137,11 @@ export default function QuizRenderer({ data }: { data: unknown }) {
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
 				<div className="bg-white border border-gray-100 rounded-[2rem] p-8 shadow-sm">
 					<p className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mb-2">Total Solved</p>
-					<p className="text-4xl font-black text-gray-900">{totalSolved}<span className="text-lg text-gray-400 ml-1 font-bold">문제</span></p>
+					<p className="text-4xl font-black text-gray-900">{totalSolved}<span className="text-lg ml-1 font-bold">문제</span></p>
 				</div>
 				<div className="bg-white border border-gray-100 rounded-[2rem] p-8 shadow-sm">
 					<p className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mb-2">Average Accuracy</p>
-					<p className="text-4xl font-black text-gray-900">{avgAccuracy}<span className="text-lg text-gray-400 ml-1 font-bold">%</span></p>
+					<p className="text-4xl font-black text-gray-900">{avgAccuracy}<span className="text-lg ml-1 font-bold">%</span></p>
 				</div>
 			</div>
 
@@ -168,17 +168,17 @@ export default function QuizRenderer({ data }: { data: unknown }) {
 										<div className="w-full">
 											<p className="text-[16px] font-black text-gray-900 mb-3">{toKoreanLevel(levelStat.level)}</p>
 
-											<div className="space-y-1.5 text-[13px] font-bold">
-												<div className="flex justify-between text-gray-400">
+											<div className="space-y-1.5 text-[15px] font-bold">
+												<div className="flex justify-between">
 													<span>전체 정답률</span>
 													<span className="text-gray-900">{levelStat.officialAccuracy}%</span>
 												</div>
-												<div className="flex justify-between text-gray-400">
+												<div className="flex justify-between">
 													<span>푼 문제 정답률</span>
 													<span className="text-blue-600">{solvedAccuracy}%</span>
 												</div>
 												<div className="pt-2 border-t border-gray-200/50 mt-2">
-													<p className="text-gray-500 text-[12px] font-medium leading-relaxed">
+													<p className="text-[15px] font-medium leading-relaxed">
 														정답 {levelStat.correctProblems} / 전체 {levelStat.totalProblems}<br />
 														풀어본 문제 {levelStat.solvedProblems}개
 													</p>
