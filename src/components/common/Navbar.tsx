@@ -54,11 +54,25 @@ export function Navbar({ onMenuClick }: NavbarProps) {
           <span className="text-gray-900">☰</span>
         </button>
         <span
-          className="text-xl font-black text-blue-800 tracking-tighter cursor-pointer flex items-center gap-1"
+          className="text-xl pr-2 font-black text-blue-800 tracking-tighter cursor-pointer flex items-center gap-1"
           onClick={() => navigate("/")}
         >
           LMS
         </span>
+        <span className="text-gray-200 font-light">|</span>
+        <button
+          onClick={() => navigate("/class")}
+          className="px-2 py-1.5 font-bold text-[17px] text-black hover:text-blue-600 transition-colors"
+        >
+          강좌 목록
+        </button>
+        <span className="text-gray-200 font-light">|</span>
+        <button
+          onClick={() => navigate("/board")}
+          className="px-2 py-1.5 font-bold text-[17px] text-black hover:text-blue-600 transition-colors"
+        >
+          게시판
+        </button>
       </div>
 
       {/* 오른쪽 영역 */}

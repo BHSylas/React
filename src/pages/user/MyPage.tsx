@@ -93,7 +93,7 @@ export default function MyPage() {
                                 const isAuthor = item.writerName?.trim() === nickname?.trim();
                                 if (picked === "QnA") {
                                     if (Number(role) === 1) return item.boardType === "LECTURE_QNA" && myLectureIds.includes(item.lectureId);
-                                    if (Number(role) === 2) return item.boardType === "QNA";
+                                    // if (Number(role) === 2) return item.boardType === "QNA";
                                     return isAuthor && item.boardType === "LECTURE_QNA"; // 학생이면
                                 }
                                 return isAuthor && item.boardType !== "LECTURE_QNA"; // post면 강의 QnA 글 안 보이게 하기
@@ -174,12 +174,17 @@ export default function MyPage() {
 }
 
 function Picker({ picked, onPick, role }: { picked: string; onPick: (item: any) => void; role: any }) {
-    const items = ["Class", "QnA", "Post", "Comment"];
+    const userRole = Number(role);
 
-    if (Number(role) === 1) {
+    const items = ["Class", "QnA", "Post", "Comment"].filter(item => {
+        if (item === "QnA" && userRole === 2) return false;
+        return true;
+    });
+
+    if (userRole === 1) {
         items.push("Metaverse");
     }
-    else {
+    else if (userRole === 0) {
         items.push("Quiz"); // 퀴즈 탭 추가: 교수는 퀴즈 못 푸니까 안 보이게
     }
     return (
@@ -188,7 +193,7 @@ function Picker({ picked, onPick, role }: { picked: string; onPick: (item: any) 
             {items.map((item) => {
                 let displayName = item;
                 if (item === "QnA") {
-                    displayName = Number(role) === 2 ? "Q&A" : "강의 Q&A";
+                    displayName = "강의 Q&A";
                 }
                 const isPicked = picked === item;
                 return (

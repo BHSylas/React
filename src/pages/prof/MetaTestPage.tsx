@@ -98,7 +98,7 @@ const MetaTestPage = () => {
             </div>
 
             {/* 메인 문제 카드 */}
-            <div className="bg-white border border-gray-200 rounded-3xl shadow-xl shadow-gray-200/50 overflow-hidden">
+            <div className="bg-white border-2 border-black rounded-3xl shadow-xl shadow-gray-200/50 overflow-hidden">
                 <div className="p-6 md:p-10 space-y-10">
 
                     {/* 문제 영역 (지문) */}
@@ -146,7 +146,7 @@ const MetaTestPage = () => {
                                         placeholder="정답 문장을 정확하게 입력해주세요..."
                                         value={logic.userChoice as string}
                                         onChange={(e) => logic.setUserChoice(e.target.value)}
-                                        className="w-full min-h-[160px] p-5 text-lg bg-white border-2 border-gray-200 rounded-2xl focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all outline-none shadow-inner placeholder:text-gray-300"
+                                        className="w-full min-h-[160px] p-5 text-lg bg-white border-2 border-gray-200 rounded-2xl focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all outline-none shadow-inner placeholder:text-black"
                                     />
                                 ) : (
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -254,8 +254,8 @@ const MetaTestPage = () => {
                                 </div>
                             </div>
                         ) : (
-                            <div className="py-12 text-center bg-gray-50 rounded-2xl border border-dashed border-gray-200">
-                                <span className="text-gray-400 font-medium">정답을 제출하면 상세 해설이 나타납니다.</span>
+                            <div className="py-12 text-center bg-gray-50 rounded-2xl border border-dashed border-black">
+                                <span className="font-medium">정답을 제출하면 상세 해설이 나타납니다.</span>
                             </div>
                         )}
                     </section>

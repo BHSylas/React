@@ -63,14 +63,14 @@ export default function NewClassPage() {
                 <p className="text-gray-500 mt-2 font-medium">지식을 공유하고 전 세계 학생들과 연결되세요.</p>
             </header>
 
-            <div className="bg-white rounded-[2rem] shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden">
+            <div className="bg-white rounded-[2rem] shadow-xl shadow-gray-200/50 border-2 border-black overflow-hidden">
                 {!createdLectureId ? (
                     <form onSubmit={handleSubmit} className="p-8 md:p-12 space-y-8">
                         {/* 제목 입력 */}
                         <div className="space-y-2">
                             <label className="text-sm font-black text-gray-900 ml-1">강의 제목</label>
                             <input
-                                className="w-full text-xl font-bold p-4 bg-gray-50 border-none rounded-2xl ring-2 ring-transparent focus:ring-blue-600/20 focus:bg-white transition-all outline-none placeholder:text-gray-300"
+                                className="w-full text-xl font-bold p-4 bg-gray-50 rounded-2xl border border-black focus:bg-white transition-all outline-none placeholder:text-black"
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
                                 required
@@ -82,7 +82,7 @@ export default function NewClassPage() {
                         <div className="space-y-2">
                             <label className="text-sm font-black text-gray-900 ml-1">강의 상세 소개</label>
                             <textarea
-                                className="w-full text-[16px] font-medium p-4 bg-gray-50 border-none rounded-2xl ring-2 ring-transparent focus:ring-blue-600/20 focus:bg-white transition-all outline-none min-h-[200px] resize-none leading-relaxed placeholder:text-gray-300"
+                                className="w-full text-[16px] font-medium p-4 bg-gray-50 border border-black rounded-2xl ring-2 focus:bg-white transition-all outline-none min-h-[200px] resize-none leading-relaxed placeholder:text-black"
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 required
@@ -94,9 +94,9 @@ export default function NewClassPage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <label className="text-sm font-black text-gray-900 ml-1">국가 카테고리</label>
-                                <p className="text-xs text-gray-400 mb-2 ml-1">* 국가를 선택하면 해당 국가의 언어로 자동 설정됩니다.</p>
+                                <p className="text-sm mb-2 ml-1">* 국가를 선택하면 해당 국가의 언어로 자동 설정됩니다.</p>
                                 <select
-                                    className="w-full p-4 bg-gray-50 border-none rounded-2xl font-bold text-gray-700 outline-none appearance-none cursor-pointer hover:bg-gray-100 transition-colors"
+                                    className="w-full p-4 bg-gray-50 border border-black rounded-2xl font-bold text-black outline-none appearance-none cursor-pointer hover:bg-gray-100 transition-colors"
                                     value={country}
                                     onChange={(e) => setCountry(e.target.value)}>
                                     <option value="USA">🇺🇸 미국</option>

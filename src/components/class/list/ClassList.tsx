@@ -51,7 +51,7 @@ function ClassListItem({ item }: { item: ClassItem }) {
 
   return (
     <div
-      className="group flex gap-6 p-4 bg-white border border-gray-100 rounded-md cursor-pointer hover:border-blue-200 hover:shadow-[0_10px_30px_rgb(0,0,0,0.04)] transition-all duration-300"
+      className="group flex gap-6 p-4 bg-white border border-gray-300 rounded-md cursor-pointer hover:border-blue-200 hover:shadow-[0_10px_30px_rgb(0,0,0,0.04)] transition-all duration-300"
       onClick={() => { navigate(`/class/${item.lectureId}`) }}
     >
       {/* 썸네일 영역: 살짝 더 둥글게 처리 */}
