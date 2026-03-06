@@ -79,7 +79,7 @@ export function BoardUploadPage() {
             return;
         }
 
-        axios.post('/api/boards/create', formData, {
+        axios.post('/api/boards/create', dataToSend, {
             headers: {
                 Authorization: `Bearer ${token}` // 토큰 전달
             }

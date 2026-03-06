@@ -44,24 +44,24 @@ const TestAnswer: React.FC<TestAnswerProps> = ({ onAnswersChange, savedOptions =
                         onChange={handleInputChange}
                         onKeyDown={handleKeyDown}
                         placeholder="단어 입력 후 엔터를 누르세요"
-                        className="w-full h-[50px] px-5 bg-white border border-gray-200 rounded-xl outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all text-sm font-medium shadow-sm placeholder:text-gray-300"
+                        className="w-full h-[50px] px-5 bg-white border border-black rounded-xl outline-none text-sm font-medium shadow-sm placeholder:text-black"
                     />
                 </div>
                 <button
                     onClick={handleReset}
-                    className="h-[50px] px-6 rounded-xl bg-white text-red-500 border border-red-100 font-bold text-sm hover:bg-red-50 transition-all active:scale-95"
+                    className="h-[50px] px-6 rounded-xl bg-white text-red-500 border border-red-500 font-bold text-sm hover:bg-red-50 transition-all active:scale-95"
                 >
                     전체 초기화
                 </button>
             </div>
 
-            <div className="min-h-[80px] p-4 bg-gray-50/50 border border-dashed border-gray-200 rounded-2xl">
+            <div className="min-h-[80px] p-4 bg-gray-50/50 border border-dashed border-black rounded-2xl">
                 {savedOptions.length > 0 ? (
                     <div className="flex flex-wrap gap-2">
                         {savedOptions.map((word, index) => (
-                            <div key={`${word}-${index}`} className="flex items-center gap-2 pl-4 pr-2 py-2 bg-white border border-gray-200 rounded-lg shadow-sm">
+                            <div key={`${word}-${index}`} className="flex items-center gap-2 pl-4 pr-2 py-2 bg-white border border-black rounded-lg shadow-sm">
                                 <span className="text-sm font-bold text-gray-700">{word}</span>
-                                <button onClick={() => handleDelete(index)} className="w-6 h-6 flex items-center justify-center rounded-md text-gray-300 hover:bg-red-50 hover:text-red-500 transition-colors">
+                                <button onClick={() => handleDelete(index)} className="w-6 h-6 flex items-center justify-center rounded-md text-black hover:bg-red-50 hover:text-red-500 transition-colors">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
                                     </svg>
@@ -70,7 +70,7 @@ const TestAnswer: React.FC<TestAnswerProps> = ({ onAnswersChange, savedOptions =
                         ))}
                     </div>
                 ) : (
-                    <p className="text-sm text-gray-300 text-center py-4">등록된 단어가 없습니다.</p>
+                    <p className="text-sm text-black text-center py-4">등록된 단어가 없습니다.</p>
                 )}
             </div>
         </div>

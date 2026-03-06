@@ -11,12 +11,13 @@ import type { PlayerHandle, PlayerSnapshot } from "../../types/player";
 type Props = {
   src: string;
   startAtSec: number;
+  isAdmin?: boolean;
 };
 
 const JUMP_THRESHOLD = 1.2;
 
 const LocalVideoPlayer = forwardRef<PlayerHandle, Props>(
-  ({ src, startAtSec }, ref) => {
+  ({ src, startAtSec, isAdmin }, ref) => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const lastTimeRef = useRef(startAtSec);
 
@@ -55,7 +56,7 @@ const LocalVideoPlayer = forwardRef<PlayerHandle, Props>(
         const t = v.currentTime;
         const diff = t - lastTimeRef.current;
 
-        if (diff > JUMP_THRESHOLD) {
+        if (!isAdmin && diff > JUMP_THRESHOLD) {
           if (t > maxWatchedRef.current) {
             v.currentTime = maxWatchedRef.current;
             return;
@@ -100,8 +101,9 @@ const LocalVideoPlayer = forwardRef<PlayerHandle, Props>(
         const v = videoRef.current;
         if (!v) return;
 
-        const allowed = Math.min(maxWatchedRef.current, durationSec);
+        const allowed = isAdmin ? durationSec : Math.min(maxWatchedRef.current, durationSec);
         const next = clamp(sec, 0, allowed);
+        // const next = clamp(sec, 0, durationSec || 99999);
 
         v.currentTime = next;
         lastTimeRef.current = next;

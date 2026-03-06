@@ -168,9 +168,7 @@ export function MetaTestUpload() {
             if (formData.level === 'BEGINNER') {
                 processedAnswers = formData.answers;
             } else if (formData.level === 'INTERMEDIATE') {
-                if (formData.answers.length > 0) {
-                    processedAnswers = formData.answers.filter(a => a && String(a).trim() !== "");
-                }
+                processedAnswers = formData.answers;
             } else if (formData.level === 'ADVANCED') {
                 processedAnswers = formData.answers
                     .map(a => String(a).trim()) // 앞뒤 공백만 제거 (문장 안의 공백은 유지됨)
@@ -217,6 +215,7 @@ export function MetaTestUpload() {
                     setCurrentSavedId(newSavedId);
                     alert("업로드가 완료되었습니다.");
                     fetchCandidates(newSavedId); // 다음 문제 연결 목록 불러오기
+                    navigate('/my')
                 } else {
                     // 혹시라도 ID를 못 받았더라도 저장은 되었을 수 있으므로
                     alert("업로드가 완료되었습니다.");
@@ -239,20 +238,20 @@ export function MetaTestUpload() {
                 <h1 className="text-3xl font-black text-gray-900 tracking-tight">메타버스 테스트 {isEdit ? "수정" : "등록"}</h1>
             </header>
 
-            <section className="bg-white border border-gray-200 rounded-[2rem] p-8 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
+            <section className="bg-white border-2 border-black rounded-[2rem] p-8 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
                 <div className="space-y-10">
 
                     {/* 테스트 기본 정보 섹션 */}
                     <div className="space-y-4">
-                        <label className="text-[11px] font-black text-gray-400 uppercase ml-1 tracking-widest">Basic Information</label>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 bg-gray-50/50 p-6 rounded-2xl border border-gray-100/50">
+                        <label className="text-[11px] font-black uppercase ml-1 tracking-widest">Basic Information</label>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 bg-gray-50/50 p-6 rounded-2xl border border-black">
                             <div className="flex flex-col gap-2">
-                                <span className="text-xs font-bold text-gray-500 ml-1">대상 강의</span>
+                                <span className="text-xs font-bold ml-1">대상 강의</span>
                                 <select
                                     name='lectureId'
                                     value={formData.lectureId}
                                     onChange={handleInputChange}
-                                    className="w-full pl-4 pr-8 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-100 cursor-pointer shadow-sm"
+                                    className="w-full pl-4 pr-8 py-2.5 bg-white border border-black rounded-xl text-sm font-bold cursor-pointer shadow-sm"
                                 >
                                     <option value="">강의를 선택해주세요</option>
                                     {lectures.map(lec => (
@@ -261,16 +260,16 @@ export function MetaTestUpload() {
                                 </select>
                             </div>
                             <div className="flex flex-col gap-2">
-                                <span className="text-xs font-bold text-gray-500 ml-1">국가 / 장소</span>
+                                <span className="text-xs font-bold ml-1">국가 / 장소</span>
                                 <div className="flex gap-2">
-                                    <select name='country' value={formData.country} onChange={handleInputChange} className="flex-1 pl-3 pr-6 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-100 shadow-sm">
+                                    <select name='country' value={formData.country} onChange={handleInputChange} className="flex-1 pl-3 pr-6 py-2.5 bg-white border border-black rounded-xl text-sm font-bold shadow-sm">
                                         <option value="USA">미국</option>
                                         <option value="JAPAN">일본</option>
                                         <option value="CHINA">중국</option>
                                         <option value="GERMANY">독일</option>
                                         <option value="ITALY">이탈리아</option>
                                     </select>
-                                    <select name="place" value={formData.place} onChange={handleInputChange} className="flex-1 pl-3 pr-6 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-100 shadow-sm">
+                                    <select name="place" value={formData.place} onChange={handleInputChange} className="flex-1 pl-3 pr-6 py-2.5 bg-white border border-black rounded-xl text-sm font-bold shadow-sm">
                                         <option value="CONVENIENCE_STORE">편의점</option>
                                         <option value="CAFE">카페</option>
                                         <option value="TRAIN_STATION">대중교통</option>
@@ -283,21 +282,21 @@ export function MetaTestUpload() {
                                 </div>
                             </div>
                             <div className="flex flex-col gap-2">
-                                <span className="text-xs font-bold text-gray-500 ml-1">난이도</span>
-                                <select name="level" value={formData.level} onChange={handleInputChange} className="w-full pl-4 pr-8 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-100 shadow-sm">
+                                <span className="text-xs font-bold ml-1">난이도</span>
+                                <select name="level" value={formData.level} onChange={handleInputChange} className="w-full pl-4 pr-8 py-2.5 bg-white border border-black rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-blue-100 shadow-sm">
                                     <option value="BEGINNER">초급</option>
                                     <option value="INTERMEDIATE">중급</option>
                                     <option value="ADVANCED">고급</option>
                                 </select>
                             </div>
                             <div className="flex flex-col gap-2">
-                                <span className="text-xs font-bold text-gray-500 ml-1">주제</span>
+                                <span className="text-xs font-bold ml-1">주제</span>
                                 <input
                                     name='topic'
                                     value={formData.topic}
                                     onChange={handleInputChange}
                                     placeholder='예: 음식 주문하기'
-                                    className='w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-100 shadow-sm placeholder:text-gray-300'
+                                    className='w-full px-4 py-2.5 bg-white border border-black rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-blue-100 shadow-sm placeholder:text-black'
                                 />
                             </div>
                         </div>
@@ -319,20 +318,20 @@ export function MetaTestUpload() {
                     <div className="space-y-6">
                         {formData.level !== 'ADVANCED' && (
                             <div className="space-y-4">
-                                <label className="text-[11px] font-black text-gray-400 uppercase ml-1 tracking-widest">Answer Options</label>
-                                <div className="bg-gray-50/30 border border-gray-100 rounded-2xl p-6">
+                                <label className="text-[11px] font-black uppercase ml-1 tracking-widest">Answer Options</label>
+                                <div className="bg-gray-50/30 border border-black rounded-2xl p-6">
                                     <TestAnswer onAnswersChange={handleOptionsChange} savedOptions={formData.options} />
                                 </div>
                             </div>
                         )}
 
                         <div className="space-y-4">
-                            <label className="text-[11px] font-black text-gray-400 uppercase ml-1 tracking-widest">Correct Answer Selection</label>
-                            <div className="p-6 bg-white border border-blue-100 rounded-2xl shadow-sm">
+                            <label className="text-[11px] font-black uppercase ml-1 tracking-widest">Correct Answer Selection</label>
+                            <div className="p-6 bg-white border border-black rounded-2xl shadow-sm">
                                 {formData.level === 'BEGINNER' && (
                                     <div className='flex flex-wrap gap-3'>
                                         {formData.options.length > 0 ? formData.options.map((opt, idx) => (
-                                            <label key={idx} className={`flex items-center gap-2 px-4 py-2 rounded-xl border cursor-pointer transition-all ${formData.answers[0] === opt ? 'bg-blue-600 border-blue-600 text-white' : 'bg-gray-50 border-gray-200 text-gray-600 hover:border-blue-300'}`}>
+                                            <label key={idx} className={`flex items-center gap-2 px-4 py-2 rounded-xl border cursor-pointer transition-all ${formData.answers[0] === opt ? 'bg-blue-600 border-blue-600 text-white' : 'bg-gray-50 border-black text-gray-600 hover:border-blue-300'}`}>
                                                 <input type='radio' name='answers' value={opt} className='hidden'
                                                     checked={formData.answers[0] === opt}
                                                     onChange={() => setFormData(prev => ({ ...prev, answers: [opt] }))} />
@@ -344,7 +343,7 @@ export function MetaTestUpload() {
                                 {formData.level === 'INTERMEDIATE' && (
                                     <div className="flex flex-wrap gap-3">
                                         {formData.options.map((opt, idx) => (
-                                            <label key={idx} className={`flex items-center gap-2 px-4 py-2 rounded-xl border cursor-pointer transition-all ${formData.answers.includes(opt) ? 'bg-blue-600 border-blue-600 text-white' : 'bg-gray-50 border-gray-200 text-gray-600 hover:border-blue-300'}`}>
+                                            <label key={idx} className={`flex items-center gap-2 px-4 py-2 rounded-xl border cursor-pointer transition-all ${formData.answers.includes(opt) ? 'bg-blue-600 border-blue-600 text-white' : 'bg-gray-50 border-black text-gray-600 hover:border-blue-300'}`}>
                                                 <input type="checkbox" className="hidden" checked={formData.answers.includes(opt)}
                                                     onChange={(e) => {
                                                         const isChecked = e.target.checked;
@@ -360,21 +359,15 @@ export function MetaTestUpload() {
                                     </div>
                                 )}
                                 {formData.level === 'ADVANCED' && (
-                                    <div className="w-full space-y-3">
-                                        <input
-                                            type="text"
-                                            value={formData.answers[0] || ""}
-                                            onChange={(e) => {
-                                                const val = e.target.value;
-                                                setFormData(prev => ({
-                                                    ...prev,
-                                                    answers: val ? [val] : []
-                                                }));
-                                            }}
-                                            placeholder="사용자가 입력해야 할 정확한 정답 문장을 입력하세요."
-                                            className="w-full py-3 px-4 bg-white border border-gray-200 rounded-xl outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all text-sm font-bold"
+                                    <div className="space-y-3">
+                                        <TestAnswer
+                                            onAnswersChange={(newList) => setFormData(prev => ({
+                                                ...prev,
+                                                answers: newList
+                                            }))}
+                                            savedOptions={formData.answers}
                                         />
-                                        <p className="text-[11px] text-gray-400 ml-1 italic">* 고급 단계에서는 전체 문장 일치 여부를 판단합니다.</p>
+                                        <p className="text-[13px] ml-1 italic text-blue-600 font-medium">* 고급 단계에서는 문장을 입력하고 엔터를 누르세요. (여러 개 등록 가능)</p>
                                     </div>
                                 )}
                             </div>
@@ -383,18 +376,18 @@ export function MetaTestUpload() {
 
                     {/* 해설 섹션 */}
                     <div className="space-y-4">
-                        <label className="text-[11px] font-black text-gray-400 uppercase ml-1 tracking-widest">Explanation</label>
+                        <label className="text-[11px] font-black uppercase ml-1 tracking-widest">Explanation</label>
                         <textarea
                             name="explanation"
                             value={formData.explanation}
                             onChange={handleInputChange}
                             placeholder="문제에 대한 해설을 입력하세요..."
-                            className="w-full min-h-[120px] p-6 text-[15px] leading-relaxed resize-none outline-none text-gray-700 bg-gray-50/30 rounded-2xl border border-gray-100 focus:bg-white focus:border-blue-200 transition-all"
+                            className="w-full min-h-[120px] p-6 text-[15px] leading-relaxed resize-none outline-none bg-gray-50/30 rounded-2xl border border-black placeholder:text-black"
                         />
                     </div>
 
                     {/* 다음 문제 연결 섹션 */}
-                    <div className={`space-y-4 p-8 rounded-[2rem] border transition-all ${currentSavedId ? 'bg-blue-50/50 border-blue-100' : 'bg-gray-50 border-gray-100'}`}>
+                    <div className='space-y-4 p-8 rounded-[2rem] border transition-all bg-blue-50/50 border-black'>
                         <div className="flex items-center justify-between">
                             <label className="text-[11px] font-black text-blue-600 uppercase ml-1 tracking-widest">Next Connection</label>
                             {currentSavedId && <span className='text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded-full font-bold'>ID: {currentSavedId}</span>}
@@ -402,7 +395,7 @@ export function MetaTestUpload() {
                         <div className="flex flex-col md:flex-row gap-4 items-center">
                             <select
                                 disabled={!currentSavedId}
-                                className="w-full md:flex-1 pl-4 pr-8 py-3 bg-white border border-gray-200 rounded-xl text-sm font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full md:flex-1 pl-4 pr-8 py-3 bg-white border border-black rounded-xl text-sm font-bold focus:outline-none text-black"
                                 onChange={(e) => handleConnectNext(e.target.value)}
                                 value={formData.nextConversationId ?? ""}
                             >
@@ -429,7 +422,7 @@ export function MetaTestUpload() {
                         </button>
                         <button
                             onClick={() => { if (confirm("초기화하시겠습니까?")) setFormData(INITIAL_FORM); }}
-                            className="px-6 py-3.5 bg-white text-gray-400 text-sm font-bold rounded-xl border border-gray-100 hover:bg-red-50 hover:text-red-500 hover:border-red-100 transition-all"
+                            className="px-6 py-3.5 bg-white text-sm font-bold rounded-xl border border-black hover:bg-red-50 hover:text-red-500 hover:border-red-500 transition-all"
                         >
                             초기화
                         </button>
@@ -437,7 +430,7 @@ export function MetaTestUpload() {
 
                     <button
                         onClick={() => navigate(-1)}
-                        className="w-full md:w-auto px-6 py-3.5 text-gray-400 text-sm font-bold hover:text-gray-900 transition-all"
+                        className="w-full md:w-auto px-6 py-3.5 text-gray-400 text-sm font-bold hover:text-black transition-all"
                     >
                         취소 후 돌아가기
                     </button>

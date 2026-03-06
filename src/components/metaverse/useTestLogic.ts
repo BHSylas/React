@@ -28,11 +28,15 @@ export function useTestLogic(data: any) {
             const processedUserAnswer = (userChoice as string).trim();
 
             // 2. 실제 정답: 데이터베이스의 정답도 양 끝 공백만 제거하여 비교 대상 일치
-            const correctAnswer = Array.isArray(data.answers) ? data.answers[0] : data.answers;
-            const processedCorrectAnswer = (correctAnswer as string).trim();
+            const answerList: string[] = Array.isArray(data.answers)
+                ? data.answers
+                : [data.answers];
 
-            // 중간 공백이 있을 경우 공백이 있어야 정답처리
-            correct = processedUserAnswer === processedCorrectAnswer;
+            correct = answerList.some((ans: string) => {
+                const processedCorrectAnswer = String(ans).trim();
+                return processedUserAnswer === processedCorrectAnswer;
+            });
+
         }
         else {
             const correctAnswer = Array.isArray(data.answers) ? data.answers[0] : data.answers;
