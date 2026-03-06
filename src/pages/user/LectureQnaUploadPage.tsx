@@ -76,30 +76,26 @@ export function LectureQnAUploadPage() {
 
     return (
         <main className="max-w-5xl mx-auto px-6 py-12">
-            {/* 상단 헤더: 서비스 아이덴티티 강조 */}
             <header className="mb-10 ml-2">
                 <p className="text-blue-600 font-bold text-xs uppercase tracking-[0.2em] mb-2">Lecture Q&A</p>
                 <h1 className="text-3xl font-black text-gray-900 tracking-tight">강의 질문하기</h1>
             </header>
 
-            {/* 메인 폼 컨테이너: 연한 테두리와 미세한 그림자로 영역 명확화 */}
-            <section className="bg-white border border-gray-200 rounded-[2.5rem] p-8 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
+            <section className="bg-white border-2 border-black rounded-[2.5rem] p-8 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
                 <div className="space-y-10">
 
-                    {/* 제목 입력 영역: 밑줄 스타일로 가독성 확보 */}
                     <div className="space-y-2">
-                        <label className="text-[11px] font-black text-gray-400 uppercase ml-1 tracking-widest">Question Title</label>
+                        <label className="text-[11px] font-black uppercase ml-1 tracking-widest">Question Title</label>
                         <input
                             name="title"
                             value={formData.title}
                             onChange={handleChange}
-                            className="w-full text-2xl font-bold py-3 px-1 border-b border-gray-100 focus:border-blue-500 outline-none transition-all placeholder:text-gray-200 bg-transparent"
+                            className="w-full text-2xl font-bold py-3 px-1 border-b border-black outline-none placeholder:text-black bg-transparent"
                             placeholder="어떤 점이 궁금하신가요?"
                         />
                     </div>
 
-                    {/* 강의 선택 영역: 별도 박스로 분리하여 시각적 인지 향상 */}
-                    <div className="space-y-4 bg-gray-50/50 p-6 rounded-2xl border border-gray-100">
+                    <div className="space-y-4 bg-gray-50/50 p-6 rounded-2xl border border-black">
                         <div className="flex items-center gap-2 mb-1">
                             <span className="w-1.5 h-1.5 bg-blue-600 rounded-full"></span>
                             <label className="text-[11px] font-black text-gray-700 uppercase tracking-widest">Select Your Lecture</label>
@@ -112,20 +108,18 @@ export function LectureQnAUploadPage() {
                         </div>
                     </div>
 
-                    {/* 본문 영역: 내부 테두리와 연한 배경으로 영역 가두기 */}
                     <div className="space-y-2">
-                        <label className="text-[11px] font-black text-gray-400 uppercase ml-1 tracking-widest">Content</label>
+                        <label className="text-[11px] font-black uppercase ml-1 tracking-widest">Content</label>
                         <textarea
                             name="content"
                             value={formData.content}
                             onChange={handleChange}
-                            className="w-full min-h-[450px] p-6 text-[15px] leading-relaxed resize-none outline-none text-gray-700 placeholder:text-gray-200 bg-gray-50/30 rounded-2xl border border-gray-100 focus:bg-white focus:border-blue-200 transition-all shadow-inner"
+                            className="w-full min-h-[450px] p-6 text-[15px] leading-relaxed resize-none outline-none text-black placeholder:text-black bg-gray-50/30 rounded-2xl border border-black shadow-inner"
                             placeholder="내용을 입력하세요..."
                         />
                     </div>
                 </div>
 
-                {/* 하단 버튼 바: 정돈된 간격과 반응형 대응 */}
                 <div className="mt-12 pt-8 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
                     <div className="flex gap-3 w-full md:w-auto">
                         <button
@@ -136,7 +130,7 @@ export function LectureQnAUploadPage() {
                         </button>
                         <button
                             onClick={handleReset}
-                            className="px-6 py-3.5 bg-white text-gray-400 text-sm font-bold rounded-xl border border-gray-100 hover:bg-red-50 hover:text-red-500 hover:border-red-100 transition-all"
+                            className="px-6 py-3.5 bg-white text-black text-sm font-bold rounded-xl border border-black hover:bg-red-50 hover:text-red-500 hover:border-red-500 transition-all"
                         >
                             초기화
                         </button>

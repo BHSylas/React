@@ -30,7 +30,7 @@ export function BoardActionBar({
           <button
             type="button"
             onClick={onEdit}
-            className={`${baseBtnStyle} bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-100/50`}
+            className={`${baseBtnStyle} bg-blue-50 text-blue-700 border border-blue-500 hover:bg-blue-100 border border-blue-100/50`}
           >
             수정하기
           </button>
@@ -39,7 +39,7 @@ export function BoardActionBar({
           <button
             type="button"
             onClick={onDelete}
-            className={`${baseBtnStyle} bg-red-50 text-red-600 hover:bg-red-100 border border-red-100/50`}
+            className={`${baseBtnStyle} bg-red-50 text-red-600 border border-red-500 hover:bg-red-100 border border-red-100/50`}
           >
             삭제
           </button>
@@ -51,7 +51,7 @@ export function BoardActionBar({
         <button
           type="button"
           onClick={onBack}
-          className={`${baseBtnStyle} bg-white text-gray-500 border border-gray-200 hover:bg-gray-50`}
+          className={`${baseBtnStyle} bg-white border border-black hover:bg-gray-100`}
         >
           목록
         </button>

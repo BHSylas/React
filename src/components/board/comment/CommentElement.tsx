@@ -70,7 +70,7 @@ export default function CommentElement({ comment }: { comment: Comment }) {
     }
     const remove = () => {
         alert("삭제하시겠습니까?");
-        axios.delete(`/api/boards/comments/delete/${comment.commentId}`, config )
+        axios.delete(`/api/boards/comments/delete/${comment.commentId}`, config)
             .then((res) => {
                 console.log(res.data);
                 setDeleted(true);
@@ -90,14 +90,14 @@ export default function CommentElement({ comment }: { comment: Comment }) {
                     /* 수정 모드 UI: 본문 작성 도구와 동일한 둥근 스타일 */
                     <div className="space-y-4 animate-in fade-in duration-300">
                         <textarea
-                            className="w-full bg-gray-50 border border-blue-100 rounded-[1.5rem] p-5 text-[14px] leading-relaxed outline-none focus:bg-white focus:ring-4 focus:ring-blue-500/5 focus:border-blue-400 transition-all resize-none shadow-inner"
+                            className="w-full bg-gray-50 border border-black rounded-[1.5rem] p-5 text-[14px] leading-relaxed outline-none focus:border-gray-500 focus:bg-white transition-all resize-none"
                             rows={3}
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
                         />
                         <div className="flex justify-end gap-3">
                             <button
-                                className="px-4 py-2 text-xs font-bold text-gray-400 hover:text-red-500 transition-all"
+                                className="px-4 py-2 text-xs font-bold text-black rounded-xl border border-back hover:border-red-500 hover:text-red-500 transition-all"
                                 onClick={handleEdit}
                             >
                                 취소

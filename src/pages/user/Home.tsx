@@ -57,7 +57,7 @@ export default function Home() {
 
 
   return (
-    <div className="min-h-screen font-sans text-slate-900">
+    <div className="min-h-screen font-sans text-slate-900 mb-10">
       <header className="max-w-7xl mx-auto pt-14 pb-10 border-b border-gray-100 mb-10 flex flex-col md:flex-row justify-between items-baseline">
         <div className="space-y-4">
           <div className="flex items-center gap-3">
@@ -123,7 +123,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section>
+        {/* <section>
           <div className="flex justify-between items-end mb-6 px-2">
             <div>
               <h3 className="text-xl font-bold flex items-center gap-2 text-slate-800">
@@ -151,7 +151,7 @@ export default function Home() {
               </div>
             )}
           </div>
-        </section>
+        </section> */}
       </main>
     </div>
   );

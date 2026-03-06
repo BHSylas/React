@@ -108,7 +108,7 @@ export function BoardViewPage() {
 
       <div className="space-y-6">
         {/* [자유게시판/Q&A] 댓글 섹션 */}
-        {(post.boardType === "FREE" || post.boardType === "QNA") && (
+        {(post.boardType === "FREE" || post.boardType === "QNA" || post.boardType === "NOTICE") && (
           <section id="comments" className="animate-in fade-in duration-500">
             <div className="flex items-center gap-3 px-4 mb-6">
               <span className="w-1.5 h-6 bg-blue-600 rounded-full"></span>

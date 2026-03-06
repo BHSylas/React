@@ -38,7 +38,7 @@ export function BoardLecture({ selectedId, onSelect }: BoardLectureProps) {
             <select
                 value={selectedId || ""}
                 onChange={(e) => onSelect(Number(e.target.value))}
-                className="pl-4 pr-8 py-2 bg-white border border-gray-200 rounded-xl text-sm font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-100 cursor-pointer appearance-none shadow-sm"
+                className="pl-4 pr-8 py-2 bg-white border border-black rounded-xl text-sm font-bold text-gray-700 cursor-pointer appearance-none shadow-sm"
             >
                 {lectures.length === 0 && <option value="">강의 로딩 중...</option>}
 
