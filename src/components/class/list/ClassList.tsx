@@ -11,14 +11,6 @@ interface ClassListProps {
 
 const SERVER_URL = "http://localhost:8080";
 
-const COUNTRY_NAMES: Record<string, string> = {
-  USA: "미국",
-  JAPAN: "일본",
-  CHINA: "중국",
-  GERMANY: "독일",
-  ITALY: "이탈리아",
-};
-
 export default function ClassList({ classList, dimmed, viewType = "list" }: ClassListProps) {
 
   return (
@@ -59,7 +51,7 @@ function ClassListItem({ item }: { item: ClassItem }) {
 
   return (
     <div
-      className="group flex gap-6 p-4 bg-white border border-gray-300 rounded-md cursor-pointer hover:border-blue-200 hover:shadow-[0_10px_30px_rgb(0,0,0,0.04)] transition-all duration-300"
+      className="group flex gap-6 p-4 bg-white border border-gray-500 rounded-md cursor-pointer hover:border-blue-500 hover:shadow-[0_10px_30px_rgb(0,0,0,0.04)] transition-all duration-300"
       onClick={() => { navigate(`/class/${item.lectureId}`) }}
     >
       {/* 썸네일 영역: 살짝 더 둥글게 처리 */}
@@ -81,14 +73,14 @@ function ClassListItem({ item }: { item: ClassItem }) {
       <div className="flex flex-col justify-center min-w-0 py-1">
         <div className="flex items-center gap-2 mb-1">
           <span className="px-2 py-0.5 bg-blue-50 text-blue-600 text-[10px] font-black rounded-full uppercase tracking-tighter">
-            {COUNTRY_NAMES[item.country]}
+            {item.country}
           </span>
-          <span className="text-[11px] font-bold text-gray-400">{item.professorNickname}</span>
+          <span className="text-[11px] font-bold text-gray-800">{item.professorNickname}</span>
         </div>
         <h3 className="text-lg font-black text-gray-900 truncate group-hover:text-blue-600 transition-colors">
           {item.title}
         </h3>
-        <p className="text-sm mt-1.5 text-gray-500 line-clamp-1 leading-relaxed">
+        <p className="text-sm mt-1.5 text-gray-800 line-clamp-1 leading-relaxed">
           {item.description}
         </p>
       </div>
@@ -121,7 +113,7 @@ function ClassCardItem({ item }: { item: ClassItem }) {
 
   return (
     <div 
-      className="group flex flex-col bg-white border border-gray-100 rounded-[1rem] overflow-hidden cursor-pointer transition-all duration-500 isolate hover:border-blue-400 hover:shadow-[0_20px_40px_rgb(0,0,0,0.06)] hover:-translate-y-1.5 transform-gpu" 
+      className="group flex flex-col bg-white border border-gray-500 rounded-[1rem] overflow-hidden cursor-pointer transition-all duration-500 isolate hover:border-blue-500 hover:shadow-[0_20px_40px_rgb(0,0,0,0.06)] hover:-translate-y-1.5 transform-gpu" 
       onClick={() => { navigate(`/class/${item.lectureId}`) }}
     >
       {/* 썸네일 영역 */}
@@ -145,7 +137,7 @@ function ClassCardItem({ item }: { item: ClassItem }) {
         <h3 className="text-xl font-black text-gray-900 leading-tight group-hover:text-blue-600 transition-colors line-clamp-1">
           {item.title}
         </h3>
-        <p className="text-[13px] text-gray-500 line-clamp-2 leading-relaxed pt-1">
+        <p className="text-[13px] text-gray-800 line-clamp-2 leading-relaxed pt-1">
           {item.description}
         </p>
       </div>
