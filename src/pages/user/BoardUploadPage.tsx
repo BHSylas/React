@@ -106,27 +106,27 @@ export function BoardUploadPage() {
                 <h1 className="text-3xl font-black text-gray-900 tracking-tight">게시글 작성</h1>
             </header>
 
-            <section className="bg-white border border-gray-200 rounded-[2rem] p-8 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
+            <section className="bg-white border-2 border-black rounded-[2rem] p-8 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
                 <div className="space-y-10">
                     
                     <div className="space-y-2">
-                        <label className="text-[11px] font-black text-gray-400 uppercase ml-1 tracking-widest">Title</label>
+                        <label className="text-[11px] font-black text-black uppercase ml-1 tracking-widest">Title</label>
                         <input 
                             name="title"
                             value={formData.title}
                             onChange={handleChange}
-                            className="w-full text-2xl font-bold py-3 px-1 border-b border-gray-100 focus:border-blue-500 outline-none transition-all placeholder:text-gray-200"
+                            className="w-full text-2xl font-bold py-3 px-1 border-b border-black outline-none placeholder:text-black"
                             placeholder="제목을 입력해 주세요"
                         />
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-4 bg-gray-50/50 p-4 rounded-2xl border border-gray-100/50">
+                    <div className="flex flex-wrap items-center gap-4 bg-gray-50/50 p-4 rounded-2xl border border-black">
                         <div className="flex items-center gap-3">
                             <select 
                                 name="boardType"
                                 value={formData.boardType}
                                 onChange={handleChange}
-                                className="pl-4 pr-8 py-2 bg-white border border-gray-200 rounded-xl text-sm font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-100 cursor-pointer appearance-none shadow-sm"
+                                className="pl-4 pr-8 py-2 bg-white border border-black rounded-xl text-sm font-bold text-gray-700 focus:outline-none cursor-pointer appearance-none shadow-sm"
                             >
                                 {filteredOptions.map((opt) => (
                                     <option key={opt.value} value={opt.value}>
@@ -137,7 +137,7 @@ export function BoardUploadPage() {
                         </div>
 
                         {formData.boardType === "NOTICE" && (
-                            <label className="flex items-center gap-2 cursor-pointer bg-white px-4 py-2 rounded-xl border border-blue-100 shadow-sm hover:border-blue-300 transition-all">
+                            <label className="flex items-center gap-2 cursor-pointer bg-white px-4 py-2 rounded-xl border border-blue-500 shadow-sm">
                                 <input
                                     type="checkbox"
                                     name="pinned"
@@ -151,12 +151,12 @@ export function BoardUploadPage() {
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-[11px] font-black text-gray-400 uppercase ml-1 tracking-widest">Content</label>
+                        <label className="text-[11px] font-black uppercase ml-1 tracking-widest">Content</label>
                         <textarea 
                             name="content"
                             value={formData.content}
                             onChange={handleChange}
-                            className="w-full min-h-[450px] p-6 text-[15px] leading-relaxed resize-none outline-none text-gray-700 placeholder:text-gray-200 bg-gray-50/30 rounded-2xl border border-gray-100 focus:bg-white focus:border-blue-200 transition-all"
+                            className="w-full min-h-[450px] p-6 text-[15px] leading-relaxed resize-none outline-none text-black placeholder:text-black bg-gray-50/30 rounded-2xl border border-black"
                             placeholder="내용을 입력하세요..."
                         />
                     </div>
@@ -172,7 +172,7 @@ export function BoardUploadPage() {
                         </button>
                         <button 
                             onClick={handleReset}
-                            className="px-6 py-3.5 bg-white text-gray-400 text-sm font-bold rounded-xl border border-gray-100 hover:bg-red-50 hover:text-red-500 hover:border-red-100 transition-all"
+                            className="px-6 py-3.5 bg-white text-black text-sm font-bold rounded-xl border border-black hover:bg-red-50 hover:text-red-500 hover:border-red-500 transition-all"
                         >
                             초기화
                         </button>

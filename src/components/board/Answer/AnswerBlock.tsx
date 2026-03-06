@@ -133,7 +133,7 @@ export function AnswerBlock({ boardId, boardType, lectureId }: AnswerBlockProps)
             <div className="space-y-6">
                 {answers.length > 0 ? (
                     answers.map((ans, idx) => (
-                        <div key={ans.id || idx} className="bg-white border border-gray-100 rounded-md p-8 shadow-sm transition-all">
+                        <div key={ans.id || idx} className="bg-white border border-black rounded-md p-8 shadow-sm transition-all">
                             <div className="flex flex-col gap-4">
                                 {/* 답변자 정보 헤더 */}
                                 <div className="flex justify-between items-start border-b border-gray-50 pb-4">
@@ -145,7 +145,7 @@ export function AnswerBlock({ boardId, boardType, lectureId }: AnswerBlockProps)
                                             <span className="font-black text-gray-900 leading-tight">
                                                 {boardType === "QNA" ? "관리자 답변" : `${ans.writerName} 교수님`}
                                             </span>
-                                            <span className="text-[11px] font-bold text-gray-400 uppercase tracking-tighter">
+                                            <span className="text-[11px] font-bold text-gray-500 uppercase tracking-tighter">
                                                 Official Response · {new Date(ans.createdAt).toLocaleDateString()}
                                             </span>
                                         </div>
@@ -188,21 +188,21 @@ export function AnswerBlock({ boardId, boardType, lectureId }: AnswerBlockProps)
                     ))
                 ) : (
                     /* 답변이 없을 때의 상태 */
-                    <div className="py-5 text-center bg-gray-50/50 rounded-md border border-dashed border-gray-200">
-                        <p className="text-gray-400 font-medium italic">아직 등록된 답변이 없습니다.</p>
+                    <div className="py-5 text-center bg-gray-50/50 rounded-md border border-dashed border-black">
+                        <p className="font-medium italic">아직 등록된 답변이 없습니다.</p>
                     </div>
                 )}
             </div>
 
             {/* 2. 답변 작성 영역 (권한이 있고 답변이 없을 때만) */}
             {showWriteArea && (
-                <div className="bg-blue-50/30 border border-blue-100 rounded-[2rem] p-8 space-y-4">
+                <div className="bg-blue-50/30 border border-blue-500 rounded-[2rem] p-8 space-y-4">
                     <div className="flex items-center gap-2 mb-2">
                         <span className="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></span>
                         <span className="text-xs font-black text-blue-600 uppercase tracking-widest">Write Official Answer</span>
                     </div>
                     <textarea
-                        className="w-full bg-white border border-blue-100 rounded-2xl p-5 text-sm leading-relaxed focus:border-blue-500 focus:ring-4 focus:ring-blue-500/5 outline-none resize-none transition-all placeholder:text-gray-300 shadow-inner"
+                        className="w-full bg-white border border-blue-500 rounded-2xl p-5 text-sm leading-relaxed outline-none resize-none placeholder:text-black shadow-inner"
                         placeholder="학생의 질문에 대한 답변을 입력해주세요."
                         value={newAnswer}
                         onChange={(e) => setNewAnswer(e.target.value)}
@@ -226,11 +226,11 @@ export function AnswerBlock({ boardId, boardType, lectureId }: AnswerBlockProps)
                 <div className="px-6 py-4">
                     {hasAnswer ? (
                         <div className="flex items-center gap-2 text-gray-400">
-                            <span className="text-[10px] font-bold bg-gray-100 px-1.5 py-0.5 rounded">STATUS</span>
-                            <p className="text-xs font-medium">답변이 완료된 게시글입니다.</p>
+                            <span className="text-[12px] font-bold bg-gray-100 text-black px-1.5 py-0.5 rounded">STATUS</span>
+                            <p className="font-medium text-black">답변이 완료된 게시글입니다.</p>
                         </div>
                     ) : (
-                        <p className="text-xs text-gray-400 italic">
+                        <p className="text-xs text-gray-500 italic">
                             {isProfessor && !isLectureOwner
                                 ? "※ 본 강의의 담당 교수자만 공식 답변을 작성할 권한이 있습니다."
                                 : "※ 답변 작성을 기다리고 있는 질문입니다."}

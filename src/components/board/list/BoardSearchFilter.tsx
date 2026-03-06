@@ -20,7 +20,7 @@ export function BoardSearchFilter({ onSearch }: BoardSearchFilterProps) {
 
   return (
     /* max-w-md를 제거하고 w-full을 적용하여 부모 컨테이너 너비에 맞게 꽉 채움 */
-    <div className="flex items-center gap-0 bg-gray-100/60 p-1.5 rounded-xl w-full transition-all focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-100 focus-within:shadow-md">
+    <div className="flex items-center gap-0 bg-gray-100/60 p-1.5 rounded-xl w-full border border-gray-500">
       
       {/* 카테고리 선택 - 너비를 고정하여 안정감 부여 */}
       <select 
@@ -42,7 +42,7 @@ export function BoardSearchFilter({ onSearch }: BoardSearchFilterProps) {
         onChange={(e) => setKeyword(e.target.value)}
         onKeyDown={onKeyDown}
         placeholder="검색어를 입력하여 필요한 정보를 찾아보세요."
-        className="bg-transparent px-4 py-2 text-[15px] flex-1 focus:outline-none text-gray-700 placeholder:text-gray-400"
+        className="bg-transparent px-4 py-2 text-[15px] flex-1 focus:outline-none text-black placeholder:text-gray-500"
       />
 
       {/* 검색 버튼 - 텍스트와 아이콘을 함께 배치하여 너비감 확장 */}

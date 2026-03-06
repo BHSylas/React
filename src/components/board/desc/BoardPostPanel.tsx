@@ -36,7 +36,7 @@ export function BoardPostPanel({
         </div>
       </div>
 
-      <div className="min-h-[500px] p-8 text-[16px] text-gray-800 leading-[1.8] whitespace-pre-line bg-gray-50 rounded-[1rem] font-medium">
+      <div className="min-h-[500px] p-8 text-[16px] text-black leading-[1.8] whitespace-pre-line border border-black rounded-[1rem] font-medium">
         {content}
       </div>
     </section>

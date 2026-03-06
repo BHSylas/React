@@ -16,11 +16,11 @@ export default function CommentForm({ postId, onSubmit }: { postId: string, onSu
   }
   return (
     <form
-      className="bg-white border border-gray-200 rounded-2xl p-4 md:p-5 space-y-3 transition-all focus-within:border-blue-400 focus-within:shadow-sm"
+      className="bg-white border border-black rounded-2xl p-4 md:p-5 space-y-3"
       onSubmit={handleSubmit}
     >
       <textarea
-        className="w-full bg-transparent text-sm leading-relaxed placeholder:text-gray-300 text-gray-700 resize-none outline-none min-h-[80px] px-1"
+        className="w-full bg-transparent text-sm leading-relaxed placeholder:text-black resize-none outline-none min-h-[80px] px-1"
         rows={3}
         placeholder="댓글을 작성하세요..."
         value={content}
@@ -28,7 +28,7 @@ export default function CommentForm({ postId, onSubmit }: { postId: string, onSu
       ></textarea>
 
       <div className="flex justify-between items-center pt-2">
-        <span className="text-[10px] font-bold text-gray-300 uppercase tracking-tight px-1">
+        <span className="text-[10px] font-bold uppercase tracking-tight px-1">
           Press Post to reply
         </span>
         <button

@@ -96,7 +96,7 @@ export default function MyPage() {
                                     if (Number(role) === 2) return item.boardType === "QNA";
                                     return isAuthor && item.boardType === "LECTURE_QNA"; // 학생이면
                                 }
-                                return isAuthor;
+                                return isAuthor && item.boardType !== "LECTURE_QNA"; // post면 강의 QnA 글 안 보이게 하기
                             });
                             setContentList(filtered);
                             break;
@@ -175,6 +175,7 @@ export default function MyPage() {
 
 function Picker({ picked, onPick, role }: { picked: string; onPick: (item: any) => void; role: any }) {
     const items = ["Class", "QnA", "Post", "Comment"];
+
     if (Number(role) === 1) {
         items.push("Metaverse");
     }
@@ -185,6 +186,10 @@ function Picker({ picked, onPick, role }: { picked: string; onPick: (item: any) 
         <nav className="w-64 shrink-0 pr-8 space-y-2 border-r border-gray-100 h-fit">
             <p className="px-4 mb-4 text-[10px] font-black text-blue-600 uppercase tracking-[0.2em]">Dashboard</p>
             {items.map((item) => {
+                let displayName = item;
+                if (item === "QnA") {
+                    displayName = Number(role) === 2 ? "Q&A" : "강의 Q&A";
+                }
                 const isPicked = picked === item;
                 return (
                     <button
@@ -197,7 +202,7 @@ function Picker({ picked, onPick, role }: { picked: string; onPick: (item: any) 
                         onClick={() => onPick(item as any)}
                     >
                         {isPicked && <span className="w-1.5 h-1.5 bg-blue-400 rounded-full mr-3 animate-pulse" />}
-                        {item}
+                        {displayName}
                     </button>
                 );
             })}
