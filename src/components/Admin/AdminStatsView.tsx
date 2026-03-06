@@ -11,6 +11,22 @@ interface NpcStats {
     accuracy: number; // 푼 문제대비 정답률
 }
 
+const COUNTRY_NAMES: Record<string, string> = {
+  USA: "미국",
+  JAPAN: "일본",
+  CHINA: "중국",
+  GERMANY: "독일",
+  ITALY: "이탈리아",
+  UK: "영국",
+  FRANCE: "프랑스",
+};
+
+const LEVEL_NAMES: Record<string, string> = {
+    BEGINNER: "초급",
+    INTERMEDIATE: "중급",
+    ADVANCED: "고급",
+}
+
 export function AdminStatsView() {
     const [stats, setStats] = useState<NpcStats[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -96,8 +112,8 @@ export function AdminStatsView() {
 
                                 return (
                                     <tr key={index}>
-                                        <td className="py-4">{item.country}</td>
-                                        <td className="py-4">{item.level}</td>
+                                        <td className="py-4">{COUNTRY_NAMES[item.country]}</td>
+                                        <td className="py-4">{LEVEL_NAMES[item.level]}</td>
                                         <td className="py-4">{item.totalNpcCount}</td>
                                         <td className="py-4">{item.solvedCount}</td>
                                         <td className={`py-4 font-bold ${isLowAccuracy ? 'text-red-600' : 'text-gray-700'
@@ -120,7 +136,7 @@ export function AdminStatsView() {
                             onChange={(e) => { setSelectedCountry(e.target.value); setCurrentPage(1); }}
                             className="p-2 border rounded border-gray-400 outline-none">
                             <option value="ALL">전체 국가</option>
-                            {[...new Set(stats.map(s => s.country))].map(c => <option key={c} value={c}>{c}</option>)}
+                            {[...new Set(stats.map(s => s.country))].map(c => <option key={c} value={c}>{COUNTRY_NAMES[c]}</option>)}
                         </select>
                     </div>
                     <div>
@@ -129,7 +145,7 @@ export function AdminStatsView() {
                             onChange={(e) => { setSelectedLevel(e.target.value); setCurrentPage(1); }}
                             className="p-2 border rounded border-gray-400 outline-none">
                             <option value="ALL">전체 레벨</option>
-                            {[...new Set(stats.map(s => s.level))].map(c => <option key={c} value={c}>{c}</option>)}
+                            {[...new Set(stats.map(s => s.level))].map(c => <option key={c} value={c}>{LEVEL_NAMES[c]}</option>)}
                         </select>
                     </div>
                 </div>

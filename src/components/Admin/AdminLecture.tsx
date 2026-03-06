@@ -5,6 +5,14 @@ import { useEffect, useState } from "react";
 import type { ClassItem } from "../../types/ClassItem";
 import axios from "axios";
 
+const COUNTRY_NAMES: Record<string, string> = {
+  USA: "미국",
+  JAPAN: "일본",
+  CHINA: "중국",
+  GERMANY: "독일",
+  ITALY: "이탈리아",
+};
+
 export default function AdminLecture() {
     // const role = useContext(AuthContext).role;
     const [state, setState] = useState<"ALL" | "PENDING" | "APPROVED" | "REJECTED">("PENDING");
@@ -107,7 +115,7 @@ function ClassListItem({ item, approveLecture, rejectLecture }: { item: ClassIte
             <div>
                 <h3 className="font-bold">{item.title}</h3>
                 <p className="text-sm text-gray-600">
-                    {item.professorNickname} · {item.country}
+                    {item.professorNickname} · {COUNTRY_NAMES[item.country]}
                 </p>
                 <p className="text-sm mt-2 text-gray-700">
                     {item.description}
