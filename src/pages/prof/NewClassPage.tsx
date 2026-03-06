@@ -45,10 +45,10 @@ export default function NewClassPage() {
             setCreatedLectureId(lectureId);
 
             // 테스트 단계에서는 일단 alert / console 정도로 충분
-            alert("Class created successfully");
+            alert("강의 정보를 업로드 하였습니다.");
         } catch (err) {
             console.error(err);
-            setError("Failed to create class");
+            setError("강의 정보 저장 중 오류가 발생하였습니다.");
         } finally {
             setLoading(false);
         }

@@ -19,7 +19,7 @@ export function ProfClassList() {
         }).then(res => {
             if (res.data && Array.isArray(res.data.content)) {
                 const filteredList = res.data.content.filter(
-                    (item: ClassItem) => item.status !== 'REJECTED'
+                    (item: ClassItem) => item.status === 'APPROVED'
                 );
                 setClassList(filteredList);
             } else {

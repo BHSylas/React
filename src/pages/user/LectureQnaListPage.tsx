@@ -17,6 +17,25 @@ export function LectureQnaListPage() {
   const [totalPages, setTotalPage] = useState(0);
   const postsPerPage = 10; // 한 페이지에 보여줄 게시글 수
 
+  const token = localStorage.getItem("token");
+
+  const getUserRole = () => {
+    if (!token) {
+      return 0;
+    }
+
+    try {
+      const base64Payload = token.split(".")[1]; // 토큰의 payload 부분 추출
+      const payload = JSON.parse(atob(base64Payload)); // base64 디코딩 후 JSON 파싱
+      return Number(payload.role);
+    } catch (e) {
+      console.error("Token decode error:", e);
+      return 0;
+    }
+  }
+
+  const userRole = getUserRole();
+
   const fetchBoards = () => {
     setLoading(true);
     api.get('/boards/searchBoard', {
@@ -61,9 +80,9 @@ export function LectureQnaListPage() {
       {loading ? (
         <div className="p-5 text-center">로딩 중...</div>
       ) : (
-        <BoardListBlock boards={allBoards} />
+        <BoardListBlock boards={allBoards}/>
       )}
-      <QnaWriteBar lectureId={lectureId} />
+      <QnaWriteBar lectureId={lectureId} userRole={userRole} />
       <BoardPagination
         currentPage={currentPage}
         totalPages={totalPages}
@@ -77,14 +96,10 @@ export function LectureQnaListPage() {
   );
 }
 
-function QnaWriteBar({lectureId} : {lectureId?: string | null}) {
+function QnaWriteBar({lectureId, userRole} : {lectureId?: string | null; userRole: number}) {
   const navigate = useNavigate();
-  if(lectureId == null) {
-    return(
-        <div className="flex justify-end">
-            NO
-        </div>
-    )
+  if(lectureId == null || userRole !== 0) {
+    return null;
   }
   return (
     <div className="flex justify-end">

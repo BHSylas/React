@@ -229,7 +229,21 @@ const MetaTestPage = () => {
                                 <div className="flex items-start p-4 bg-white border-t border-gray-50">
                                     <div className="w-24 text-sm font-black text-gray-500 uppercase pt-1">정답</div>
                                     <div className="font-bold text-gray-800 text-lg italic">
-                                        {Array.isArray(data.answers) ? data.answers.join(' → ') : (data.answers || "정보 없음")}
+                                        {data.level === 'ADVANCED' && Array.isArray(data.answers)
+                                            ? (
+                                                <div className="flex flex-wrap gap-2">
+                                                    {data.answers.map((ans, idx) => (
+                                                        <span key={idx} className="bg-blue-50 text-blue-700 px-3 py-1 rounded-lg border border-blue-100 text-sm">
+                                                            {ans}
+                                                        </span>
+                                                    ))}
+                                                    <span className="text-xs text-gray-400 font-normal self-center ml-1">(이 중 하나만 입력해도 정답)</span>
+                                                </div>
+                                            )
+                                            : Array.isArray(data.answers)
+                                                ? data.answers.join(' → ')
+                                                : (data.answers || "정보 없음")
+                                        }
                                     </div>
                                 </div>
                                 <div className="flex items-start p-4 bg-white border-t border-gray-50">

@@ -20,7 +20,7 @@ export function BoardListBlock({ boards }: BoardListBlockProps) {
   return (
     <div className="w-full">
       {/* 헤더: 구분선 강화 (border-y) */}
-      <div className="grid grid-cols-[1fr_100px_120px_100px_130px] gap-4 px-6 py-4 text-[13px] font-semibold text-gray-500 border-y border-gray-100 bg-gray-50/30">
+      <div className="grid grid-cols-[1fr_100px_120px_100px_130px] gap-4 px-6 py-4 text-[17px] font-semibold border-y border-gray-100 bg-gray-50/30">
         <span className="pl-2">제목</span>
         <span className="text-center">작성자</span>
         <span className="text-center">카테고리</span>
@@ -53,22 +53,22 @@ export function BoardListBlock({ boards }: BoardListBlockProps) {
               </div>
 
               {/* 작성자 */}
-              <div className="text-center text-gray-500 text-sm italic">{board.writerName}</div>
+              <div className="text-center italic">{board.writerName}</div>
 
               {/* 카테고리 배지: 톤다운된 스타일 */}
               <div className="flex justify-center">
-                <span className="px-2.5 py-1 text-[11px] font-medium text-gray-400 bg-white border border-gray-200 rounded">
+                <span className="px-2.5 py-1 text-[13px] font-medium bg-white border border-gray-200 rounded">
                   {CATEGORY_MAP[board.boardType]}
                 </span>
               </div>
 
               {/* 날짜 */}
-              <div className="text-center text-gray-400 text-xs tracking-tighter">
+              <div className="text-center tracking-tighter">
                 {board.createdAt.split('T')[0]}
               </div>
 
               {/* 정보 (조회수/댓글 요약) */}
-              <div className="text-right pr-2 text-xs font-medium text-gray-400">
+              <div className="text-right pr-2 font-medium">
                 <span className="group-hover:text-gray-700 transition-colors uppercase"></span>{board.viewCount || 0}
               </div>
             </div>

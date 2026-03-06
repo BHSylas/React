@@ -13,7 +13,7 @@ export function BoardActionBar({
   onEdit,
   onDelete,
   onBack,
-  onWrite,
+  // onWrite,
   isAuthor,
   canDelete,
 }: BoardActionBarProps) {
@@ -55,13 +55,13 @@ export function BoardActionBar({
         >
           목록
         </button>
-        <button
+        {/* <button
           type="button"
           onClick={onWrite}
           className={`${baseBtnStyle} bg-gray-900 text-white hover:bg-black shadow-lg shadow-gray-200`}
         >
           글쓰기
-        </button>
+        </button> */}
       </div>
     </div>
   );
