@@ -3,38 +3,38 @@
 import { useState, useEffect } from "react";
 import WorldMap from "../../components/home/WorldMap";
 import { useNavigate } from "react-router";
-import { BoardListBlock } from "../../components/board/list/BoardListBlock";
-import type { Board } from "../../types/Board";
+// import { BoardListBlock } from "../../components/board/list/BoardListBlock";
+// import type { Board } from "../../types/Board";
 import ClassList from "../../components/class/list/ClassList";
 import type { ClassItem } from "../../types/ClassItem";
 import axios from "axios";
 
 export default function Home() {
   const navigate = useNavigate();
-  const [freeBoards, setFreeBoards] = useState<Board[]>([]);
+  // const [freeBoards, setFreeBoards] = useState<Board[]>([]);
   const [newClasses, setNewClasses] = useState<ClassItem[]>([]);
 
   // 자유게시판 가져오는 useEffect
-  useEffect(() => {
-    const fetchFreeBoards = async () => {
-      try {
-        const response = await axios.get('/api/boards/searchBoard?size=1000', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-        //content 안에 게시판 글 목록 보기
-        const boardData = response.data.content || [];
-        // 필터 적용(FREE(자유게시판)) 후 잘라서 5개만 보이기
-        const filtered = boardData.filter((board: Board) => board.boardType === "FREE")
-          .slice(0, 5);
-        setFreeBoards(filtered);
-      } catch (error) {
-        console.log("게시판 데이터를 가져오는데 실패", error);
-      }
-    };
-    fetchFreeBoards();
-  }, []);
+  // useEffect(() => {
+  //   const fetchFreeBoards = async () => {
+  //     try {
+  //       const response = await axios.get('/api/boards/searchBoard?size=1000', {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem('token')}`
+  //         }
+  //       });
+  //       //content 안에 게시판 글 목록 보기
+  //       const boardData = response.data.content || [];
+  //       // 필터 적용(FREE(자유게시판)) 후 잘라서 5개만 보이기
+  //       const filtered = boardData.filter((board: Board) => board.boardType === "FREE")
+  //         .slice(0, 5);
+  //       setFreeBoards(filtered);
+  //     } catch (error) {
+  //       console.log("게시판 데이터를 가져오는데 실패", error);
+  //     }
+  //   };
+  //   fetchFreeBoards();
+  // }, []);
 
   // 최신 강좌 가져오는 useEffect
   useEffect(() => {

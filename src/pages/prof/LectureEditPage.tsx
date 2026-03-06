@@ -89,14 +89,14 @@ export default function LectureEditPage() {
                 <p className="text-gray-500 mt-2 font-medium">강의의 상세 정보와 학습 영상을 업데이트하세요.</p>
             </header>
 
-            <div className="bg-white rounded-[2.5rem] shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden">
+            <div className="bg-white rounded-[2.5rem] shadow-xl shadow-gray-200/50 border-2 border-black overflow-hidden">
                 {!isInfoUpdated ? (
                     /* 1단계: 정보 수정 폼 */
                     <form onSubmit={handleUpdateInfo} className="p-8 md:p-12 space-y-8">
                         <div className="space-y-2">
                             <label className="text-sm font-black text-gray-900 ml-1">강의 제목</label>
                             <input
-                                className="w-full text-xl font-bold p-4 bg-gray-50 border-none rounded-2xl ring-2 ring-transparent focus:ring-blue-600/20 focus:bg-white transition-all outline-none"
+                                className="w-full text-xl font-bold p-4 bg-gray-50 border border-black rounded-2xl ring-2 ring-transparent focus:ring-blue-600/20 focus:bg-white transition-all outline-none"
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
                                 required
@@ -107,7 +107,7 @@ export default function LectureEditPage() {
                         <div className="space-y-2">
                             <label className="text-sm font-black text-gray-900 ml-1">강의 상세 소개</label>
                             <textarea
-                                className="w-full text-[16px] font-medium p-4 bg-gray-50 border-none rounded-2xl ring-2 ring-transparent focus:ring-blue-600/20 focus:bg-white transition-all outline-none min-h-[200px] resize-none leading-relaxed"
+                                className="w-full text-[16px] font-medium p-4 bg-gray-50 border border-black rounded-2xl ring-2 ring-transparent focus:bg-white transition-all outline-none min-h-[200px] resize-none leading-relaxed"
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 required
@@ -119,7 +119,7 @@ export default function LectureEditPage() {
                             <div className="space-y-2">
                                 <label className="text-sm font-black text-gray-900 ml-1">국가 카테고리</label>
                                 <select
-                                    className="w-full p-4 bg-gray-50 border-none rounded-2xl font-bold text-gray-700 outline-none cursor-pointer"
+                                    className="w-full p-4 bg-gray-50 border border-black rounded-2xl font-bold text-black outline-none cursor-pointer"
                                     value={country}
                                     onChange={(e) => setCountry(e.target.value)}>
                                     <option value="USA">🇺🇸 미국</option>
@@ -207,7 +207,7 @@ export default function LectureEditPage() {
                         <div className="mt-10 pt-6 border-t border-gray-100 flex justify-center">
                             <button
                                 onClick={() => navigate(-1)}
-                                className="text-[14px] font-black text-gray-400 hover:text-gray-900 transition-colors uppercase tracking-widest"
+                                className="text-[14px] font-black text-gray-400 hover:text-black transition-colors uppercase tracking-widest"
                             >
                                 ← 뒤로 가기
                             </button>
