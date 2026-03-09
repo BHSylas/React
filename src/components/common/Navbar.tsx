@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-// import { textLimiter } from "../../utils/textLimiter";
+import { textLimiter } from "../../utils/textLimiter";
 import { useContext, useEffect, useRef, useState } from "react";
 import { AuthModalContext } from "../../context/AuthModalContext";
 import "../../global.css";
@@ -12,7 +12,7 @@ interface NavbarProps {
 export function Navbar({ onMenuClick }: NavbarProps) {
   const [visible, setVisible] = useState(true);
   const lastScrollY = useRef(0);
-  const { isLoggedIn, logout } = useAuth();
+  const { isLoggedIn, logout, nickname } = useAuth();
   const { openLogin } = useContext(AuthModalContext);
   const navigate = useNavigate();
 
@@ -79,6 +79,11 @@ export function Navbar({ onMenuClick }: NavbarProps) {
       <div className="flex items-center text-[17px] font-bold">
         {isLoggedIn ? (
           <div className="flex items-center gap-2">
+            <div className="px-1 text-gray-500">
+              <span className="text-gray-900 text-[15px]">{nickname !== null ? textLimiter(nickname, 15) : "사용자"}</span>
+              <span className="text-[15px] text-gray-700 font-normal">님 환영합니다.</span>
+            </div>
+            <span className="text-gray-200 font-light">|</span>
             <button
               onClick={() => navigate("/my")}
               className="px-3 py-1.5 text-gray-700 hover:text-blue-600 transition-colors"
@@ -86,10 +91,6 @@ export function Navbar({ onMenuClick }: NavbarProps) {
               My Page
             </button>
             <span className="text-gray-200 font-light">|</span>
-            {/* <div className="px-1 text-gray-500">
-              <span className="text-gray-900">{nickname !== null ? textLimiter(nickname, 15) : "사용자"}</span>님
-            </div>
-            <span className="text-gray-200 font-light">|</span> */}
             <button
               onClick={logout}
               className="px-2 py-1.5 text-blue-800 hover:text-blue-600 transition-colors"
