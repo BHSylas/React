@@ -9,6 +9,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { getUserIdFromToken } from "../../types/decodeToken";
 import OtherLecutres from "../../components/class/desc/OtherLectures";
 import axios from "axios";
+import { getMyProfessorProfile, type ProfessorProfileResponse } from "../../types/profProfile";
 
 export default function LectureViewPage() { //현재 테스트 데이터 삽입 중
   const classId = useParams().classId;
@@ -20,6 +21,7 @@ export default function LectureViewPage() { //현재 테스트 데이터 삽입 
   const userId = getUserIdFromToken(authContext.token)!;
   const isProfessor = authContext.role === '1';
   const isMyLecture = isProfessor && page?.professorId === userId;
+  const [professorProfile, setProfessorProfile] = useState<ProfessorProfileResponse | null>(null);
 
   const token = localStorage.getItem("token");
   const config = {
@@ -29,6 +31,15 @@ export default function LectureViewPage() { //현재 테스트 데이터 삽입 
   useEffect(() => {
     api.get(`/lectures/${classId}`).then((res) => {
       setPage(res.data);
+
+      //위에 res.data 에서 교수 아이디 조회
+      if (res.data.professorId) {
+        getMyProfessorProfile(res.data.professorId) // 조회한 아이디 저장
+          .then(profRes => {
+            setProfessorProfile(profRes); // 그 아이디 따라서 프로필 저장
+          })
+          .catch(err => console.error("교수 프로필 로드 실패:", err));
+      }
     });
     api.get(`/lectures/${classId}/video`).then((res) => {
       const data = res.data;
@@ -95,7 +106,7 @@ export default function LectureViewPage() { //현재 테스트 데이터 삽입 
       <div className="max-w-6xl mx-auto mt-10 space-y-20">
         <section className="prose prose-slate max-w-none">
           <div className="text-gray-700 leading-relaxed min-h-[200px]">
-            <Overview description={page.description} />
+            <Overview description={page.description} profData={professorProfile}/>
           </div>
         </section>
 

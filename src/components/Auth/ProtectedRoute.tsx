@@ -14,15 +14,25 @@ export default function ProtectedRoute({ children }: { children: JSX.Element }) 
   useEffect(() => {
     if (!isAuthReady) return;
 
-    // 인증 확인이 끝났는데 로그인이 안 되어 있다면
-    if (!isLoggedIn && !hasAlerted.current && prevIsLoggout.current === null) {
-        alert("로그인이 필요한 서비스입니다.");
-        hasAlerted.current = true;
-        navigate("/", { replace: true }); // 메인으로 강제 이동
-        return;
+    const isWithdrawing = localStorage.getItem("isWithdrawing"); // 탈퇴중인지 확인용
+    
+    if (isWithdrawing) {
+      // 이동이 완료된 후 플래그 삭제 (메인 페이지로 이동하므로 여기서 지워도 무방)
+      if (!isLoggedIn) {
+        localStorage.removeItem("isWithdrawing");
+      }
+      return;
     }
 
-    if(prevIsLoggout.current === true && !isLoggedIn) {
+    // 인증 확인이 끝났는데 로그인이 안 되어 있다면
+    if (!isLoggedIn && !hasAlerted.current && prevIsLoggout.current === null) {
+      alert("로그인이 필요한 서비스입니다.");
+      hasAlerted.current = true;
+      navigate("/", { replace: true }); // 메인으로 강제 이동
+      return;
+    }
+
+    if (prevIsLoggout.current === true && !isLoggedIn) {
       alert("로그아웃 되었습니다.");
       navigate("/", { replace: true });
       return;
