@@ -12,6 +12,12 @@ export default function RegisterForm() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
 
+  const [verificationCode, SetVerificationCode] = useState(""); // 이메일 인증 코드
+  const [isEmailSent, setIsEmailSent] = useState(false); // 이메일 발송 여부
+  const [isEmailVerified, setIsEmailVerified] = useState(false); // 이메일 인증 여부
+  const [isEmailLoading, setIsEmailLoading] = useState(false);
+  const [emailMessage, setEmailMessage] = useState(""); // 이메일 인증 안내 메세지
+
   const navigate = useNavigate();
 
   // 영어, 숫자, 특수문자 포함 / 8~16자
@@ -21,9 +27,49 @@ export default function RegisterForm() {
   // 비밀번호와 비밀번호 확인이 동일하지 않음
   const isPasswordMatch = password === confirmPassword && confirmPassword !== "";
 
+  // 인증 번호 발송 api
+  const handleSendCode = async () => {
+    if (!email) {
+      alert("이메일을 입력해주시길 바랍니다.");
+      return;
+    }
+    setIsEmailLoading(true);
+    setEmailMessage("");
+    try {
+      await axios.post("/api/auth/send-verification-code", { email });
+      setIsEmailLoading(true);
+      setIsEmailSent(true);
+      setEmailMessage("인증번호가 발송되었습니다.");
+
+    } catch (e: any) {
+      setEmailMessage(e.response?.data?.message || "인증번호 발송에 실패했습니다.");
+    } finally {
+      setIsEmailLoading(false);
+    }
+  };
+
+  // 이메일 인증 api
+  const handleEmailVerified = async () => {
+    setIsEmailLoading(true);
+    try {
+      await axios.post("/api/auth/verify-email-code", { email, code: verificationCode });
+      setIsEmailLoading(true);
+      setIsEmailVerified(true);
+      setEmailMessage("");
+    } catch (e: any) {
+      setEmailMessage("인증 번호가 일치하지 않습니다.");
+    } finally {
+      setIsEmailLoading(false);
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    if (!isEmailVerified) {
+      setError("이메일 인증을 완료해주시길 바랍니다.");
+      return;
+    }
 
     if (!isPasswordValid) return; // 유효하지 않으면 제출 방지
     if (!isPasswordMatch) return; // 이하동문
@@ -38,7 +84,7 @@ export default function RegisterForm() {
       });
 
       if (response.status === 200 || response.status === 201) {
-        alert("회원가입이 완료되었습니다. 이메일 인증 후 로그인해주세요.");
+        alert("회원가입이 완료되었습니다.");
         navigate("/");
       }
 
@@ -63,7 +109,7 @@ export default function RegisterForm() {
   const inputStyle = "w-full px-5 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all text-sm font-medium placeholder:text-blue-500";
 
   return (
-    <div className="max-w-[400px] mx-auto bg-white border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.05)] rounded-[2.5rem] p-10 mt-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="max-w-[450px] mx-auto bg-white border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.05)] rounded-[2.5rem] p-10 mt-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <header className="mb-8 text-center">
         <p className="text-blue-600 font-black text-[10px] uppercase tracking-[0.3em] mb-2">Join Us</p>
         <h2 className="text-3xl font-black text-gray-900 tracking-tighter">회원가입</h2>
@@ -71,14 +117,49 @@ export default function RegisterForm() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1">
-          <input
-            type="email"
-            placeholder="이메일"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className={inputStyle}
-            required
-          />
+          <div className="flex gap-3">
+            <input
+              type="email"
+              placeholder="이메일"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className={inputStyle}
+              required
+            />
+            <button
+              type="button"
+              onClick={handleSendCode}
+              disabled={isEmailVerified || isEmailLoading}
+              className="text-[12px] px-4 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600 w-[80px]"
+            >
+              {isEmailLoading ? "..." : (isEmailSent ? "재발송" : "인증 요청")}
+            </button>
+          </div>
+          {emailMessage && !isEmailVerified && (
+            <p className="text-blue-500 text-[12px] font-medium ml-2">{emailMessage}</p>
+          )}
+          {isEmailSent && !isEmailVerified && (
+            <div className="flex gap-3">
+              <input
+                type="text"
+                placeholder="인증번호 확인"
+                value={verificationCode}
+                onChange={(e) => SetVerificationCode(e.target.value)}
+                className={inputStyle}
+              />
+              <button
+                type="button"
+                onClick={handleEmailVerified}
+                className="text-[12px] px-4 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600 w-[80px]"
+              >
+                {isEmailLoading ? "..." : "확인"}
+              </button>
+            </div>
+          )}
+
+          {isEmailVerified && (
+            <p className="text-green-500 text-[12px] font-bold ml-2">✓ 이메일 인증이 완료되었습니다.</p>
+          )}
         </div>
         <div className="space-y-1">
           <input
