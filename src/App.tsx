@@ -24,7 +24,7 @@ import LecturePlayerPage from "./pages/user/LecturePlayerPage";
 import LectureEditPage from "./pages/prof/LectureEditPage";
 import LectureManagePage from "./pages/prof/LectureManagePage";
 import AuthProvider from "./components/provider/AuthProvider";
-import VerifyEmail from "./pages/user/VerifyEmail";
+// import VerifyEmail from "./pages/user/VerifyEmail";
 
 function App() {
   return (
@@ -62,7 +62,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<LoginForm />} />
                 <Route path="/register" element={<RegisterForm />} />
-                <Route path="/verify-email" element={<VerifyEmail />} />
+                {/* <Route path="/verify-email" element={<VerifyEmail />} /> */}
               </Route>
             </Routes>
           </BrowserRouter>
