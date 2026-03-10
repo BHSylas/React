@@ -49,7 +49,13 @@ export default function AuthProvider ({ children }: AuthProviderProps){
         console.error("토큰 해독 실패", error);
       }
     } else {
-      localStorage.clear();
+        localStorage.clear();
+        delete api.defaults.headers.common.Authorization;
+        setIsLoggedIn(false);
+        setToken(null);
+        setName(null);
+        setNickname(null);
+        setRole(null);
     }
 
     setIsAuthReady(true);
@@ -83,17 +89,18 @@ export default function AuthProvider ({ children }: AuthProviderProps){
     }
   };
 
-  const logout = () => {
-    localStorage.clear();
-    delete api.defaults.headers.common.Authorization;
+    const logout = () => {
+        localStorage.clear();
+        delete api.defaults.headers.common.Authorization;
 
-    setIsLoggedIn(false);
-    setToken(null);
-    setName(null);
-    setNickname(null);
-    
-    window.location.href = "/";
-  };
+        setIsLoggedIn(false);
+        setToken(null);
+        setName(null);
+        setNickname(null);
+        setRole(null);
+
+        window.location.href = "/";
+    };
 
   return (
     <AuthContext.Provider
