@@ -127,7 +127,16 @@ function AdminClassList({ classList, approveLecture, rejectLecture, inactivateLe
 function ClassListItem({ item, approveLecture, rejectLecture, inactivateLecture, reactivateLecture }: { item: ClassItem, approveLecture: (lectureId: string) => void, rejectLecture: (lectureId: string) => void, inactivateLecture: (lectureId: string) => void, reactivateLecture: (lectureId: string) => void }) {
     return (
         <div className="flex gap-4 p-3 border border-gray-500 rounded-lg cursor-pointer hover:shadow-lg transition-shadow">
-            <div className="w-40 h-24 bg-gray-300 rounded" />
+            <div>
+                {item.thumbnailUrl ? (
+                    <img src={item.thumbnailUrl}
+                        alt={item.title}
+                        className="rounded w-40"
+                    ></img>
+                ) : (
+                    <div className="w-40 h-24 bg-gray-300 rounded" />
+                )}
+            </div>
             <div>
                 <h3 className="font-bold">{item.title}</h3>
                 <p className="text-[15px]">

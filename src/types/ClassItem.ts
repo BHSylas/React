@@ -7,4 +7,5 @@ export interface ClassItem {
   language: string;
   status: string;
   professorId: number;
+  thumbnailUrl: string;
 }
