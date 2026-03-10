@@ -2,6 +2,7 @@ import { useState } from "react";
 import { api } from "../../api/axiosInstance";
 import { VideoUpload } from "../../components/prof/upload/VideoUpload";
 import { VideoYoutube } from "../../components/prof/upload/VideoYoutube";
+import axios from "axios";
 
 type Language = "en" | "jp" | "de" | "it" | "cn";
 
@@ -16,6 +17,7 @@ const COUNTRY_LANGUAGE_MAP: Record<string, Language> = {
 
 export default function NewClassPage() {
     const [title, setTitle] = useState("");
+    const token = localStorage.getItem("token");
     const [description, setDescription] = useState("");
     const [country, setCountry] = useState("USA");
     // const [language, setLanguage] = useState<Language>("en"); // 국가의 종속됨으로 필요없음
@@ -39,7 +41,11 @@ export default function NewClassPage() {
                 language: COUNTRY_LANGUAGE_MAP[country] || "en", // 선택된 언어의 맞추기 (없으면 기본 영어)
             };
 
-            const res = await api.post("/instructor/lectures", payload);
+            const res = await axios.post("/api/instructor/lectures", payload, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             console.log("Create class success:", res.data);
             const lectureId = res.data.lectureId;
             setCreatedLectureId(lectureId);
