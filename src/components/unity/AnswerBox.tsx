@@ -25,13 +25,10 @@ export default function AnswerBox({ conversation }: { conversation: Conversation
         });
     }, []);
     const handleSubmit = (answer: string) => {
-        const userAnswer = conversation.level === 'INTERMEDIATE'
-            ? answer.split(" ")   // "I am a student" → ["I", "am", "a", "student"]
-            : answer;
         console.log(`Submitted answer for conversation ${conversation.conversationId}: ${answer}`);
         api.post(`/user/answer/${conversation.conversationId}`,
             {
-                userAnswer: userAnswer,
+                userAnswer: answer,
             }
         ).then(res => {
             console.log(res.data);
