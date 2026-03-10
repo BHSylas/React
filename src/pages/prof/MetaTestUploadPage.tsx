@@ -142,6 +142,22 @@ export function MetaTestUpload() {
         });
     };
 
+    useEffect(() => {
+        setFormData(prev => {
+            // 현재 선택된 정답들 중, 여전히 options 목록에 존재하는 것들만 남김
+            const validAnswers = prev.answers.filter(ans => prev.options.includes(ans));
+
+            // 만약 기존 answers와 필터링된 결과가 다르다면 업데이트
+            if (JSON.stringify(validAnswers) !== JSON.stringify(prev.answers)) {
+                return {
+                    ...prev,
+                    answers: validAnswers
+                };
+            }
+            return prev;
+        });
+    }, [formData.options]); // options가 바뀔 때마다 실행
+
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -228,7 +244,7 @@ export function MetaTestUpload() {
     };
 
     // 권한 없는 사용자의 렌더링 방지
-    if (role === '0') return null;
+    if (role === '0' || role === "ROLE_USER" || role === "USER") return null;
 
     return (
         <main className="max-w-6xl mx-auto px-6 py-12">
@@ -370,7 +386,7 @@ export function MetaTestUpload() {
                                                                 setFormData(prev => ({
                                                                     ...prev,
                                                                     answers: isSelected
-                                                                        ? prev.answers.filter(a => a !== opt) 
+                                                                        ? prev.answers.filter(a => a !== opt)
                                                                         : [...prev.answers, opt]
                                                                 }));
                                                             }}
