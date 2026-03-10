@@ -37,7 +37,7 @@ return (
             </div>
 
             {/* 리스트 본문 */}
-            <div className="divide-y divide-gray-100">
+            <div className="divide-y divide-gray-500">
                 {classList.length === 0 ? (
                     <div className="py-24 text-center">
                         <p className="text-gray-300 font-medium tracking-tight">등록된 강의 데이터가 존재하지 않습니다.</p>
@@ -47,7 +47,7 @@ return (
                         <div 
                             key={list.lectureId}
                             onClick={() => navigate(`/class/${list.lectureId}`)}
-                            className="group grid grid-cols-[1.5fr_100px_100px_2fr] gap-8 items-center py-6 cursor-pointer transition-all hover:bg-gray-50/50 px-4 -mx-4 rounded-xl"
+                            className="group grid grid-cols-[1.5fr_100px_100px_2fr] gap-8 items-center py-6 cursor-pointer transition-all hover:bg-gray-50/50 px-4"
                         >
                             <div className="text-[17px] font-black text-gray-900 group-hover:text-blue-600 transition-colors truncate tracking-tight">
                                 {list.title || "제목없음"}
@@ -73,7 +73,7 @@ return (
                 )}
             </div>
 
-            <div className="border-t border-gray-100 mt-2"></div>
+            <div className="border-t border-gray-500 mt-2"></div>
         </div>
     );
 

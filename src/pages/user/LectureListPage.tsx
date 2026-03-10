@@ -126,16 +126,13 @@ export function LectureListPage() {
         </header>
 
         {/* 에러/결과 없음 상태 */}
-        {(error || (!isLoading && classList.length === 0)) && (
+        {(error || (!isLoading && classList.length === 0)) ? (
           <div className="flex flex-col items-center justify-center py-24 bg-gray-50/50 rounded-[2rem] border border-dashed border-gray-200">
             <p className="text-gray-400 font-medium text-sm">
               {error || "조건에 맞는 강의가 아직 없습니다."}
             </p>
           </div>
-        )}
-
-        {/* 강의 리스트 */}
-        {classList.length > 0 && (
+        ) : (
           <div
             className={`transition-all duration-500 ${isLoading ? "opacity-30 blur-[2px] pointer-events-none" : "opacity-100"
               }`}
@@ -182,8 +179,8 @@ export function LectureListPage() {
                       <button
                         onClick={() => handlePageChange(page)}
                         className={`w-9 h-9 flex items-center justify-center rounded-lg text-xs transition-all ${isCurrent
-                            ? "font-bold scale-110"
-                            : "text-gray-400 hover:font-bold hover:text-gray-900"
+                          ? "font-bold scale-110"
+                          : "text-gray-400 hover:font-bold hover:text-gray-900"
                           }`}
                       >
                         {page + 1}

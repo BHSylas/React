@@ -1,5 +1,5 @@
-export default function BeginnerAnswer({options, onOptionSelect} : {options: string[] | null, onOptionSelect: (option: string) => void}) {
-    if(!options) {
+export default function BeginnerAnswer({ options, onOptionSelect }: { options: string[] | null, onOptionSelect: (option: string) => void }) {
+    if (!options) {
         return (
             <div className="flex justify-center items-center h-full">
                 <p className="text-lg font-bold">Loading...</p>
@@ -8,6 +8,7 @@ export default function BeginnerAnswer({options, onOptionSelect} : {options: str
     }
     return (
         <div className="flex flex-col items-center justify-center h-full gap-6">
+            <p className="text-blue-500 font-medium italic">"아래 보기 중 정답을 하나 선택해 주세요."</p>
             <div className="flex gap-4">
                 {options.map((option, index) => (
                     <button key={index} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition" onClick={() => onOptionSelect(option)}>

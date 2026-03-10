@@ -97,6 +97,8 @@ export default function HeadRenderer() {
         return <div className="p-6">사용자 정보를 불러오는 중...</div>;
     }
 
+    console.log("현재 role 값:", role);
+    console.log("parseInt 결과:", parseInt(role as string));
     return (
         <div className="relative overflow-hidden bg-gray-100 rounded-[1rem] p-10 border border-gray-100">
             <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">

@@ -1,10 +1,10 @@
 import { useState } from "react";
 
-export default function IntermediateAnswer({options, onOptionSelect} : {options: string[] | null, onOptionSelect: (option: string) => void}) {
+export default function IntermediateAnswer({ options, onOptionSelect }: { options: string[] | null, onOptionSelect: (option: string) => void }) {
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
     const handleOptionToggle = (option: string) => {
         setSelectedOptions((prev: string[]) => {
-            if(prev.includes(option)) {
+            if (prev.includes(option)) {
                 return prev.filter(o => o !== option);
             }
             else {
@@ -12,7 +12,7 @@ export default function IntermediateAnswer({options, onOptionSelect} : {options:
             }
         });
     }
-    if(!options) {
+    if (!options) {
         return (
             <div className="flex justify-center items-center h-full">
                 <p className="text-lg font-bold">Loading...</p>
@@ -21,12 +21,13 @@ export default function IntermediateAnswer({options, onOptionSelect} : {options:
     }
     return (
         <div className="flex flex-col items-center justify-center h-full gap-6">
+            <p className="text-blue-500 font-medium italic">"순서대로 선택하여 문장을 만드세요."</p>
             <div className="flex gap-4">
                 {options.map((option, index) => (
                     <div key={index} className="relative">
-                        <button 
-                        className={`px-4 py-2 rounded transition ${selectedOptions.includes(option) ? 'bg-green-600 text-white' : 'bg-green-500 text-white hover:bg-green-600'}`} 
-                        onClick={() => handleOptionToggle(option)}>
+                        <button
+                            className={`px-4 py-2 rounded transition ${selectedOptions.includes(option) ? 'bg-green-600 text-white' : 'bg-green-500 text-white hover:bg-green-600'}`}
+                            onClick={() => handleOptionToggle(option)}>
                             {option}
                         </button>
                         {selectedOptions.includes(option) && (
