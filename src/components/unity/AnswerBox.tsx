@@ -31,7 +31,7 @@ export default function AnswerBox({ conversation }: { conversation: Conversation
         ).then(res => {
             console.log(res.data);
             if(res.data.correct) {
-                alert("Correct answer!");
+                alert("정답!");
                 setIsCorrect(true);
                 setCorrectAnswer(res.data.correctAnswer || [answer]);
             }
@@ -39,15 +39,15 @@ export default function AnswerBox({ conversation }: { conversation: Conversation
                 setExplanation(res.data.explanation);
                 setIsCorrect(false);
                 setAttemptsLeft(0);
-                alert("No more attempts allowed for this question... Better luck next time!");
+                alert("이 질문에 대한 시도는 더 이상 허용되지 않습니다... 다음번에는 행운을 빕니다!");
             }
             else {
                 setAttemptsLeft(Math.max(0, 3 - res.data.attempts));
-                alert("Wrong answer. Try again!");
+                alert("오답입니다. 다시 한 번 도전하세요.");
             }
         }).catch(err => {
             console.error("Failed to submit answer:", err);
-            alert("An error occurred while submitting your answer. Please try again.");
+            alert("답변을 제출하는 동안 오류가 발생했습니다. 다시 시도해 주세요.");
         });
     }
     const handleOptionSelect = (option: string) => {

@@ -96,13 +96,13 @@ const MetaList = () => {
             </div>
 
             {/* 리스트 본문 */}
-            <div className="min-h-[400px] divide-y divide-gray-100">
+            <div className="min-h-[400px] divide-y divide-gray-500">
                 {listItems.length > 0 ? (
                     listItems.map((item) => (
                         <div key={item.id}
                             className="group grid grid-cols-[1.2fr_1.5fr_80px_80px_100px] 
                                        gap-6 px-4 py-6 cursor-pointer text-gray-600 
-                                       hover:bg-gray-50/50 transition-all items-center -mx-4 rounded-xl"
+                                       hover:bg-gray-50/50 transition-all items-center"
                             onClick={() => navigate(`/metaverse/page/${item.id}`)}>
 
                             {/* 강의 제목 */}
@@ -135,7 +135,7 @@ const MetaList = () => {
                     </div>
                 )}
             </div>
-
+            <div className="border-t border-gray-500 mt-2"></div>
             <div className="flex justify-end">
                 <button onClick={() => navigate('/metaverse/upload')}
                     className="group relative flex items-center gap-2 px-6 py-2.5 

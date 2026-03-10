@@ -17,7 +17,7 @@ export default function EnrollmentRenderer({ classes }: { classes: EnrollmentIte
     // 교수 권한일 때
     if (role === '1') {
         return (
-            <div className="flex-1 flex flex-col items-center justify-center py-20 bg-gray-50 rounded-[2.5rem] border-2 border-dashed border-gray-200">
+            <div className="flex-1 flex flex-col items-center justify-center py-20 bg-gray-50 rounded-[2.5rem] border-2 border-dashed border-gray-500">
                 <h1 className="text-xl font-black text-gray-400 mb-6 tracking-tight">강의 관리 권한이 확인되었습니다.</h1>
                 <button
                     onClick={() => navigate('/class/prof')}
@@ -31,7 +31,7 @@ export default function EnrollmentRenderer({ classes }: { classes: EnrollmentIte
 
     if (classes.length === 0) {
         return (
-            <div className="flex-1 py-24 text-center bg-gray-50 rounded-[2.5rem] border border-gray-100">
+            <div className="flex-1 py-24 text-center bg-gray-50 rounded-[2.5rem] border border-gray-500">
                 <p className="text-gray-300 font-black tracking-tight uppercase text-sm">No Enrolled Classes Found</p>
                 <p className="text-gray-400 mt-2 font-medium">수강 중인 강의가 없습니다.</p>
             </div>
@@ -54,7 +54,7 @@ export default function EnrollmentRenderer({ classes }: { classes: EnrollmentIte
                 {classes.map((enrollment) => (
                     <div
                         key={enrollment.lectureId}
-                        className="group relative bg-white border border-gray-100 rounded-[2rem] p-8 cursor-pointer transition-all duration-300 hover:shadow-2xl hover:shadow-gray-200/50 hover:border-blue-100 hover:-translate-y-1"
+                        className="group relative bg-white border-2 border-gray-500 rounded-[2rem] p-8 cursor-pointer transition-all duration-300 hover:shadow-2xl hover:shadow-gray-200/50 hover:border-blue-100 hover:-translate-y-1"
                         onClick={() => navigate(`/class/${enrollment.lectureId}`)}
                     >
                         <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-8">
