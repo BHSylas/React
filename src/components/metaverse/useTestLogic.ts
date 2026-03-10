@@ -18,11 +18,12 @@ export function useTestLogic(data: any) {
         if (!data) return;
         let correct = false;
 
-        if (data.level === 'INTERMEDIATE' && Array.isArray(data.answers)) { //중급 & 다중 선택지일 경우
+        if (data.level === 'INTERMEDIATE') {
             const choiceArray = userChoice as string[];
-
-            correct = data.answers.length === choiceArray.length &&
-                data.answers.every((val: string, idx: number) => val === choiceArray[idx]);
+            const submitted = choiceArray.join(" ").trim().toLowerCase().replace(/\s+/g, " ");
+            const answer = (Array.isArray(data.answers) ? data.answers[0] : data.answers)
+                ?.trim().toLowerCase().replace(/\s+/g, " ");
+            correct = submitted === answer;
         } else if (data.level === 'ADVANCED') {
             // 1. 사용자 입력: 양 끝 공백만 제거 (문장 안의 공백은 유지)
             const processedUserAnswer = (userChoice as string).trim();
