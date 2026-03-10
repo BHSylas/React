@@ -62,6 +62,10 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<LoginForm />} />
                 <Route path="/register" element={<RegisterForm />} />
+
+                  <Route path="/error/403" element={<div>403 접근 권한이 없습니다.</div>} />
+                  <Route path="/error/429" element={<div>429 요청이 너무 많습니다.</div>} />
+                  <Route path="/error/500" element={<div>500 서버 오류가 발생했습니다.</div>} />
                 {/* <Route path="/verify-email" element={<VerifyEmail />} /> */}
               </Route>
             </Routes>
