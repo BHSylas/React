@@ -30,20 +30,22 @@ export default function AnswerBox({ conversation }: { conversation: Conversation
             }
         ).then(res => {
             console.log(res.data);
-            if(res.data.correct) {
+            if (res.data.correct) {
                 alert("정답!");
                 setIsCorrect(true);
                 setCorrectAnswer(res.data.correctAnswer || [answer]);
             }
-            else if(res.data.locked) {
+            else if (res.data.locked) {
                 setExplanation(res.data.explanation);
                 setIsCorrect(false);
                 setAttemptsLeft(0);
-                alert("이 질문에 대한 시도는 더 이상 허용되지 않습니다... 다음번에는 행운을 빕니다!");
+                alert("기회를 모두 소모하였습니다.");
             }
             else {
-                setAttemptsLeft(Math.max(0, 3 - res.data.attempts));
-                alert("오답입니다. 다시 한 번 도전하세요.");
+                const currentAttempt = res.data.attempts; // 시도한 횟수
+                const remaining = Math.max(0, 3 - currentAttempt); // 횟수 제한
+                setAttemptsLeft(remaining)
+                alert(`오답입니다. (현재 ${currentAttempt} / 3회 시도) \n다시 한 번 도전하세요!`);
             }
         }).catch(err => {
             console.error("Failed to submit answer:", err);
@@ -78,7 +80,7 @@ export default function AnswerBox({ conversation }: { conversation: Conversation
 }
 
 function LevelSwitcher(level: string, options: string[] | null, onOptionSelect: (option: string) => void) {
-    switch(level.toUpperCase()) {
+    switch (level.toUpperCase()) {
         case "BEGINNER":
             return <BeginnerAnswer options={options} onOptionSelect={onOptionSelect} />;
         case "INTERMEDIATE":
