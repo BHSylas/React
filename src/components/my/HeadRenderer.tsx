@@ -169,7 +169,7 @@ export default function HeadRenderer() {
                                 { id: "specialty", label: "전공 분야", type: "text" },
                                 { id: "office", label: "연구실 위치", type: "text" },
                                 { id: "career", label: "경력", type: "text" },
-                                { id: "contactEmail", label: "연락처 이메일", type: "email" }
+                                { id: "contactEmail", label: "이메일", type: "email" }
                             ].map((field) => (
                                 <div key={field.id}>
                                     <label className="block text-[15px] font-black text-blue-600 mb-1 uppercase">
