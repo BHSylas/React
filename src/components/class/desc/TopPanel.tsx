@@ -54,7 +54,7 @@ export default function TopPanel({
       })
       .catch((err: any) => {
         console.error(err);
-        if (role === '1') {
+        if (role === '1' || role === "ROLE_PROFESSOR" || role === "PROFESSOR") {
           alert("강사는 수강할 수 없습니다.");
         }
         else {
@@ -104,15 +104,15 @@ export default function TopPanel({
           </div>
 
           <div className="mt-8 flex flex-wrap justify-center md:justify-start gap-3">
-            {(enrollment || role === '1' || role === '2') && (
+            {(enrollment || role === '1' || role === "ROLE_PROFESSOR" || role === "PROFESSOR" || role === '2' || role === "USER_ADMIN" || role === "ADMIN") && (
               <div className="flex gap-3">
                 <button
                   type="button"
                   className="px-8 py-3.5 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-700 hover:scale-[1.02] transition-all active:scale-95 shadow-lg shadow-blue-900/20"
                   onClick={video}
                 >
-                  {role === '1' || role === '2' ? "영상 확인하기" : "수강하기"}
-                  
+                  {role === '1' || role === "ROLE_PROFESSOR" || role === "PROFESSOR" || role === '2' || role === "USER_ADMIN" || role === "ADMIN" ? "영상 확인하기" : "수강하기"}
+
                 </button>
                 <button
                   type="button"
@@ -123,7 +123,7 @@ export default function TopPanel({
                 </button>
               </div>
             )}
-            {!enrollment && role !== '1' && role !== '2' && (
+            {!enrollment && (role !== '1' && role !== "ROLE_PROFESSOR" && role !== "PROFESSOR" ) && (role !== '2' && role !== "USER_ADMIN" && role !== "ADMIN") && (
               <button
                 type="button"
                 className="w-full md:w-auto px-10 py-4 bg-blue-600 text-white text-sm font-black rounded-xl hover:bg-blue-700 hover:shadow-xl transition-all active:scale-95 shadow-lg shadow-blue-900/20"

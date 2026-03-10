@@ -10,7 +10,7 @@ export function LectureQnaListPage() {
   // const [boards, setBoards] = useState<Board[]>([]);
   const [loading, setLoading] = useState<boolean>(true); //로딩중 상태
   const activeTab = "LECTURE_QNA";
-    const lectureId = useParams().lectureId ?? null;
+  const lectureId = useParams().lectureId ?? null;
   const [allBoards, setAllBoard] = useState<Board[]>([]); // 전체 보드
   const [searchBoard, setSerarchBoard] = useState({ keyword: "", category: "title" }); // 서치
   const [currentPage, setCurrentPage] = useState(1);
@@ -27,7 +27,7 @@ export function LectureQnaListPage() {
     try {
       const base64Payload = token.split(".")[1]; // 토큰의 payload 부분 추출
       const payload = JSON.parse(atob(base64Payload)); // base64 디코딩 후 JSON 파싱
-      return Number(payload.role);
+      return payload.role;
     } catch (e) {
       console.error("Token decode error:", e);
       return 0;
@@ -60,7 +60,7 @@ export function LectureQnaListPage() {
       setLoading(false);
     });
   };
-  
+
   useEffect(() => {
     setCurrentPage(1);
     setSerarchBoard({ keyword: "", category: "title" });
@@ -80,7 +80,7 @@ export function LectureQnaListPage() {
       {loading ? (
         <div className="p-5 text-center">로딩 중...</div>
       ) : (
-        <BoardListBlock boards={allBoards}/>
+        <BoardListBlock boards={allBoards} />
       )}
       <QnaWriteBar lectureId={lectureId} userRole={userRole} />
       <BoardPagination
@@ -96,9 +96,14 @@ export function LectureQnaListPage() {
   );
 }
 
-function QnaWriteBar({lectureId, userRole} : {lectureId?: string | null; userRole: number}) {
+function QnaWriteBar({ lectureId, userRole }: { lectureId?: string | null; userRole: any }) {
   const navigate = useNavigate();
-  if(lectureId == null || userRole !== 0) {
+
+  if (!lectureId) return null;
+
+  const allowedRoles = ["0", "ROLE_USER", "USER"];
+
+  if (!allowedRoles.includes(userRole)) {
     return null;
   }
   return (

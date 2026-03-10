@@ -112,7 +112,7 @@ export function LectureListPage() {
             <h1 className="text-2xl font-black text-gray-900 tracking-tight">강좌 목록</h1>
           </div>
 
-          {role === '1' && (
+          {(role === '1' || role === "ROLE_PROFESSOR" || role === "PROFESSOR") && (
             <button
               className="group relative flex items-center gap-2 px-6 py-2.5 
                    bg-blue-600 text-white text-sm font-bold rounded-full

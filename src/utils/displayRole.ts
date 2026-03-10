@@ -14,7 +14,6 @@ export default function displayRole(role: number | string | null | undefined) {
         case "ADMIN":
         case "ROLE_ADMIN":
             return "관리자";
-        case "ROLE_ADMIN":
         default:
             return "알 수 없음";
     }

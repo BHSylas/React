@@ -3,7 +3,7 @@ import Overview from "../../components/class/desc/Overview";
 import TopPanel from "../../components/class/desc/TopPanel";
 // import ReviewBlock from "../../components/class/review/ReviewBlock";
 import { useEffect, useState, useContext } from "react";
-import { api } from "../../api/axiosInstance";
+// import { api } from "../../api/axiosInstance";
 import type { ClassItem } from "../../types/ClassItem";
 import { AuthContext } from "../../context/AuthContext";
 import { getUserIdFromToken } from "../../types/decodeToken";
@@ -19,7 +19,7 @@ export default function LectureViewPage() { //현재 테스트 데이터 삽입 
   const navigate = useNavigate();
   const authContext = useContext(AuthContext);
   const userId = getUserIdFromToken(authContext.token)!;
-  const isProfessor = authContext.role === '1';
+  const isProfessor = (authContext.role === '1' || authContext.role === "ROLE_PROFESSOR" || authContext.role === "PROFESSOR");
   const isMyLecture = isProfessor && page?.professorId === userId;
   const [professorProfile, setProfessorProfile] = useState<ProfessorProfileResponse | null>(null);
 
@@ -29,7 +29,7 @@ export default function LectureViewPage() { //현재 테스트 데이터 삽입 
   };
 
   useEffect(() => {
-    api.get(`/lectures/${classId}`).then((res) => {
+    axios.get(`/api/lectures/${classId}`, config).then((res) => {
       setPage(res.data);
 
       //위에 res.data 에서 교수 아이디 조회
@@ -41,7 +41,7 @@ export default function LectureViewPage() { //현재 테스트 데이터 삽입 
           .catch(err => console.error("교수 프로필 로드 실패:", err));
       }
     });
-    api.get(`/lectures/${classId}/video`).then((res) => {
+    axios.get(`/api/lectures/${classId}/video`, config).then((res) => {
       const data = res.data;
       if (data === null) {
         setThumbnailUrl(undefined);
@@ -54,7 +54,7 @@ export default function LectureViewPage() { //현재 테스트 데이터 삽입 
         setThumbnailUrl(data.thumbnailUrl);
       }
     });
-    api.get(`/me/enrollments/${classId}`).then(() => {
+    axios.get(`/api/me/enrollments/${classId}`, config).then(() => {
       setEnrolling(true);
     })
       .catch(() => {
@@ -83,6 +83,7 @@ export default function LectureViewPage() { //현재 테스트 데이터 삽입 
       }
     }
   }
+
   if (page === null) {
     return <div>Loading...</div>;
   }
@@ -106,7 +107,7 @@ export default function LectureViewPage() { //현재 테스트 데이터 삽입 
       <div className="max-w-6xl mx-auto mt-10 space-y-20">
         <section className="prose prose-slate max-w-none">
           <div className="text-gray-700 leading-relaxed min-h-[200px]">
-            <Overview description={page.description} profData={professorProfile}/>
+            <Overview description={page.description} profData={professorProfile} />
           </div>
         </section>
 

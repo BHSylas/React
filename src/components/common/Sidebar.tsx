@@ -70,7 +70,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           게시판
         </button>
 
-        {role === "2" && (
+        {role === "2" || role === "ADMIN" || role === "ROLE_ADMIN" && (
           <button
             className="px-3 py-4 text-left transition-all hover:bg-blue-50 hover:text-blue-800 text-lg font-bold"
             onClick={() => handleNavigate("/admin")}

@@ -18,7 +18,7 @@ export default function AdminMainPage() {
         console.log("No role, probably waiting for auth...");
         return <div>Loading...</div>;
     }
-    else if (role !== '2') {
+    else if (role !== '2' && role !== "ADMIN" && role !== "ROLE_ADMIN") {
         alert("No exception!");
         navigate('/');
     }
