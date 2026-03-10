@@ -60,8 +60,8 @@ export default function AnswerBox({ conversation }: { conversation: Conversation
         <div className="flex justify-center items-center">
             <div className="flex flex-col text-center gap-2 rounded-lg bg-base-100 min-w-64 p-3">
                 <div className="flex flex-col">
-                    <p className="text-xl font-bold">{conversation.question.replace(/\[.*?\]/g, "___")}</p>
                     <p className="">{conversation.topic}</p>
+                    <p className="text-xl font-bold">{conversation.question.replace(/\[.*?\]/g, "___")}</p>
                     <p className="text-sm opacity-70">{isCorrect ? `정답: ${correctAnswer?.join(", ")}` : `남은 기회: ${attemptsLeft}`}</p>
                     {explanation && (
                         <div className="mt-2 p-2 bg-red-100 text-red-700 rounded">
