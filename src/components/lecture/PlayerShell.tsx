@@ -29,7 +29,7 @@ export default function PlayerShell({ init }: { init: LecturePlaybackInit }) {
     try {
       const base64Payload = token.split(".")[1]; // 토큰의 payload 부분 추출
       const payload = JSON.parse(atob(base64Payload)); // base64 디코딩 후 JSON 파싱
-      return Number(payload.role);
+      return payload.role;
     } catch (e) {
       console.error("Token decode error:", e);
       return 0;
@@ -83,7 +83,7 @@ export default function PlayerShell({ init }: { init: LecturePlaybackInit }) {
 
   // 5초마다 진행 저장 (기존 로직 유지)
   useInterval(() => {
-    if (userRole === 1 || userRole === 2) {
+    if (userRole === '1' || userRole === "ROLE_PROFESSOR" || userRole === "PROFESSOR" || userRole === '2' || userRole === "USER_ADMIN" || userRole === "ADMIN") {
       return;
     }
 
@@ -115,7 +115,7 @@ export default function PlayerShell({ init }: { init: LecturePlaybackInit }) {
             ref={playerRef}
             src={signedUrl}
             startAtSec={init.lastWatchedTimeSec}
-            isAdmin={userRole === 1 || userRole === 2}
+            isAdmin={userRole === '1' || userRole === "ROLE_PROFESSOR" || userRole === "PROFESSOR" || userRole === '2' || userRole === "USER_ADMIN" || userRole === "ADMIN"}
           />
         ) : (
           <div className="p-4 text-error">영상 URL을 불러오지 못했습니다.</div>
@@ -132,7 +132,7 @@ export default function PlayerShell({ init }: { init: LecturePlaybackInit }) {
       {snapshot && (
         <PlayerControls
           currentSec={snapshot.currentSec}
-          maxWatchedSec={(userRole === 1 || userRole === 2)
+          maxWatchedSec={(userRole === '1' || userRole === "ROLE_PROFESSOR" || userRole === "PROFESSOR" || userRole === '2' || userRole === "USER_ADMIN" || userRole === "ADMIN")
             ? snapshot.durationSec
             : snapshot.maxWatchedSec
           }
@@ -148,12 +148,12 @@ export default function PlayerShell({ init }: { init: LecturePlaybackInit }) {
           }}
           onSeek={(sec) => {
 
-            if (userRole === 1 || userRole === 2) {
+            if (userRole === '1' || userRole === "ROLE_PROFESSOR" || userRole === "PROFESSOR" || userRole === '2' || userRole === "USER_ADMIN" || userRole === "ADMIN") {
               playerRef.current?.seekTo(sec);
               return;
             }
 
-            if (userRole === 0) {
+            if (userRole === "0" || userRole === "ROLE_USER" || userRole === "USER") {
               if (sec > snapshot.maxWatchedSec) {
                 alert("아직 시청하지 않은 구간으로는 이동할 수 없습니다.");
                 return;

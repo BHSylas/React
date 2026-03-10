@@ -16,7 +16,7 @@ export default function LecturePlayerPage() {
     if (!token) return 0;
     try {
       const payload = JSON.parse(atob(token.split(".")[1])); // 토큰에서 페이로드 추출
-      return Number(payload.role); // 0: 학생, 1: 교수, 2: 관리자
+      return payload.role; // 0: 학생, 1: 교수, 2: 관리자
     } catch (e) {
       return 0;
     }
@@ -42,7 +42,7 @@ export default function LecturePlayerPage() {
         let lastWatchedTime = 0;
         const userRole = getUserRole();
 
-        if (userRole === 0) {
+        if (userRole === "0" || userRole === "ROLE_USER" || userRole === "USER") {
           try {
             const progressRes = await axios.get(`/api/me/enrollments/${lectureId}`, {
               headers: {
