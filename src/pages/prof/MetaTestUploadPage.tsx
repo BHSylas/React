@@ -184,7 +184,7 @@ export function MetaTestUpload() {
             if (formData.level === 'BEGINNER') {
                 processedAnswers = formData.answers;
             } else if (formData.level === 'INTERMEDIATE') {
-                processedAnswers = formData.answers;
+                processedAnswers = [formData.answers.join(" ")];
             } else if (formData.level === 'ADVANCED') {
                 processedAnswers = formData.answers
                     .map(a => String(a).trim()) // 앞뒤 공백만 제거 (문장 안의 공백은 유지됨)
