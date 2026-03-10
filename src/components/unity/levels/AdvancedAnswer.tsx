@@ -4,6 +4,7 @@ export default function AdvancedAnswer({ onOptionSelect }: { onOptionSelect: (op
     const [answer, setAnswer] = useState<string>("");
         return (
             <div className="flex flex-col items-center justify-center h-full gap-6">
+                <p className="text-blue-500 font-medium italic">"답을 직접 서술해 주세요."</p>
                 <div className="flex gap-4">
                     <input type="text" placeholder="Enter your answer" className="input input-bordered w-full max-w-xs" value={answer} onChange={(e) => setAnswer(e.target.value)} />
                 </div>
