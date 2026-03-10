@@ -43,7 +43,7 @@ const TestAnswer: React.FC<TestAnswerProps> = ({ onAnswersChange, savedOptions =
                         value={inputValue}
                         onChange={handleInputChange}
                         onKeyDown={handleKeyDown}
-                        placeholder="단어 입력 후 엔터를 누르세요"
+                        placeholder="입력 후 엔터를 누르세요"
                         className="w-full h-[50px] px-5 bg-white border border-black rounded-xl outline-none text-sm font-medium shadow-sm placeholder:text-black"
                     />
                 </div>
