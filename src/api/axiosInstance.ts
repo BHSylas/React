@@ -76,7 +76,11 @@ api.interceptors.response.use(
                 url.includes("/auth/me") ||
                 url.includes("/auth/signup") ||
                 url.includes("/auth/send-verification-code") ||
-                url.includes("/auth/verify-email-code")
+                url.includes("/auth/verify-email-code") ||
+                url.includes("/auth/find-email") ||
+                url.includes("/auth/password-reset/send-code") ||
+                url.includes("/auth/password-reset/verify-code") ||
+                url.includes("/auth/password-reset/confirm")
             ) {
                 return Promise.reject(error);
             }
@@ -91,10 +95,17 @@ api.interceptors.response.use(
         }
 
         if (status === 500) {
+            if (
+                url.includes("/auth/find-email") ||
+                url.includes("/auth/password-reset/send-code") ||
+                url.includes("/auth/password-reset/verify-code") ||
+                url.includes("/auth/password-reset/confirm")
+            ) {
+                return Promise.reject(error);
+            }
+
             window.location.href = "/error/500";
             return Promise.reject(error);
         }
-
-        return Promise.reject(error);
     }
 );

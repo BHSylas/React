@@ -1,15 +1,23 @@
 import { useAuth } from "../../hooks/useAuth";
 import displayRole from "../../utils/displayRole";
-import { withdrawMember } from "../../types/authService";
-import { useState } from "react";
+import { withdrawMember, updateMyProfile } from "../../types/authService";
+import { useEffect, useState } from "react";
 import { updateProfessorProfile, getMyProfessorProfile } from "../../types/profProfile";
 import { getUserIdFromToken } from "../../types/decodeToken";
 import { api } from "../../api/axiosInstance";
 
 export default function HeadRenderer() {
-    const { name, nickname, role } = useAuth();
-    const [isEditing, setIsEditing] = useState(false);
-    const [editData, setEditData] = useState({
+    const { name, nickname, role, syncProfile } = useAuth();
+
+    const [isEditingProfile, setIsEditingProfile] = useState(false);
+    const [isEditingProfessorInfo, setIsEditingProfessorInfo] = useState(false);
+
+    const [profileForm, setProfileForm] = useState({
+        name: "",
+        nickname: ""
+    });
+
+    const [professorForm, setProfessorForm] = useState({
         bio: "",
         specialty: "",
         career: "",
@@ -28,6 +36,13 @@ export default function HeadRenderer() {
         normalizedRole === "0" ||
         normalizedRole === "USER" ||
         normalizedRole === "ROLE_USER";
+
+    useEffect(() => {
+        setProfileForm({
+            name: name ?? "",
+            nickname: nickname ?? ""
+        });
+    }, [name, nickname]);
 
     const handleWithdraw = async () => {
         if (!window.confirm("정말로 탈퇴하시겠습니까? 데이터는 복구되지 않습니다.")) return;
@@ -49,7 +64,50 @@ export default function HeadRenderer() {
         }
     };
 
-    const handleStartEditing = async () => {
+    const handleStartProfileEdit = () => {
+        setProfileForm({
+            name: name ?? "",
+            nickname: nickname ?? ""
+        });
+        setIsEditingProfile(true);
+    };
+
+    const handleSaveProfile = async () => {
+        const trimmedName = profileForm.name.trim();
+        const trimmedNickname = profileForm.nickname.trim();
+
+        if (!trimmedName) {
+            alert("이름을 입력해주세요.");
+            return;
+        }
+
+        if (!trimmedNickname) {
+            alert("닉네임을 입력해주세요.");
+            return;
+        }
+
+        try {
+            const updated = await updateMyProfile({
+                name: trimmedName,
+                nickname: trimmedNickname
+            });
+
+            syncProfile({
+                name: updated.name ?? trimmedName,
+                nickname: updated.nickname ?? trimmedNickname
+            });
+
+            alert("내 정보가 수정되었습니다.");
+            setIsEditingProfile(false);
+        } catch (e: any) {
+            console.error("내 정보 수정 실패:", e);
+            const message =
+                e?.response?.data?.message || "내 정보 수정 중 오류가 발생했습니다.";
+            alert(message);
+        }
+    };
+
+    const handleStartProfessorEditing = async () => {
         const token = localStorage.getItem("token");
         const userId = getUserIdFromToken(token);
 
@@ -61,7 +119,7 @@ export default function HeadRenderer() {
         try {
             const currentProfile = await getMyProfessorProfile(userId);
 
-            setEditData({
+            setProfessorForm({
                 bio: currentProfile.bio || "",
                 specialty: currentProfile.specialty || "",
                 career: currentProfile.career || "",
@@ -69,37 +127,23 @@ export default function HeadRenderer() {
                 contactEmail: currentProfile.contactEmail || ""
             });
 
-            setIsEditing(true);
-        } catch (e: any) {
-            if (e.response?.status === 404) {
-                console.log("프로필이 아직 존재하지 않습니다. 신규 생성을 시작합니다.");
-                // 빈 데이터로 입력창을 열기
-                setEditData({
-                    bio: "",
-                    specialty: "",
-                    career: "",
-                    office: "",
-                    contactEmail: ""
-                });
-                setIsEditing(true);
-            } else {
-                // 그 외의 진짜 에러(서버 다운, 권한 등) 처리
-                console.error(e);
-                alert("정보를 불러오는 데 실패했습니다.");
-            }
+            setIsEditingProfessorInfo(true);
+        } catch (e) {
+            console.error(e);
+            alert("기존 프로필 정보를 불러오는 데 실패했습니다.");
         }
     };
 
-    const handleUpdateProfile = async () => {
-        if (editData.bio.length > 1000) {
+    const handleUpdateProfessorProfile = async () => {
+        if (professorForm.bio.length > 1000) {
             alert("자기소개는 1000자 이내여야 합니다.");
             return;
         }
 
         try {
-            await updateProfessorProfile(editData);
-            alert("프로필이 성공적으로 수정되었습니다.");
-            setIsEditing(false);
+            await updateProfessorProfile(professorForm);
+            alert("교수 프로필이 성공적으로 수정되었습니다.");
+            setIsEditingProfessorInfo(false);
             window.location.reload();
         } catch (e) {
             console.error(e);
@@ -107,12 +151,10 @@ export default function HeadRenderer() {
         }
     };
 
-    if (!name || !nickname || !role) {
+    if (name === null || nickname === null || role === null) {
         return <div className="p-6">사용자 정보를 불러오는 중...</div>;
     }
 
-    console.log("현재 role 값:", role);
-    console.log("parseInt 결과:", parseInt(role as string));
     return (
         <div className="relative overflow-hidden bg-gray-100 rounded-[1rem] p-10 border border-gray-100">
             <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
@@ -140,6 +182,24 @@ export default function HeadRenderer() {
             </div>
 
             <div className="flex justify-between mt-3">
+                <div className="flex gap-3">
+                    <button
+                        onClick={handleStartProfileEdit}
+                        className="text-blue-500 text-[11px] font-bold hover:text-blue-600"
+                    >
+                        내 정보 수정
+                    </button>
+
+                    {isProfessor && (
+                        <button
+                            onClick={handleStartProfessorEditing}
+                            className="text-indigo-500 text-[11px] font-bold hover:text-indigo-600"
+                        >
+                            교수 프로필 수정
+                        </button>
+                    )}
+                </div>
+
                 {canWithdraw && (
                     <button
                         onClick={handleWithdraw}
@@ -148,18 +208,62 @@ export default function HeadRenderer() {
                         회원 탈퇴
                     </button>
                 )}
-
-                {isProfessor && (
-                    <button
-                        onClick={handleStartEditing}
-                        className="text-blue-500 text-[11px] font-bold hover:text-blue-600"
-                    >
-                        교수 프로필 수정하기
-                    </button>
-                )}
             </div>
 
-            {isEditing && (
+            {isEditingProfile && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+                    <div className="bg-white w-full max-w-md rounded-[1rem] p-8 shadow-2xl">
+                        <h2 className="text-2xl font-black text-gray-900 mb-6">내 정보 수정</h2>
+
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-[15px] font-black text-blue-600 mb-1 uppercase">
+                                    이름
+                                </label>
+                                <input
+                                    type="text"
+                                    className="w-full border border-black rounded-xl px-4 py-2 text-sm"
+                                    value={profileForm.name}
+                                    onChange={(e) =>
+                                        setProfileForm({ ...profileForm, name: e.target.value })
+                                    }
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-[15px] font-black text-blue-600 mb-1 uppercase">
+                                    닉네임
+                                </label>
+                                <input
+                                    type="text"
+                                    className="w-full border border-black rounded-xl px-4 py-2 text-sm"
+                                    value={profileForm.nickname}
+                                    onChange={(e) =>
+                                        setProfileForm({ ...profileForm, nickname: e.target.value })
+                                    }
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex gap-3 mt-8">
+                            <button
+                                onClick={() => setIsEditingProfile(false)}
+                                className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-2xl font-bold hover:bg-gray-200 transition-all"
+                            >
+                                취소
+                            </button>
+                            <button
+                                onClick={handleSaveProfile}
+                                className="flex-1 py-3 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all"
+                            >
+                                저장하기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {isEditingProfessorInfo && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
                     <div className="bg-white w-full max-w-lg rounded-[1rem] p-8 shadow-2xl max-h-[100vh] overflow-y-auto">
                         <h2 className="text-2xl font-black text-gray-900 mb-6">교수 프로필 수정</h2>
@@ -169,7 +273,7 @@ export default function HeadRenderer() {
                                 { id: "specialty", label: "전공 분야", type: "text" },
                                 { id: "office", label: "연구실 위치", type: "text" },
                                 { id: "career", label: "경력", type: "text" },
-                                { id: "contactEmail", label: "이메일", type: "email" }
+                                { id: "contactEmail", label: "연락처 이메일", type: "email" }
                             ].map((field) => (
                                 <div key={field.id}>
                                     <label className="block text-[15px] font-black text-blue-600 mb-1 uppercase">
@@ -178,8 +282,10 @@ export default function HeadRenderer() {
                                     <input
                                         type={field.type}
                                         className="w-full border border-black rounded-xl px-4 py-2 text-sm"
-                                        value={(editData as any)[field.id]}
-                                        onChange={(e) => setEditData({ ...editData, [field.id]: e.target.value })}
+                                        value={(professorForm as any)[field.id]}
+                                        onChange={(e) =>
+                                            setProfessorForm({ ...professorForm, [field.id]: e.target.value })
+                                        }
                                     />
                                 </div>
                             ))}
@@ -190,21 +296,23 @@ export default function HeadRenderer() {
                                 </label>
                                 <textarea
                                     className="w-full border border-black rounded-xl px-4 py-2 text-sm h-24 resize-none"
-                                    value={editData.bio}
-                                    onChange={(e) => setEditData({ ...editData, bio: e.target.value })}
+                                    value={professorForm.bio}
+                                    onChange={(e) =>
+                                        setProfessorForm({ ...professorForm, bio: e.target.value })
+                                    }
                                 />
                             </div>
                         </div>
 
                         <div className="flex gap-3 mt-8">
                             <button
-                                onClick={() => setIsEditing(false)}
+                                onClick={() => setIsEditingProfessorInfo(false)}
                                 className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-2xl font-bold hover:bg-gray-200 transition-all"
                             >
                                 취소
                             </button>
                             <button
-                                onClick={handleUpdateProfile}
+                                onClick={handleUpdateProfessorProfile}
                                 className="flex-1 py-3 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all"
                             >
                                 저장하기

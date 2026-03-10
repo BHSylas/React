@@ -14,15 +14,17 @@ export interface AuthContextType {
     nickname: string;
   }) => void;
   logout: () => void;
+  syncProfile: (data: { name: string; nickname: string }) => void;
 }
 
 export const AuthContext = createContext<AuthContextType>({
-  isLoggedIn: false,
-  token: null,
-  name: null,
-  nickname: null,
-  role: null,
-  isAuthReady: false,
-  login: () => {},
-  logout: () => {},
+    isLoggedIn: false,
+    token: null,
+    name: null,
+    nickname: null,
+    role: null,
+    isAuthReady: false,
+    login: () => {},
+    logout: () => {},
+    syncProfile: () => {},
 });
