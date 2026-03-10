@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { api } from "../../api/axiosInstance";
 import type { Conversation } from "../../types/conversation";
 import BeginnerAnswer from "./levels/BeginnerAnswer";
@@ -12,7 +12,7 @@ export default function AnswerBox({ conversation }: { conversation: Conversation
     const [correctAnswer, setCorrectAnswer] = useState<string[] | null>(
         conversation.correctAnswer ? [conversation.correctAnswer] : null
     );
-    useEffect(() => {
+    const fetchData = useCallback(() => {
         console.log(conversation);
         api.get(`/user/npc/conversation/${conversation.conversationId}`).then(res => {
             const data = res.data;
@@ -23,7 +23,12 @@ export default function AnswerBox({ conversation }: { conversation: Conversation
         }).catch(err => {
             console.error("Failed to fetch conversation details:", err);
         });
-    }, []);
+    }, [conversation.conversationId]);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
+
     const handleSubmit = (answer: string) => {
         console.log(`Submitted answer for conversation ${conversation.conversationId}: ${answer}`);
         api.post(`/user/answer/${conversation.conversationId}`,
@@ -58,6 +63,17 @@ export default function AnswerBox({ conversation }: { conversation: Conversation
         console.log(`Selected option for conversation ${conversation.conversationId}: ${option}`);
         handleSubmit(option);
     }
+
+    const handleReset = () => {
+        api.delete(`/user/answer/${conversation.conversationId}/reset`).then(() => {
+            alert("초기화되었습니다. 다시 시도해보세요!");
+            fetchData();
+        })
+            .catch(err => {
+                console.error("초기화 실패:", err);
+                alert("초기화 중 오류가 발생했습니다.");
+            });
+    };
     return (
         <div className="flex justify-center items-center">
             <div className="flex flex-col text-center gap-2 rounded-lg bg-base-100 min-w-64 p-3">
@@ -75,6 +91,11 @@ export default function AnswerBox({ conversation }: { conversation: Conversation
                 {(attemptsLeft > 0 && !isCorrect) && <div>
                     {LevelSwitcher(conversation.level, conversation.options, handleOptionSelect)}
                 </div>}
+                {(attemptsLeft === 0 && !isCorrect) && <button
+                    onClick={handleReset}
+                    className="btn btn-primary mt-4 w-full">
+                    다시 풀기
+                </button>}
             </div>
         </div>
     );
