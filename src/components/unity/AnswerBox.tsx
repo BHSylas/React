@@ -12,7 +12,7 @@ export default function AnswerBox({ conversation }: { conversation: Conversation
     const [correctAnswer, setCorrectAnswer] = useState<string[] | null>([]);
     useEffect(() => {
         console.log(conversation);
-        api.get(`user/npc/conversation/${conversation.conversationId}`).then(res => {
+        api.get(`/user/npc/conversation/${conversation.conversationId}`).then(res => {
             const data = res.data;
             setExplanation(data.explanation);
             setAttemptsLeft(Math.max(0, 3 - data.attempts));
@@ -60,8 +60,7 @@ export default function AnswerBox({ conversation }: { conversation: Conversation
         <div className="flex justify-center items-center">
             <div className="flex flex-col text-center gap-2 rounded-lg bg-base-100 min-w-64 p-3">
                 <div className="flex flex-col">
-                    <h3 className="text-2xl font-bold text-center">Answer Box</h3>
-                    <p className="text-3xl font-bold">{conversation.question}?</p>
+                    <p className="text-xl font-bold">{conversation.question.replace(/\[.*?\]/g, "___")}</p>
                     <p className="">{conversation.topic}</p>
                     <p className="text-sm opacity-70">{isCorrect ? `정답: ${correctAnswer?.join(", ")}` : `남은 기회: ${attemptsLeft}`}</p>
                     {explanation && (
