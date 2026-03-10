@@ -341,21 +341,52 @@ export function MetaTestUpload() {
                                     </div>
                                 )}
                                 {formData.level === 'INTERMEDIATE' && (
-                                    <div className="flex flex-wrap gap-3">
-                                        {formData.options.map((opt, idx) => (
-                                            <label key={idx} className={`flex items-center gap-2 px-4 py-2 rounded-xl border cursor-pointer transition-all ${formData.answers.includes(opt) ? 'bg-blue-600 border-blue-600 text-white' : 'bg-gray-50 border-black text-gray-600 hover:border-blue-300'}`}>
-                                                <input type="checkbox" className="hidden" checked={formData.answers.includes(opt)}
-                                                    onChange={(e) => {
-                                                        const isChecked = e.target.checked;
-                                                        setFormData(prev => ({
-                                                            ...prev,
-                                                            answers: isChecked ? [...prev.answers, opt] : prev.answers.filter(a => a !== opt)
-                                                        }));
-                                                    }}
-                                                />
-                                                <span className="text-sm font-bold">{opt}</span>
-                                            </label>
-                                        ))}
+                                    <div className="flex flex-col gap-4">
+                                        {/* 선택 순서 미리보기 */}
+                                        {formData.answers.length > 0 && (
+                                            <div className="flex flex-wrap gap-2 p-3 bg-blue-50 border border-blue-200 rounded-xl">
+                                                {formData.answers.map((ans, i) => (
+                                                    <span key={i} className="px-3 py-1 bg-blue-600 text-white rounded-lg text-sm font-bold">
+                                                        {i + 1}. {ans}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        )}
+
+                                        {/* 보기 버튼 */}
+                                        <div className="flex flex-wrap gap-3">
+                                            {formData.options.length > 0 ? formData.options.map((opt, idx) => {
+                                                const orderIndex = formData.answers.indexOf(opt);
+                                                const isSelected = orderIndex !== -1;
+                                                return (
+                                                    <div key={idx} className="relative">
+                                                        <button
+                                                            type="button"
+                                                            className={`flex items-center gap-2 px-4 py-2 rounded-xl border font-bold text-sm transition-all ${isSelected
+                                                                ? 'bg-blue-600 border-blue-600 text-white'
+                                                                : 'bg-gray-50 border-black text-gray-600 hover:border-blue-300'
+                                                                }`}
+                                                            onClick={() => {
+                                                                setFormData(prev => ({
+                                                                    ...prev,
+                                                                    answers: isSelected
+                                                                        ? prev.answers.filter(a => a !== opt) 
+                                                                        : [...prev.answers, opt]
+                                                                }));
+                                                            }}
+                                                        >
+                                                            {opt}
+                                                        </button>
+                                                        {isSelected && (
+                                                            <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-black">
+                                                                {orderIndex + 1}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                );
+                                            }) : <p className='text-sm text-gray-400 italic'>먼저 답 목록을 추가해주세요.</p>}
+                                        </div>
+                                        <p className="text-[13px] ml-1 italic text-blue-600 font-medium">* 정답 단어를 순서대로 클릭하세요.</p>
                                     </div>
                                 )}
                                 {formData.level === 'ADVANCED' && (
