@@ -24,7 +24,7 @@ export function MyActivityRenderer({ type, data }: { type: string, data: any[] }
     return (
         <div className="flex-1">
             {/* 상단 헤더: 진한 검정 선으로 섹션 구분 */}
-            <div className="flex items-center justify-between pb-4 border-b-2 border-gray-900">
+            <div className="flex items-center justify-between pb-4 border-b-2 border-gray-900 w-full">
                 <h2 className="text-[22px] font-black text-gray-900 tracking-tight">{type} 내역</h2>
                 <span className="text-[11px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded uppercase tracking-wider">
                     Activity Log
@@ -32,11 +32,11 @@ export function MyActivityRenderer({ type, data }: { type: string, data: any[] }
             </div>
 
             {/* 리스트 본문 */}
-            <div className="divide-y divide-gray-100">
+            <div className="divide-y divide-gray-500">
                 {data.map((item, index) => (
                     <div
                         key={item.boardId || item.commentId || `activity-${index}`}
-                        className="group flex flex-col md:flex-row md:items-center justify-between gap-2 py-6 px-4 -mx-4 cursor-pointer transition-all hover:bg-gray-50/50 rounded-xl"
+                        className="group flex flex-col md:flex-row md:items-center justify-between gap-2 py-6 px-4 cursor-pointer transition-all hover:bg-gray-50/50"
                         onClick={() => hanbleItemClick(item.boardId)}
                     >
                         <div className="flex-1">
@@ -58,7 +58,7 @@ export function MyActivityRenderer({ type, data }: { type: string, data: any[] }
             </div>
 
             {/* 하단 마무리 선 */}
-            <div className="border-t border-gray-100 mt-2"></div>
+            <div className="border-t border-gray-500 mt-2"></div>
         </div>
     );
 }

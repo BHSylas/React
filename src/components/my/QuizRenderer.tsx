@@ -135,11 +135,11 @@ export default function QuizRenderer({ data }: { data: unknown }) {
 
 			{/* 상단 요약 카드 영역 */}
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-				<div className="bg-white border border-gray-100 rounded-[2rem] p-8 shadow-sm">
+				<div className="bg-white border-2 border-gray-500 rounded-[2rem] p-8 shadow-sm">
 					<p className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mb-2">Total Solved</p>
 					<p className="text-4xl font-black text-gray-900">{totalSolved}<span className="text-lg ml-1 font-bold">문제</span></p>
 				</div>
-				<div className="bg-white border border-gray-100 rounded-[2rem] p-8 shadow-sm">
+				<div className="bg-white border-2 border-gray-500 rounded-[2rem] p-8 shadow-sm">
 					<p className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mb-2">Average Accuracy</p>
 					<p className="text-4xl font-black text-gray-900">{avgAccuracy}<span className="text-lg ml-1 font-bold">%</span></p>
 				</div>
@@ -148,18 +148,18 @@ export default function QuizRenderer({ data }: { data: unknown }) {
 			{/* 국가별 통계 상세 */}
 			<div className="space-y-8">
 				{visibleStats.map((countryStat) => (
-					<div key={countryStat.country} className="bg-white border border-gray-100 rounded-[2.5rem] p-8">
+					<div key={countryStat.country} className="bg-white border-t border-gray-900 mt-3 p-8">
 						<h3 className="text-[20px] font-black text-gray-900 mb-6 flex items-center gap-2">
 							<span className="w-2 h-6 bg-blue-600 rounded-full"></span>
 							{COUNTRY_NAMES[countryStat.country]}
 						</h3>
 
-						<div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+						<div className="grid grid-cols-1 xl:grid-cols-3 gap-6 ">
 							{countryStat.levels.map((levelStat) => {
 								const solvedAccuracy = Math.round((levelStat.correctProblems / levelStat.solvedProblems) * 100);
 								return (
 									<div key={`${countryStat.country}-${levelStat.level}`}
-										className="bg-gray-50/50 rounded-3xl p-6 flex flex-col items-center text-center gap-4 transition-all hover:bg-white hover:shadow-xl hover:shadow-gray-200/50 border border-transparent hover:border-blue-50">
+										className="bg-gray-50/50 rounded-3xl p-6 flex flex-col items-center text-center gap-4 transition-all hover:bg-white hover:shadow-xl hover:shadow-gray-200/50 border border-gray-400">
 
 										<div className="relative">
 											<CircleProgress correct={levelStat.correctProblems} total={levelStat.totalProblems} />
@@ -177,7 +177,7 @@ export default function QuizRenderer({ data }: { data: unknown }) {
 													<span>푼 문제 정답률</span>
 													<span className="text-blue-600">{solvedAccuracy}%</span>
 												</div>
-												<div className="pt-2 border-t border-gray-200/50 mt-2">
+												<div className="pt-2 border-t border-gray-500 mt-2">
 													<p className="text-[15px] font-medium leading-relaxed">
 														정답 {levelStat.correctProblems} / 전체 {levelStat.totalProblems}<br />
 														풀어본 문제 {levelStat.solvedProblems}개
