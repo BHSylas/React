@@ -40,7 +40,7 @@ export default function MyPage() {
     const { role, nickname } = useAuth();
     useEffect(() => {
         const fetchData = async () => {
-            if (picked === "Class" && Number(role) === 1) {
+            if (picked === "Class" && (Number(role) === 1 || role === "ROLE_PROFESSOR" || role === "PROFESSOR")) {
                 setLoading(false);
                 return;
             }
@@ -77,7 +77,7 @@ export default function MyPage() {
                             const boardRes = await axios.get("/api/boards/searchBoard?size=1000", config);
                             const boardData = boardRes.data.content || [];
                             let myLectureIds: any[] = []; // 강의 아이디 저장
-                            if ((Number(role) === 1 || role === "ROLE_PROFESSOR") && picked === "QnA") {
+                            if ((Number(role) === 1 || role === "ROLE_PROFESSOR" || role === "PROFESSOR") && picked === "QnA") {
                                 try {
                                     const lecturesRes = await axios.get(`/api/lectures?size=1000`, config); // 강의목록
                                     const allLectures = lecturesRes.data.content || []; // 강의 내용
@@ -92,7 +92,7 @@ export default function MyPage() {
                             const filtered = boardData.filter((item: any) => {
                                 const isAuthor = item.writerName?.trim() === nickname?.trim();
                                 if (picked === "QnA") {
-                                    if (Number(role) === 1 || role === "ROLE_PROFESSOR") return item.boardType === "LECTURE_QNA" && myLectureIds.includes(item.lectureId);
+                                    if (Number(role) === 1 || role === "ROLE_PROFESSOR" || role === "PROFESSOR") return item.boardType === "LECTURE_QNA" && myLectureIds.includes(item.lectureId);
                                     // if (Number(role) === 2) return item.boardType === "QNA";
                                     return isAuthor && item.boardType === "LECTURE_QNA"; // 학생이면
                                 }
@@ -177,7 +177,7 @@ function Picker({ picked, onPick, role }: { picked: string; onPick: (item: any) 
     const userRole = Number(role);
 
     const items = ["Class", "QnA", "Post", "Comment"].filter(item => {
-        if (item === "QnA" && (userRole === 2 || role === "ROLE_ADMIN" || role === "ADMIN") ) return false;
+        if (item === "QnA" && (userRole === 2 || role === "ROLE_ADMIN" || role === "ADMIN")) return false;
         return true;
     });
 

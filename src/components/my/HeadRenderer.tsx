@@ -140,7 +140,7 @@ export default function HeadRenderer() {
                         onClick={handleStartEditing}
                         className="text-blue-500 text-[11px] font-bold hover:text-blue-600"
                     >
-                        프로필 수정하기
+                        교수 프로필 수정하기
                     </button>
                 )}
             </div>
