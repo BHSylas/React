@@ -70,9 +70,23 @@ export default function HeadRenderer() {
             });
 
             setIsEditing(true);
-        } catch (e) {
-            console.error(e);
-            alert("기존 프로필 정보를 불러오는 데 실패했습니다.");
+        } catch (e: any) {
+            if (e.response?.status === 404) {
+                console.log("프로필이 아직 존재하지 않습니다. 신규 생성을 시작합니다.");
+                // 빈 데이터로 입력창을 열기
+                setEditData({
+                    bio: "",
+                    specialty: "",
+                    career: "",
+                    office: "",
+                    contactEmail: ""
+                });
+                setIsEditing(true);
+            } else {
+                // 그 외의 진짜 에러(서버 다운, 권한 등) 처리
+                console.error(e);
+                alert("정보를 불러오는 데 실패했습니다.");
+            }
         }
     };
 
