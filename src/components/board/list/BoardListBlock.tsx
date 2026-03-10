@@ -20,7 +20,7 @@ export function BoardListBlock({ boards }: BoardListBlockProps) {
   return (
     <div className="w-full">
       {/* 헤더: 구분선 강화 (border-y) */}
-      <div className="grid grid-cols-[1fr_100px_120px_100px_130px] gap-4 px-6 py-4 text-[17px] font-semibold border-y border-gray-100 bg-gray-50/30">
+      <div className="grid grid-cols-[1fr_100px_120px_100px_130px] gap-4 px-6 py-4 text-[17px] font-semibold border-y border-gray-500 bg-gray-50/30">
         <span className="pl-2">제목</span>
         <span className="text-center">작성자</span>
         <span className="text-center">카테고리</span>
@@ -33,8 +33,8 @@ export function BoardListBlock({ boards }: BoardListBlockProps) {
           <div key={`board-group-${board.boardId}-${idx}`} className="group">
             {/* 게시글 본체: 하단에만 얇은 구분선 (border-b) */}
             <div
-              className={`grid grid-cols-[1fr_100px_120px_100px_130px] gap-4 px-6 py-[18px] transition-all cursor-pointer items-center border-b border-gray-100
-                ${board.pinned ? 'bg-blue-50/30 hover:bg-blue-50/60' : 'hover:bg-gray-50'}`}
+              className={`grid grid-cols-[1fr_100px_120px_100px_130px] gap-4 px-6 py-[18px] transition-all cursor-pointer items-center border-b border-gray-500
+                ${board.pinned ? 'bg-blue-50 hover:bg-blue-100' : 'hover:bg-white'}`}
               onClick={() => navigate(`/board/${board.boardId}`)}
             >
               {/* 제목 영역 */}
