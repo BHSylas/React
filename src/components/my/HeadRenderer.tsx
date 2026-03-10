@@ -76,6 +76,9 @@ export default function HeadRenderer() {
     if (!name || !nickname || !role) {
         return <div className="p-6">사용자 정보를 불러오는 중...</div>;
     }
+
+    console.log("현재 role 값:", role);
+    console.log("parseInt 결과:", parseInt(role as string));
     return (
         <div className="relative overflow-hidden bg-gray-100 rounded-[1rem] p-10 border border-gray-100">
 
@@ -90,7 +93,7 @@ export default function HeadRenderer() {
                     {[
                         { label: "이름", value: name },
                         { label: "닉네임", value: nickname },
-                        { label: "사용자 등급", value: displayRole(parseInt(role)), highlight: true }
+                        { label: "사용자 등급", value: displayRole(role), highlight: true }
                     ].map((info, i) => (
                         <div key={i} className="bg-white px-6 py-4 rounded-3xl shadow-sm border border-gray-100">
                             <span className="block text-[10px] font-black text-blue-600 uppercase tracking-widest mb-1">
