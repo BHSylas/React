@@ -9,7 +9,9 @@ export default function AnswerBox({ conversation }: { conversation: Conversation
     const [explanation, setExplanation] = useState<string | null>(conversation.explanation);
     const [attemptsLeft, setAttemptsLeft] = useState<number>(Math.max(0, 3 - conversation.attempts));
     const [isCorrect, setIsCorrect] = useState<boolean>(conversation.correct);
-    const [correctAnswer, setCorrectAnswer] = useState<string[] | null>([]);
+    const [correctAnswer, setCorrectAnswer] = useState<string[] | null>(
+        conversation.correctAnswer ? [conversation.correctAnswer] : null
+    );
     useEffect(() => {
         console.log(conversation);
         api.get(`/user/npc/conversation/${conversation.conversationId}`).then(res => {
