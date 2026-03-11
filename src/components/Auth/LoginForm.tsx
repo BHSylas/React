@@ -7,6 +7,7 @@ import {
     verifyPasswordResetCode,
     confirmPasswordReset
 } from "../../types/authService";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function LoginForm() {
     const { login } = useAuth();
@@ -31,6 +32,8 @@ export default function LoginForm() {
     const [isResetLoading, setIsResetLoading] = useState(false);
     const [isCodeSent, setIsCodeSent] = useState(false);
     const [isCodeVerified, setIsCodeVerified] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
 
     const passwordRegex =
         /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/;
@@ -166,6 +169,7 @@ export default function LoginForm() {
             setIsCodeSent(false);
             setIsCodeVerified(false);
             setResetMessage("");
+            setShowNewPassword(false);
         } catch (e: any) {
             setResetMessage(
                 e?.response?.data?.message || "비밀번호 변경 중 오류가 발생했습니다."
@@ -197,15 +201,24 @@ export default function LoginForm() {
                         className={inputStyle}
                         required
                     />
-
-                    <input
-                        type="password"
-                        placeholder="비밀번호"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className={inputStyle}
-                        required
-                    />
+                    <div className="relative">
+                        <input
+                            type={showPassword ? "text" : "password"}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="비밀번호"
+                            className={`${inputStyle} pr-12`}
+                            required
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword((prev) => !prev)}
+                            className="absolute right-4 top-1/2 -translate-y-1/2 text-blue-400 hover:text-blue-600 transition-colors"
+                            aria-label={showPassword ? "비밀번호 숨기기" : "비밀번호 보기"}
+                        >
+                            {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                        </button>
+                    </div>
 
                     {error && <p className="text-red-500 text-[13px] font-medium ml-2">{error}</p>}
 
@@ -332,13 +345,23 @@ export default function LoginForm() {
                             )}
 
                             {isCodeVerified && (
-                                <input
-                                    type="password"
-                                    placeholder="새 비밀번호"
-                                    value={newPassword}
-                                    onChange={(e) => setNewPassword(e.target.value)}
-                                    className={inputStyle}
-                                />
+                                <div className="relative">
+                                    <input
+                                        type={showNewPassword ? "text" : "password"}
+                                        placeholder="새 비밀번호"
+                                        value={newPassword}
+                                        onChange={(e) => setNewPassword(e.target.value)}
+                                        className={`${inputStyle} pr-12`}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowNewPassword((prev) => !prev)}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-blue-400 hover:text-blue-600 transition-colors"
+                                        aria-label={showNewPassword ? "새 비밀번호 숨기기" : "새 비밀번호 보기"}
+                                    >
+                                        {showNewPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                                    </button>
+                                </div>
                             )}
                         </div>
 
@@ -362,6 +385,7 @@ export default function LoginForm() {
                                     setResetMessage("");
                                     setIsCodeSent(false);
                                     setIsCodeVerified(false);
+                                    setShowNewPassword(false);
                                 }}
                                 className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-2xl font-bold hover:bg-gray-200 transition-all"
                             >
