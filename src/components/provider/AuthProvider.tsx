@@ -89,8 +89,20 @@ export default function AuthProvider ({ children }: AuthProviderProps){
     }
   };
 
+    const syncProfile = ({ name, nickname }: { name: string; nickname: string }) => {
+        localStorage.setItem("name", name);
+        localStorage.setItem("nickname", nickname);
+
+        setName(name);
+        setNickname(nickname);
+    };
+
     const logout = () => {
-        localStorage.clear();
+        localStorage.setItem("isLoggingOut", "true");
+
+        localStorage.removeItem("token");
+        localStorage.removeItem("name");
+        localStorage.removeItem("nickname");
         delete api.defaults.headers.common.Authorization;
 
         setIsLoggedIn(false);
@@ -105,14 +117,15 @@ export default function AuthProvider ({ children }: AuthProviderProps){
   return (
     <AuthContext.Provider
       value={{
-        isLoggedIn,
-        token,
-        name,
-        nickname,
-        role,
-        isAuthReady,
-        login,
-        logout,
+          isLoggedIn,
+          token,
+          name,
+          nickname,
+          role,
+          isAuthReady,
+          login,
+          logout,
+          syncProfile,
       }}
     >
       {children}
