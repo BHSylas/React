@@ -50,9 +50,7 @@ export default function LoginForm() {
                 password,
             });
 
-            const accessToken = res.data.accessToken;
-            const name = res.data.name ?? res.data.userName;
-            const nickname = res.data.nickname ?? res.data.userNickname;
+            const { accessToken, userName: name, userNickname: nickname } = res.data;
 
             login({
                 token: accessToken,

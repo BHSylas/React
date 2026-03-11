@@ -16,6 +16,8 @@ export default function AnswerBox({ conversation }: { conversation: Conversation
         console.log(conversation);
         api.get(`/user/npc/conversation/${conversation.conversationId}`).then(res => {
             const data = res.data;
+            console.log("attempts:", data.attempts, "correct:", data.correct, "locked:", data.locked);
+
             setExplanation(data.explanation);
             setAttemptsLeft(Math.max(0, 3 - data.attempts));
             setIsCorrect(data.correct);
