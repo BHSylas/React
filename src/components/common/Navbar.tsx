@@ -4,7 +4,6 @@ import { textLimiter } from "../../utils/textLimiter";
 import { useContext, useEffect, useRef, useState } from "react";
 import { AuthModalContext } from "../../context/AuthModalContext";
 import "../../global.css";
-import { requestLogout } from "../../types/authService";
 
 interface NavbarProps {
   onMenuClick: () => void;
@@ -16,15 +15,10 @@ export function Navbar({ onMenuClick }: NavbarProps) {
   const { isLoggedIn, logout, nickname } = useAuth();
   const { openLogin } = useContext(AuthModalContext);
   const navigate = useNavigate();
-    const handleLogout = async () => {
-        try {
-            await requestLogout();
-        } catch (e) {
-            console.error("서버 로그아웃 실패:", e);
-        }
-        alert("로그아웃 되었습니다.");
-        logout();
-    };
+  const handleLogout = async () => {
+      await logout();
+      alert("로그아웃 되었습니다.");
+  };
 
   useEffect(() => {
     const onScroll = () => {

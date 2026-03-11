@@ -1,20 +1,19 @@
-// context/AuthContext.ts
 import { createContext } from "react";
 
 export interface AuthContextType {
-  isLoggedIn: boolean;
-  token: string | null;
-  name: string | null;
-  nickname: string | null;
-  role: string | null;
-  isAuthReady: boolean;
-  login: (payload: {
-    token: string;
-    name: string;
-    nickname: string;
-  }) => void;
-  logout: () => void;
-  syncProfile: (data: { name: string; nickname: string }) => void;
+    isLoggedIn: boolean;
+    token: string | null;
+    name: string | null;
+    nickname: string | null;
+    role: string | null;
+    isAuthReady: boolean;
+    login: (payload: {
+        token: string;
+        name: string;
+        nickname: string;
+    }) => void;
+    logout: () => Promise<void>;
+    syncProfile: (data: { name: string; nickname: string }) => void;
 }
 
 export const AuthContext = createContext<AuthContextType>({
@@ -25,6 +24,6 @@ export const AuthContext = createContext<AuthContextType>({
     role: null,
     isAuthReady: false,
     login: () => {},
-    logout: () => {},
+    logout: async () => {},
     syncProfile: () => {},
 });

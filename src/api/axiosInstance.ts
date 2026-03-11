@@ -6,6 +6,13 @@ export const api = axios.create({
     withCredentials: true,
 });
 
+const clearClientAuth = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("name");
+    localStorage.removeItem("nickname");
+    delete api.defaults.headers.common.Authorization;
+};
+
 api.interceptors.request.use(
     async (config) => {
         const token = localStorage.getItem("token");
@@ -31,17 +38,26 @@ api.interceptors.request.use(
             );
 
             const newToken = res.data.accessToken;
+            const refreshedName = res.data.name ?? res.data.userName;
+            const refreshedNickname = res.data.nickname ?? res.data.userNickname;
 
             localStorage.setItem("token", newToken);
             api.defaults.headers.common.Authorization = `Bearer ${newToken}`;
+
+            if (refreshedName) {
+                localStorage.setItem("name", refreshedName);
+            }
+
+            if (refreshedNickname) {
+                localStorage.setItem("nickname", refreshedNickname);
+            }
 
             config.headers = config.headers ?? {};
             config.headers.Authorization = `Bearer ${newToken}`;
 
             return config;
         } catch (error) {
-            localStorage.clear();
-            delete api.defaults.headers.common.Authorization;
+            clearClientAuth();
             window.location.href = "/";
             return Promise.reject(error);
         }
@@ -64,14 +80,12 @@ api.interceptors.response.use(
         }
 
         if (status === 401) {
-            localStorage.clear();
-            delete api.defaults.headers.common.Authorization;
+            clearClientAuth();
             window.location.href = "/";
             return Promise.reject(error);
         }
 
         if (status === 403) {
-            // 개별 화면에서 직접 처리해야 하는 요청은 페이지 이동 막기
             if (
                 url.includes("/auth/me") ||
                 url.includes("/auth/signup") ||
@@ -107,5 +121,7 @@ api.interceptors.response.use(
             window.location.href = "/error/500";
             return Promise.reject(error);
         }
+
+        return Promise.reject(error);
     }
 );
