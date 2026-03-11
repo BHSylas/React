@@ -12,7 +12,7 @@ interface AnswerBlockProps {
 
 interface TokenPayload {
     sub: string; // 고유 아이디
-    role: number; // 0: 학생, 1: 교수, 2: 관리자
+    role: string; // 0: 학생, 1: 교수, 2: 관리자
 }
 
 export function AnswerBlock({ boardId, boardType, lectureId }: AnswerBlockProps) {
@@ -36,7 +36,7 @@ export function AnswerBlock({ boardId, boardType, lectureId }: AnswerBlockProps)
     const [editContent, setEditContent] = useState("");
 
     // const isAdmin = currentUser?.role === 2; // 관리자
-    const isProfessor = currentUser?.role === 1; // 교수
+    const isProfessor = (currentUser?.role === "1" || currentUser?.role === "ROLE_PROFESSOR" || currentUser?.role === "PROFESSOR"); // 교수
     const isLectureOwner = isProfessor && ownerId !== null && currentUser?.sub === String(ownerId); // 아이디 비교
 
     const canWrite =

@@ -9,7 +9,7 @@ export function CommentBlock({ postId, boardType }: { postId: string, boardType:
   const [requireRenewal, setRequireRenewal] = useState(true);
 
   const role = useContext(AuthContext).role;
-  const canWriteComment = boardType === "FREE" || (boardType === "QNA" && role === "2") || boardType === "NOTICE";
+  const canWriteComment = boardType === "FREE" || (boardType === "QNA" && (role === "2" || role === "ROLE_ADMIN" || role === "ADMIN")) || boardType === "NOTICE";
 
   useEffect(() => {
     api.get(`/boards/comments/list/${postId}?size=50`).then((res) => {
