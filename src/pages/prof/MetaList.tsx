@@ -19,7 +19,7 @@ interface MetaListItem {
 
 export interface PageResponse<T> {
     content: T[];
-    totalPage: number;
+    totalPages: number;
     totalElements: number;
     size: number;
     number: number; // 현재 페이지 번호(0부터 시작)
@@ -33,14 +33,19 @@ const MetaList = () => {
     const [isLoading, setIsLoding] = useState<boolean>(true);
 
     const [page, setPage] = useState(0);
-    const [totalPage, setTotalPage] = useState(0); // 총 페이지 수
+    const [totalPages, setTotalPages] = useState(0); // 총 페이지 수
+
     const navigate = useNavigate();
+
     const role = useContext(AuthContext).role;
-    if (role === '0') {
-        alert("No exception!");
-        navigate('/');
-    }
+
     useEffect(() => {
+
+        if (role === '0') {
+            alert("No exception!");
+            navigate('/');
+        }
+
         const token = localStorage.getItem("token");
         if (!token) return;
 
@@ -62,7 +67,8 @@ const MetaList = () => {
         axios.get<PageResponse<MetaListItem>>(`/api/professor/npc/list`, config).then(res => {
             if (res && res.data && Array.isArray(res.data.content)) {
                 setListItems(res.data.content);
-                setTotalPage(res.data.totalPage);
+                setTotalPages(res.data.totalPages);
+                console.log(res.data);
             }
         }).catch(err => {
             if (err.response) {
@@ -77,6 +83,25 @@ const MetaList = () => {
         });
     }, [page]);
 
+    const renderPagination = () => {
+        const pages = [];
+        for (let i = 0; i < totalPages; i++) {
+            pages.push(
+                <button
+                    key={i}
+                    onClick={() => setPage(i)}
+                    className={`px-3 py-1 text-sm font-bold transition-all ${page === i
+                        ? "text-blue-600 border-b-2 border-blue-600"
+                        : "text-gray-400 hover:text-gray-600"
+                        }`}
+                >
+                    {i + 1}
+                </button>
+            );
+        }
+        return pages;
+    };
+
     if (isLoading) return (
         <div className="flex-1 flex items-center justify-center py-20">
             <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
@@ -84,7 +109,7 @@ const MetaList = () => {
     );
 
     return (
-        <div className="flex-1"> {/* animate-in 클래스 제거 */}
+        <div className="flex-1 flex flex-col"> {/* animate-in 클래스 제거 */}
             {/* 상단 헤더: 진한 검정 선으로 섹션 구분 */}
             <div className="flex items-center justify-between pb-4 border-b-2 border-gray-900">
                 <h2 className="text-[22px] font-black text-gray-900 tracking-tight">Metaverse 테스트 목록</h2>
@@ -136,12 +161,40 @@ const MetaList = () => {
                 )}
             </div>
             <div className="border-t border-gray-500 mt-2"></div>
-            <div className="flex justify-end">
-                <button onClick={() => navigate('/metaverse/upload')}
-                    className="group relative flex items-center gap-2 px-6 py-2.5 
+            {/* 페이지네이션 및 하단 버튼 섹션 */}
+
+            <div className="mt-8 flex flex-col items-center gap-6 w-full pb-10">
+                {/* 페이지 번호 UI */}
+                {totalPages > 0 && (
+                    <div className="flex items-center gap-2">
+                        <button
+                            disabled={page === 0}
+                            onClick={() => setPage(prev => prev - 1)}
+                            className="p-2 text-gray-400 disabled:opacity-20 hover:text-blue-600"
+                        >
+                            &lt;
+                        </button>
+
+                        <div className="flex gap-1">
+                            {renderPagination()}
+                        </div>
+
+                        <button
+                            disabled={page === totalPages - 1}
+                            onClick={() => setPage(prev => prev + 1)}
+                            className="p-2 text-gray-400 disabled:opacity-20 hover:text-blue-600"
+                        >
+                            &gt;
+                        </button>
+                    </div>
+                )}
+                <div className="w-full flex justify-end">
+                    <button onClick={() => navigate('/metaverse/upload')}
+                        className="group relative flex items-center gap-2 px-6 py-2.5 
                    bg-blue-600 text-white text-sm font-bold rounded-full
                    hover:bg-blue-700 hover:shadow-[0_8px_20px_rgba(37,99,235,0.3)]
                    transition-all duration-300 active:scale-95 mt-10">문제 작성</button>
+                </div>
             </div>
         </div>
     );
