@@ -87,13 +87,16 @@ export default function AnswerBox({ conversation }: { conversation: Conversation
                         <div className="mt-2 p-2 bg-red-100 text-red-700 rounded">
                             <p className="font-bold">Explanation:</p>
                             <p>{explanation}</p>
+
+                            <p className="font-bold">Answer:</p>
+                            <p>{correctAnswer?.join(", ")}</p>
                         </div>
                     )}
                 </div>
                 {(attemptsLeft > 0 && !isCorrect) && <div>
                     {LevelSwitcher(conversation.level, conversation.options, handleOptionSelect)}
                 </div>}
-                {(attemptsLeft === 0 && !isCorrect) && <button
+                {(attemptsLeft === 0 || isCorrect) && <button
                     onClick={handleReset}
                     className="btn btn-primary mt-4 w-full">
                     다시 풀기
