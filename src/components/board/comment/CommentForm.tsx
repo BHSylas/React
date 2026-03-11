@@ -10,25 +10,33 @@ export default function CommentForm({ postId, onSubmit }: { postId: string, onSu
     }).then(() => {
       setContent("");
       onSubmit();
-    }).catch((err : any) => {
+    }).catch((err: any) => {
       console.error(err);
     });
   }
   return (
-    <form className="space-y-4" onSubmit={handleSubmit}>
+    <form
+      className="bg-white border border-black rounded-2xl p-4 md:p-5 space-y-3"
+      onSubmit={handleSubmit}
+    >
       <textarea
-        className="w-full border rounded-lg p-2 resize-none"
-        rows={4}
+        className="w-full bg-transparent text-sm leading-relaxed placeholder:text-black resize-none outline-none min-h-[80px] px-1"
+        rows={3}
         placeholder="댓글을 작성하세요..."
         value={content}
         onChange={(e) => setContent(e.target.value)}
       ></textarea>
-      <div className="flex justify-end">
+
+      <div className="flex justify-between items-center pt-2">
+        <span className="text-[10px] font-bold uppercase tracking-tight px-1">
+          Press Post to reply
+        </span>
         <button
-        type="submit"
-        className="px-4 py-2 rounded 
-        hover:text-blue-800 hover:scale-105 hover:font-bold transition"
-      >댓글 작성</button>
+          type="submit"
+          className="px-5 py-2 bg-blue-600 text-white text-[12px] font-bold rounded-lg hover:bg-blue-700 transition-all active:scale-95 shadow-sm"
+        >
+          댓글 작성
+        </button>
       </div>
     </form>
   );

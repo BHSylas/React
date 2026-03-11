@@ -35,23 +35,44 @@ const TestAnswer: React.FC<TestAnswerProps> = ({ onAnswersChange, savedOptions =
     };
 
     return (
-        <div>
-            <div className="flex items-center mb-3">
-                <input type="text" value={inputValue} onChange={handleInputChange} onKeyDown={handleKeyDown} placeholder="단어 입력 후 엔터" className="w-[1130px] h-[40px] pr-3 pl-3 font-lg rounded-md border border-solid border-gray-500" />
-                <button onClick={handleReset} className="rounded-md bg-red-600 p-2 text-white hover:bg-red-700  ml-5">전체 초기화</button>
+        <div className="w-full space-y-4">
+            <div className="flex flex-col md:flex-row gap-3">
+                <div className="relative flex-1">
+                    <input
+                        type="text"
+                        value={inputValue}
+                        onChange={handleInputChange}
+                        onKeyDown={handleKeyDown}
+                        placeholder="입력 후 엔터를 누르세요"
+                        className="w-full h-[50px] px-5 bg-white border border-black rounded-xl outline-none text-sm font-medium shadow-sm placeholder:text-black"
+                    />
+                </div>
+                <button
+                    onClick={handleReset}
+                    className="h-[50px] px-6 rounded-xl bg-white text-red-500 border border-red-500 font-bold text-sm hover:bg-red-50 transition-all active:scale-95"
+                >
+                    전체 초기화
+                </button>
             </div>
 
-            {savedOptions.length > 0 ? (
-                <ol> {savedOptions.map((word, index) => (
-                    <li key={`${word}-${index}`}>
-                        {word}
-                        <button onClick={() => handleDelete(index)} className="rounded-md bg-red-600 p-2 text-white hover:bg-red-700 ml-5 mb-5">삭제</button>
-                    </li>
-                ))}
-                </ol>
-            ) : (
-                <p>목록이 비어있습니다.</p>
-            )}
+            <div className="min-h-[80px] p-4 bg-gray-50/50 border border-dashed border-black rounded-2xl">
+                {savedOptions.length > 0 ? (
+                    <div className="flex flex-wrap gap-2">
+                        {savedOptions.map((word, index) => (
+                            <div key={`${word}-${index}`} className="flex items-center gap-2 pl-4 pr-2 py-2 bg-white border border-black rounded-lg shadow-sm">
+                                <span className="text-sm font-bold text-gray-700">{word}</span>
+                                <button onClick={() => handleDelete(index)} className="w-6 h-6 flex items-center justify-center rounded-md text-black hover:bg-red-50 hover:text-red-500 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <p className="text-sm text-black text-center py-4">등록된 단어가 없습니다.</p>
+                )}
+            </div>
         </div>
     );
 };

@@ -9,12 +9,16 @@ interface NavbarProps {
   onMenuClick: () => void;
 }
 
-export function Navbar({onMenuClick} : NavbarProps) {
+export function Navbar({ onMenuClick }: NavbarProps) {
   const [visible, setVisible] = useState(true);
   const lastScrollY = useRef(0);
-  const { isLoggedIn, nickname: nickname, logout } = useAuth();
+  const { isLoggedIn, logout, nickname } = useAuth();
   const { openLogin } = useContext(AuthModalContext);
   const navigate = useNavigate();
+  const handleLogout = async () => {
+      await logout();
+      alert("로그아웃 되었습니다.");
+  };
 
   useEffect(() => {
     const onScroll = () => {
@@ -27,7 +31,7 @@ export function Navbar({onMenuClick} : NavbarProps) {
       lastScrollY.current = currentY;
     };
     window.addEventListener("scroll", onScroll);
-    if(localStorage.getItem("requireLogin") === "yes"){
+    if (localStorage.getItem("requireLogin") === "yes") {
       openLogin();
       localStorage.removeItem("requireLogin");
     }
@@ -36,58 +40,86 @@ export function Navbar({onMenuClick} : NavbarProps) {
 
 
   return (
-    <div
+    <nav
       className={`
-        navbar shadow fixed z-20
-        transition bg-base-100
-        duration-300
-        fixed-padding-adjust
+        fixed top-0 left-0 right-0 z-50
+        h-[66px] bg-white border-b border-gray-100
+        transition-transform duration-300 ease-in-out shadow-sm
+        flex items-center justify-between px-4 md:px-8 
         ${visible ? "translate-y-0" : "-translate-y-full"}
       `}
     >
-      {/* Hover 메뉴 그룹 */}
-      <div className="flex flex-1">
-        <div className="flex items-center">
-          <div className="mx-4 relative flex md:gap-2 lg:gap-4 rounded-md bg-transparent">
-            <div className="group flex-row lg:flex-none">
-              {/* 모바일: 클릭 */}
-              <button
-                className="my-2 mx-1 text-xl"
-                onClick={onMenuClick}
-              >
-                ☰
-              </button>
-              {/* 데스크톱: hover */}
-            </div>
-            <span
-                className="my-2 lg:text-xl font-bold cursor-pointer text-blue-800"
-                onClick={() => navigate("/")}
-              >
-                LMS
-            </span>
-          </div>
-        </div>
+      {/* 왼쪽 영역 */}
+      <div className="flex items-center gap-4">
+        <button
+          className="p-2 hover:bg-gray-50 rounded-lg transition-colors text-xl"
+          onClick={onMenuClick}
+        >
+          <span className="text-gray-900">☰</span>
+        </button>
+        <span
+          className="text-xl pr-2 font-black text-blue-800 tracking-tighter cursor-pointer flex items-center gap-1"
+          onClick={() => navigate("/")}
+        >
+          LMS
+        </span>
+        <span className="text-gray-200 font-light">|</span>
+        <button
+          onClick={() => navigate("/class")}
+          className="px-2 py-1.5 font-bold text-[17px] text-black hover:text-blue-600 transition-colors"
+        >
+          강좌 목록
+        </button>
+        <span className="text-gray-200 font-light">|</span>
+        <button
+          onClick={() => navigate("/board")}
+          className="px-2 py-1.5 font-bold text-[17px] text-black hover:text-blue-600 transition-colors"
+        >
+          게시판
+        </button>
       </div>
 
-      {/* 로그인 / 로그아웃 영역 */}
-      <div className="flex-none gap-3"> 
-        <span className="font-semibold flex flex-row">
-          <div className="flex flex-col">
-            {isLoggedIn ? 
-            <div className="flex gap-2 p-2">
-              <div className="text-xl cursor-pointer" onClick={() => {navigate("/my")}}>{nickname !== null ? textLimiter(nickname, 20) + "님" : "사용자"}</div>
-              <div>|</div> 
-              <div className="text-lg cursor-pointer text-blue-800" onClick={logout}>로그아웃</div> 
+      {/* 오른쪽 영역 */}
+      <div className="flex items-center text-[17px] font-bold">
+        {isLoggedIn ? (
+          <div className="flex items-center gap-2">
+            <div className="px-1 text-gray-500">
+              <span className="text-gray-900 text-[15px]">{nickname !== null ? textLimiter(nickname, 15) : "사용자"}</span>
+              <span className="text-[15px] text-gray-700 font-normal">님 환영합니다.</span>
             </div>
-            :
-            <div className="flex gap-2 p-2">
-              <div className="text-lg cursor-pointer" onClick={openLogin}>로그인</div>
-              <div>|</div> 
-              <div className="text-lg text-blue-800 cursor-pointer" onClick={() => {navigate("/register")}}>회원가입</div> 
-            </div> }
-          </div> 
-        </span>
+            <span className="text-gray-200 font-light">|</span>
+            <button
+              onClick={() => navigate("/my")}
+              className="px-3 py-1.5 text-gray-700 hover:text-blue-600 transition-colors"
+            >
+              My Page
+            </button>
+            <span className="text-gray-200 font-light">|</span>
+            <button
+              onClick={handleLogout}
+              className="px-2 py-1.5 text-blue-800 hover:text-blue-600 transition-colors"
+            >
+              로그아웃
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <button
+              onClick={openLogin}
+              className="px-3 py-1.5 text-gray-700 hover:text-gray-900"
+            >
+              로그인
+            </button>
+            <span className="text-gray-200 font-light">|</span>
+            <button
+              onClick={() => navigate("/register")}
+              className="px-2 py-1.5 text-blue-800 hover:text-blue-600 transition-colors"
+            >
+              회원가입
+            </button>
+          </div>
+        )}
       </div>
-    </div>
+    </nav>
   );
 }

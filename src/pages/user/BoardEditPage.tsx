@@ -9,7 +9,7 @@ export function BoardEditPage() {
     const postId = useParams().postId;
     const [formData, setFormData] = useState(BOARD_FORM);
     const navigate = useNavigate();
-    const {role} = useAuth();
+    const { role } = useAuth();
 
     useEffect(() => {
         // 여기에 기존 게시글 데이터를 불러오는 로직 추가
@@ -22,7 +22,7 @@ export function BoardEditPage() {
             alert("게시글 로드 중 오류가 발생했습니다.");
         });
     }, [postId]);
-    if(role === null) {
+    if (role === null) {
         console.log("?");
         return <div>Loading...</div>;
     }
@@ -90,66 +90,105 @@ export function BoardEditPage() {
     }
 
     return (
-        <main className="px-6 py-8 space-y-6">
-            <section className="border border-gray-300 rounded-md px-5 py-7">
-                <div className="w-full mb-5">
-                    <input name="title"
-                        value={formData.title}
-                        onChange={handleChange}
-                        className="border-b-2 border-gray-300 w-full h-full text-xl p-2 outline-none mb-5"
-                        placeholder="게시글 제목"></input>
-                    <div>
-                        <select name="boardType"
-                            value={formData.boardType}
+        <main className="max-w-6xl mx-auto px-6 py-12">
+            {/* 헤더 섹션 */}
+            <header className="mb-10 ml-2">
+                <p className="text-blue-600 font-bold text-xs uppercase tracking-[0.2em] mb-2">Editor</p>
+                <h1 className="text-3xl font-black text-gray-900 tracking-tight">게시글 수정</h1>
+            </header>
+
+            {/* 메인 폼 섹션 */}
+            <section className="bg-white border-2 border-black rounded-[2rem] p-8 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
+                <div className="space-y-10">
+
+                    {/* 제목 입력 */}
+                    <div className="space-y-2">
+                        <label className="text-[11px] font-black uppercase ml-1 tracking-widest">Title</label>
+                        <input
+                            name="title"
+                            value={formData.title}
                             onChange={handleChange}
-                            className="px-2 border border-gray-500 rounded-md mr-6">
-                            {filteredOptions.map((opt) => (
-                                <option key={opt.value} value={opt.value}>
-                                    {opt.label}
-                                </option>
-                            ))}
-                        </select>
+                            className="w-full text-2xl font-bold py-3 px-1 border-b border-black outline-none placeholder:text-black"
+                            placeholder="제목을 입력해 주세요"
+                        />
+                    </div>
+
+                    {/* 옵션 선택 영역 (타입, 고정, 강의선택) */}
+                    <div className="flex flex-wrap items-center gap-4 bg-gray-50/50 border border-black p-4 rounded-2xl border border-gray-100/50">
+                        <div className="flex items-center">
+                            <select
+                                name="boardType"
+                                value={formData.boardType}
+                                onChange={handleChange}
+                                className="pl-4 pr-8 py-2 bg-white border border-black rounded-xl text-sm font-bold text-black cursor-pointer appearance-none shadow-sm"
+                            >
+                                {filteredOptions.map((opt) => (
+                                    <option key={opt.value} value={opt.value}>
+                                        {opt.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
                         {formData.boardType === "NOTICE" && (
-                            <label className="flex items-center gap-2 cursor-pointer bg-yellow-50 px-3 py-1 rounded-md border border-yellow-200 mt-5">
+                            <label className="flex items-center gap-2 cursor-pointer bg-white px-4 py-2 rounded-xl border border-blue-500 shadow-sm">
                                 <input
                                     type="checkbox"
                                     name="pinned"
                                     checked={formData.pinned}
                                     onChange={handleChange}
-                                    className="w-4 h-4 accent-yellow-600"
+                                    className="w-4 h-4 accent-blue-600"
                                 />
-                                <span className="text-sm font-medium text-yellow-800">이 게시글을 상단에 고정합니다</span>
+                                <span className="text-sm font-bold text-blue-600">상단 고정 공지</span>
                             </label>
                         )}
+
                         {formData.boardType === "LECTURE_QNA" && (
-                            <BoardLecture selectedId={formData.lectureId}
-                                onSelect={handleLectureSelect}></BoardLecture>
+                            <div className="flex-1 min-w-[200px]">
+                                <BoardLecture
+                                    selectedId={formData.lectureId}
+                                    onSelect={handleLectureSelect}
+                                />
+                            </div>
                         )}
                     </div>
-                </div>
-                <div>
-                    <textarea name="content"
-                        value={formData.content}
-                        onChange={handleChange}
-                        className="w-full h-screen resize-none leading-[1.5]
-                    border-2 border-gray-300 rounded-md p-3"
-                        placeholder="내용을 입력하세요.">
-                    </textarea>
-                </div>
-                <div className="mt-5 flex justify-between items-center">
-                    <div className="flex gap-3 px-3">
-                        <button onClick={handleSave}
-                            className="btn px-4 py-2 text-sm font-medium rounded-md bg-blue-800 text-white
-                        hover:bg-blue-900 transition-colors">업로드</button>
-                        <button onClick={handleReset}
-                            className="btn px-4 py-2 text-sm font-medium rounded-md bg-red-600 text-white
-                        hover:bg-red-700 transition-colors">초기화</button>
+
+                    {/* 본문 입력 */}
+                    <div className="space-y-2">
+                        <label className="text-[11px] font-black uppercase ml-1 tracking-widest">Content</label>
+                        <textarea
+                            name="content"
+                            value={formData.content}
+                            onChange={handleChange}
+                            className="w-full min-h-[500px] p-6 text-[15px] leading-relaxed resize-none outline-none text-black placeholder:text-black bg-gray-50/30 rounded-2xl border border-black"
+                            placeholder="내용을 입력하세요..."
+                        />
                     </div>
-                    <div className="px-3">
-                        <button onClick={() => navigate(-1)}
-                            className="btn px-4 py-2 text-sm font-medium rounded-md bg-blue-800 text-white
-                        hover:bg-blue-900 transition-colors">목록</button>
+                </div>
+
+                {/* 하단 버튼 영역 */}
+                <div className="mt-12 pt-8 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div className="flex gap-3 w-full md:w-auto">
+                        <button
+                            onClick={handleSave}
+                            className="flex-1 md:flex-none px-10 py-3.5 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-200 transition-all active:scale-95"
+                        >
+                            수정 완료
+                        </button>
+                        <button
+                            onClick={handleReset}
+                            className="px-6 py-3.5 bg-white text-black text-sm font-bold rounded-xl border border-black hover:bg-red-50 hover:text-red-500 hover:border-red-500 transition-all"
+                        >
+                            초기화
+                        </button>
                     </div>
+
+                    <button
+                        onClick={() => navigate(-1)}
+                        className="w-full md:w-auto px-6 py-3.5 text-gray-400 text-sm font-bold hover:text-gray-900 transition-all"
+                    >
+                        취소 후 돌아가기
+                    </button>
                 </div>
             </section>
         </main>

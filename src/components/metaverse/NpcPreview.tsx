@@ -5,10 +5,10 @@ interface NpcPreviewProps {
 
 const NpcPreview = ({ text }: NpcPreviewProps) => {
     return (
-        <div className='w-full mb-8'>
-            <h3 className='text-2xl font-bold mb-5'>시험 미리보기</h3>
-            <div className="w-full min-h-[100px] box-border border border-gray-500 rounded-md p-3 resize-none leading-[1.5]">
-                {text || "npc의 대사가 이곳으로 출력됩니다."}
+        <div className='w-full'>
+            <h3 className="text-[11px] font-black text-blue-600 uppercase ml-1 tracking-widest mb-2">NPC Preview</h3>
+            <div className="w-full min-h-[100px] p-5 text-[15px] leading-relaxed bg-blue-50/30 border border-blue-100/50 rounded-2xl text-gray-600 italic shadow-inner">
+                {text || "NPC의 대사가 이곳에 실시간으로 표시됩니다."}
             </div>
         </div>
     );

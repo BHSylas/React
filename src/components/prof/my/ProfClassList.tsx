@@ -2,12 +2,12 @@ import { useState, useEffect } from "react"
 import { type ClassItem } from "../../../types/ClassItem";
 import axios from "axios";
 import { ClassListBlock } from "../List/profClassListBlock";
-// import { useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 
 export function ProfClassList() {
     const [classList, setClassList] = useState<ClassItem[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -18,7 +18,10 @@ export function ProfClassList() {
             }
         }).then(res => {
             if (res.data && Array.isArray(res.data.content)) {
-                setClassList(res.data.content);
+                const filteredList = res.data.content.filter(
+                    (item: ClassItem) => item.status === 'APPROVED'
+                );
+                setClassList(filteredList);
             } else {
                 setClassList([]);
             }
@@ -46,6 +49,17 @@ export function ProfClassList() {
                     )}
                 </div>
             )}
+            <div className="flex justify-end">
+                <button
+                    className="group relative flex items-center gap-2 px-6 py-2.5 
+                   bg-blue-600 text-white text-sm font-bold rounded-full
+                   hover:bg-blue-700 hover:shadow-[0_8px_20px_rgba(37,99,235,0.3)]
+                   transition-all duration-300 active:scale-95 mt-10"
+                    onClick={() => navigate("/class/new")}
+                >
+                    새 강의 등록
+                </button>
+            </div>
         </main>
     )
 }

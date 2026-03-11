@@ -11,8 +11,9 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import MetaList from "../prof/MetaList";
 import { api } from "../../api/axiosInstance";
+import ProfMetaStats from "../../components/my/ProfMetaStuats";
 
-type MyPagePick = "Class" | "QnA" | "Post" | "Comment" | "Metaverse" | "Quiz";
+type MyPagePick = "Class" | "QnA" | "Post" | "Comment" | "Metaverse" | "MetaStats" | "Quiz";
 
 interface TokenPayload {
     sub: string;
@@ -23,11 +24,11 @@ export default function MyPage() {
     const [picked, setPicked] = useState<MyPagePick>(() => {
         const savedPick = sessionStorage.getItem("recentPick");
         if (savedPick) {
-          sessionStorage.removeItem("recentPick");
-          return savedPick as MyPagePick;
+            sessionStorage.removeItem("recentPick");
+            return savedPick as MyPagePick;
         }
         return "Class";
-      });
+    });
     const [classes, setClasses] = useState<EnrollmentItem[]>([]);
     const [contentList, setContentList] = useState<any[]>([]);
     const [quizStats, setQuizStats] = useState<any>(null); // 퀴즈 통계 데이터 상태 추가
@@ -40,7 +41,7 @@ export default function MyPage() {
     const { role, nickname } = useAuth();
     useEffect(() => {
         const fetchData = async () => {
-            if (picked === "Class" && Number(role) === 1) {
+            if (picked === "Class" && (Number(role) === 1 || role === "ROLE_PROFESSOR" || role === "PROFESSOR")) {
                 setLoading(false);
                 return;
             }
@@ -65,63 +66,62 @@ export default function MyPage() {
             try {
                 switch (picked) {
                     case "Class":
-                        { const res = await axios.get("/api/me/enrollments", config);
-                        setClasses(res.data.content || []);
-                        break; }
+                        {
+                            const res = await axios.get("/api/me/enrollments", config);
+                            setClasses(res.data.content || []);
+                            break;
+                        }
                     case "QnA":
                     case "Post":
                         // QnA 게시판에서 내 닉네임으로 작성된 것만
-                        { const boardRes = await axios.get("/api/boards/searchBoard?size=1000", config);
-                        const boardData = boardRes.data.content || [];
-                        let myLectureIds: any[] = []; // 강의 아이디 저장
-                        if (Number(role) === 1 && picked === "QnA") {
-                            try {
-                                const lecturesRes = await axios.get(`/api/lectures?size=1000`, config); // 강의목록
-                                const allLectures = lecturesRes.data.content || []; // 강의 내용
-                                myLectureIds = allLectures
-                                    .filter((lec: any) => String(lec.professorId) === String(currentSub))
-                                    // 교수아이디와 로그인 계정 id을 비교
-                                    .map((lec: any) => lec.lectureId); // 맞는 거에서 강의아이디 가져옴
-                            } catch (e) {
-                                console.error("강의 목록 조회 실패", e);
+                        {
+                            const boardRes = await axios.get("/api/boards/searchBoard?size=1000", config);
+                            const boardData = boardRes.data.content || [];
+                            let myLectureIds: any[] = []; // 강의 아이디 저장
+                            if ((Number(role) === 1 || role === "ROLE_PROFESSOR" || role === "PROFESSOR") && picked === "QnA") {
+                                try {
+                                    const lecturesRes = await axios.get(`/api/lectures?size=1000`, config); // 강의목록
+                                    const allLectures = lecturesRes.data.content || []; // 강의 내용
+                                    myLectureIds = allLectures
+                                        .filter((lec: any) => String(lec.professorId) === String(currentSub))
+                                        // 교수아이디와 로그인 계정 id을 비교
+                                        .map((lec: any) => lec.lectureId); // 맞는 거에서 강의아이디 가져옴
+                                } catch (e) {
+                                    console.error("강의 목록 조회 실패", e);
+                                }
                             }
+                            const filtered = boardData.filter((item: any) => {
+                                const isAuthor = item.writerName?.trim() === nickname?.trim();
+                                if (picked === "QnA") {
+                                    if (Number(role) === 1 || role === "ROLE_PROFESSOR" || role === "PROFESSOR") return item.boardType === "LECTURE_QNA" && myLectureIds.includes(item.lectureId);
+                                    // if (Number(role) === 2) return item.boardType === "QNA";
+                                    return isAuthor && item.boardType === "LECTURE_QNA"; // 학생이면
+                                }
+                                return isAuthor && item.boardType !== "LECTURE_QNA"; // post면 강의 QnA 글 안 보이게 하기
+                            });
+                            setContentList(filtered);
+                            break;
                         }
-                        const filtered = boardData.filter((item: any) => {
-                            const isAuthor = item.writerName?.trim() === nickname?.trim();
-                            if (picked === "QnA") {
-                                if (Number(role) === 1) return item.boardType === "LECTURE_QNA" && myLectureIds.includes(item.lectureId);
-                                if (Number(role) === 2) return item.boardType === "QNA";
-                                return isAuthor && item.boardType === "LECTURE_QNA"; // 학생이면
-                            }
-                            return isAuthor;
-                        });
-                        setContentList(filtered);
-                        break; }
                     case "Comment":
-                        { const cr = await axios.get("/api/boards/comments/me", config);
-                        const commentData = cr.data.content || cr.data || [];
-                        const seenIds = new Set();
-                        const uniqueComments = commentData.filter((item: any) => {
-                            if (seenIds.has(item.id)) {
-                                return false; // 이미 있는 ID면 제외
-                            }
-                            seenIds.add(item.id);
-                            return true;
-                        });
-                        setContentList(uniqueComments);
-                        break; }
+                        {
+                            const cr = await axios.get("/api/boards/comments/me", config);
+                            const commentData = cr.data.content || cr.data || [];
+                            const seenIds = new Set();
+                            const uniqueComments = commentData.filter((item: any) => {
+                                if (seenIds.has(item.id)) {
+                                    return false; // 이미 있는 ID면 제외
+                                }
+                                seenIds.add(item.id);
+                                return true;
+                            });
+                            setContentList(uniqueComments);
+                            break;
+                        }
                     case "Quiz":
                         {
-                            //Add quiz related API call and state update here when quiz feature is implemented
                             api.get("/myPage/learning-stats").then(res => {
                                 console.log("학습 통계 데이터: ", res.data);
                                 setQuizStats(res.data);
-                                // Assuming the response data is an array of quiz stats; adjust as necessary
-                                // But using any? I guess it is better to define types for the content,
-                                // or seperate the resposibilities into different components,
-                                // so that we don't have to do type checking and conditional rendering based on the picked item. 
-                                // For now, just set it to contentList and handle the rendering in MyActivityRenderer.
-                                // Not quite clean but it works for now, and should be done like that either. No over-engineering...
                             }).catch(err => {
                                 console.error("학습 통계 로드 실패: ", err);
                             });
@@ -139,62 +139,81 @@ export default function MyPage() {
     }, [picked, nickname, role]);
 
     if (loading) {
-        return (<div>...</div>);
+        return (
+            <div className="w-full h-screen flex items-center justify-center bg-gray-50">
+                <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        );
     }
 
     return (
-        <div className="w-full h-screen">
-            <section>
-                <div className="mb-8 flex flex-col">
+        <div className="min-h-screen bg-white">
+            <div className="max-w-7xl mx-auto px-6 py-12">
+                {/* 상단 프로필 영역 */}
+                <header className="mb-16">
                     <HeadRenderer />
-                    <div className="divider mx-20" />
-                </div>
-            </section>
-            <section>
-                <div className={`flex h-screen`}>
+                </header>
+
+                {/* 메인 콘텐츠 영역 */}
+                <div className="flex gap-4 min-h-[600px] animate-in fade-in slide-in-from-bottom-6 duration-1000">
                     <Picker picked={picked} onPick={handlePick} role={role} />
-                    {picked === "Class" && (
-                        Number(role) === 1 ? <div className="flex-1 px-8"> <ProfClassList /> </div>
-                            : <EnrollmentRenderer classes={classes} />
-                    )}
-                    {picked === "Metaverse" && (
-                        <div className="flex-1 px-8">
-                            <MetaList />
-                        </div>
-                    )}
-                    {picked !== "Class" && picked !== "Metaverse" && picked !== "Quiz" &&  (
-                        < MyActivityRenderer type={picked} data={contentList} />
-                    )}
-                    {picked === "Quiz" && <QuizRenderer data={quizStats} />}
-                    
+
+                    <main className="flex-1 pl-8">
+                        {picked === "Class" && (
+                            (Number(role) === 1 || role === "ROLE_PROFESSOR" || role === "PROFESSOR") ? <ProfClassList /> : <EnrollmentRenderer classes={classes} />
+                        )}
+                        {picked === "Metaverse" && <MetaList />}
+                        {picked === "MetaStats" && <ProfMetaStats />}
+                        {picked !== "Class" && picked !== "Metaverse" && picked !== "Quiz" && (
+                            <MyActivityRenderer type={picked} data={contentList} />
+                        )}
+                        {picked === "Quiz" && <QuizRenderer data={quizStats} />}
+                    </main>
                 </div>
-            </section>
+            </div>
         </div>
     );
 }
 
 function Picker({ picked, onPick, role }: { picked: string; onPick: (item: any) => void; role: any }) {
-    const items = ["Class", "QnA", "Post", "Comment"];
-    if (Number(role) === 1) {
+    const userRole = Number(role);
+
+    const items = ["Class", "QnA", "Post", "Comment"].filter(item => {
+        if (item === "QnA" && (userRole === 2 || role === "ROLE_ADMIN" || role === "ADMIN")) return false;
+        return true;
+    });
+
+    if (userRole === 1 || role === "ROLE_PROFESSOR" || role === "PROFESSOR") {
         items.push("Metaverse");
+        items.push("MetaStats");
     }
-    else {
+    else if (userRole === 0 || role === "ROLE_USER" || role === "USER") {
         items.push("Quiz"); // 퀴즈 탭 추가: 교수는 퀴즈 못 푸니까 안 보이게
     }
     return (
-        <div className="flex flex-col gap-4 mb-8">
+        <nav className="w-64 shrink-0 pr-8 space-y-2 border-r border-gray-100 h-fit">
+            <p className="px-4 mb-4 text-[10px] font-black text-blue-600 uppercase tracking-[0.2em]">Dashboard</p>
             {items.map((item) => {
+                let displayName = item;
+                if (item === "QnA") {
+                    displayName = "강의 Q&A";
+                }
                 const isPicked = picked === item;
                 return (
-                    <div
+                    <button
                         key={item}
-                        className={`cursor-pointer text-2xl text-center font-bold p-4 border-r-4 ${isPicked ? "border-blue-800 text-blue-800" : "border-transparent text-gray-500"
+                        className={`w-full flex items-center px-5 py-4 rounded-2xl text-[15px] font-black transition-all duration-200 
+                            ${isPicked
+                                ? "bg-blue-600 text-white shadow-lg shadow-gray-200 translate-x-2"
+                                : "text-gray-400 hover:bg-gray-50 hover:text-gray-900"
                             }`}
-                        onClick={() => onPick(item as any)}>
-                        {item}
-                    </div>
+                        onClick={() => onPick(item as any)}
+                    >
+                        {isPicked && <span className="w-1.5 h-1.5 bg-blue-400 rounded-full mr-3 animate-pulse" />}
+                        {displayName}
+                    </button>
                 );
             })}
-        </div>
+        </nav>
     );
 }

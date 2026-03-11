@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { api } from "../../api/axiosInstance";
 import type { Conversation } from "../../types/conversation";
 import BeginnerAnswer from "./levels/BeginnerAnswer";
@@ -9,19 +9,28 @@ export default function AnswerBox({ conversation }: { conversation: Conversation
     const [explanation, setExplanation] = useState<string | null>(conversation.explanation);
     const [attemptsLeft, setAttemptsLeft] = useState<number>(Math.max(0, 3 - conversation.attempts));
     const [isCorrect, setIsCorrect] = useState<boolean>(conversation.correct);
-    const [correctAnswer, setCorrectAnswer] = useState<string[] | null>([]);
-    useEffect(() => {
+    const [correctAnswer, setCorrectAnswer] = useState<string[] | null>(
+        conversation.correctAnswer ? [conversation.correctAnswer] : null
+    );
+    const fetchData = useCallback(() => {
         console.log(conversation);
-        api.get(`user/npc/conversation/${conversation.conversationId}`).then(res => {
+        api.get(`/user/npc/conversation/${conversation.conversationId}`).then(res => {
             const data = res.data;
+            console.log("attempts:", data.attempts, "correct:", data.correct, "locked:", data.locked);
+
             setExplanation(data.explanation);
             setAttemptsLeft(Math.max(0, 3 - data.attempts));
             setIsCorrect(data.correct);
-            setCorrectAnswer(data.correctAnswer);
+            setCorrectAnswer(data.correctAnswer ? Array.isArray(data.correctAnswer) ? data.correctAnswer : [data.correctAnswer] : null);
         }).catch(err => {
             console.error("Failed to fetch conversation details:", err);
         });
-    }, []);
+    }, [conversation.conversationId]);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
+
     const handleSubmit = (answer: string) => {
         console.log(`Submitted answer for conversation ${conversation.conversationId}: ${answer}`);
         api.post(`/user/answer/${conversation.conversationId}`,
@@ -30,55 +39,88 @@ export default function AnswerBox({ conversation }: { conversation: Conversation
             }
         ).then(res => {
             console.log(res.data);
-            if(res.data.correct) {
-                alert("Correct answer!");
+            if (res.data.correct) {
+                alert("정답!");
                 setIsCorrect(true);
-                setCorrectAnswer(res.data.correctAnswer || [answer]);
+                setCorrectAnswer(
+                    res.data.correctAnswer
+                        ? Array.isArray(res.data.correctAnswer)
+                            ? res.data.correctAnswer
+                            : [res.data.correctAnswer]
+                        : null
+                );
             }
-            else if(res.data.locked) {
+            else if (res.data.locked) {
                 setExplanation(res.data.explanation);
                 setIsCorrect(false);
                 setAttemptsLeft(0);
-                alert("No more attempts allowed for this question... Better luck next time!");
+                setCorrectAnswer(
+                    res.data.correctAnswer
+                        ? Array.isArray(res.data.correctAnswer)
+                            ? res.data.correctAnswer
+                            : [res.data.correctAnswer]
+                        : null
+                );
+                alert("기회를 모두 소모하였습니다.");
             }
             else {
-                setAttemptsLeft(Math.max(0, 3 - res.data.attempts));
-                alert("Wrong answer. Try again!");
+                const currentAttempt = res.data.attempts; // 시도한 횟수
+                const remaining = Math.max(0, 3 - currentAttempt); // 횟수 제한
+                setAttemptsLeft(remaining)
+                alert(`오답입니다. (현재 ${currentAttempt} / 3회 시도) \n다시 한 번 도전하세요!`);
             }
         }).catch(err => {
             console.error("Failed to submit answer:", err);
-            alert("An error occurred while submitting your answer. Please try again.");
+            alert("답변을 제출하는 동안 오류가 발생했습니다. 다시 시도해 주세요.");
         });
     }
     const handleOptionSelect = (option: string) => {
         console.log(`Selected option for conversation ${conversation.conversationId}: ${option}`);
         handleSubmit(option);
     }
+
+    const handleReset = () => {
+        api.delete(`/user/answer/${conversation.conversationId}/reset`).then(() => {
+            alert("초기화되었습니다. 다시 시도해보세요!");
+            fetchData();
+        })
+            .catch(err => {
+                console.error("초기화 실패:", err);
+                alert("초기화 중 오류가 발생했습니다.");
+            });
+    };
     return (
         <div className="flex justify-center items-center">
             <div className="flex flex-col text-center gap-2 rounded-lg bg-base-100 min-w-64 p-3">
                 <div className="flex flex-col">
-                    <h3 className="text-2xl font-bold text-center">Answer Box</h3>
-                    <p className="text-3xl font-bold">{conversation.question}?</p>
                     <p className="">{conversation.topic}</p>
+                    <p className="text-xl font-bold">{conversation.question.replace(/\[.*?\]/g, "___")}</p>
                     <p className="text-sm opacity-70">{isCorrect ? `정답: ${correctAnswer?.join(", ")}` : `남은 기회: ${attemptsLeft}`}</p>
                     {explanation && (
                         <div className="mt-2 p-2 bg-red-100 text-red-700 rounded">
                             <p className="font-bold">Explanation:</p>
                             <p>{explanation}</p>
+
+                            <p className="font-bold">Answer:</p>
+                            <p>{correctAnswer?.join(", ")}</p>
                         </div>
                     )}
                 </div>
                 {(attemptsLeft > 0 && !isCorrect) && <div>
                     {LevelSwitcher(conversation.level, conversation.options, handleOptionSelect)}
                 </div>}
+                {(attemptsLeft === 0 || isCorrect) && <button
+                    onClick={handleReset}
+                    className="btn btn-primary mt-4 w-full">
+                    다시 풀기
+                </button>}
             </div>
         </div>
     );
 }
 
 function LevelSwitcher(level: string, options: string[] | null, onOptionSelect: (option: string) => void) {
-    switch(level.toUpperCase()) {
+    switch (level.toUpperCase()) {
         case "BEGINNER":
             return <BeginnerAnswer options={options} onOptionSelect={onOptionSelect} />;
         case "INTERMEDIATE":

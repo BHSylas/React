@@ -9,6 +9,16 @@ interface ClassListProps {
   viewType?: "list" | "card";
 }
 
+const COUNTRY_NAMES: Record<string, string> = {
+  USA: "미국",
+  JAPAN: "일본",
+  CHINA: "중국",
+  GERMANY: "독일",
+  ITALY: "이탈리아",
+};
+
+const SERVER_URL = "http://localhost:8080";
+
 export default function ClassList({ classList, dimmed, viewType = "list" }: ClassListProps) {
 
   return (
@@ -38,7 +48,9 @@ function ClassListItem({ item }: { item: ClassItem }) {
       if (data?.sourceType === "YOUTUBE" && data.youtubeVideoId) {
         setThumbnailUrl(`https://img.youtube.com/vi/${data.youtubeVideoId}/0.jpg`);
       } else if (data.thumbnailUrl) {
-        setThumbnailUrl(data.thumbnailUrl);
+        const fullPath = data.thumbnailUrl.startsWith('http')
+          ? data.thumbnailUrl : `${SERVER_URL}${data.thumbnailUrl}`;
+        setThumbnailUrl(fullPath);
       } else {
         setThumbnailUrl(undefined);
       }
@@ -46,26 +58,37 @@ function ClassListItem({ item }: { item: ClassItem }) {
   }, [item.lectureId]);
 
   return (
-    <div className="flex gap-4 p-3 border rounded-lg cursor-pointer hover:shadow-lg transition-shadow" onClick={() => { navigate(`/class/${item.lectureId}`) }}>
-      <div className="w-40 h-24 bg-gray-300 rounded">
+    <div
+      className="group flex gap-6 p-4 bg-white border border-gray-500 rounded-md cursor-pointer hover:border-blue-500 hover:shadow-[0_10px_30px_rgb(0,0,0,0.04)] transition-all duration-300"
+      onClick={() => { navigate(`/class/${item.lectureId}`) }}
+    >
+      {/* 썸네일 영역: 살짝 더 둥글게 처리 */}
+      <div className="w-44 h-28 bg-gray-50 rounded-[1rem] overflow-hidden flex-shrink-0 border border-gray-50">
         {thumbnailUrl ? (
           <img
             src={thumbnailUrl}
             alt={item.title}
-            className="w-full h-full object-cover rounded"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-500">
-            섬네일 없음
+          <div className="w-full h-full flex items-center justify-center text-[10px] font-black text-gray-300 uppercase tracking-widest">
+            No Image
           </div>
         )}
       </div>
-      <div>
-        <h3 className="font-bold">{item.title}</h3>
-        <p className="text-sm text-gray-600">
-          {item.professorNickname} · {item.country}
-        </p>
-        <p className="text-sm mt-2 text-gray-700">
+
+      {/* 텍스트 영역: 위계 질서 강화 */}
+      <div className="flex flex-col justify-center min-w-0 py-1">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="px-2 py-0.5 bg-blue-50 text-blue-600 text-[10px] font-black rounded-full uppercase tracking-tighter">
+            {COUNTRY_NAMES[item.country]}
+          </span>
+          <span className="text-[11px] font-bold text-gray-800">{item.professorNickname}</span>
+        </div>
+        <h3 className="text-lg font-black text-gray-900 truncate group-hover:text-blue-600 transition-colors">
+          {item.title}
+        </h3>
+        <p className="text-sm mt-1.5 text-gray-800 line-clamp-1 leading-relaxed">
           {item.description}
         </p>
       </div>
@@ -87,7 +110,9 @@ function ClassCardItem({ item }: { item: ClassItem }) {
       if (data?.sourceType === "YOUTUBE" && data.youtubeVideoId) {
         setThumbnailUrl(`https://img.youtube.com/vi/${data.youtubeVideoId}/0.jpg`);
       } else if (data.thumbnailUrl) {
-        setThumbnailUrl(data.thumbnailUrl);
+        const fullPath = data.thumbnailUrl.startsWith('http')
+          ? data.thumbnailUrl : `${SERVER_URL}${data.thumbnailUrl}`;
+        setThumbnailUrl(fullPath);
       } else {
         setThumbnailUrl(undefined);
       }
@@ -95,29 +120,35 @@ function ClassCardItem({ item }: { item: ClassItem }) {
   }, [item.lectureId]);
 
   return (
-    <div className="flex flex-col border rounded-xl overflow-hidden cursur-pointer hover:-translate-y-1 transition-all" onClick={() => { navigate(`/class/${item.lectureId}`) }}>
-      <div className="w-full h-48 bg-gray-300">
+    <div 
+      className="group flex flex-col bg-white border border-gray-500 rounded-[1rem] overflow-hidden cursor-pointer transition-all duration-500 isolate hover:border-blue-500 hover:shadow-[0_20px_40px_rgb(0,0,0,0.06)] hover:-translate-y-1.5 transform-gpu" 
+      onClick={() => { navigate(`/class/${item.lectureId}`) }}
+    >
+      {/* 썸네일 영역 */}
+      <div className="relative w-full h-48 bg-gray-50 overflow-hidden rounded-t-[1rem]">
         {thumbnailUrl ? (
           <img
             src={thumbnailUrl}
             alt={item.title}
-            className="w-full h-full object-cover rounded"
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 rounded-t-[1rem]"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-500">
-            섬네일 없음
+          <div className="w-full h-full flex items-center justify-center text-[10px] font-black text-gray-300 uppercase tracking-widest">
+            No Image
           </div>
         )}
       </div>
-      <div className="px-2 pt-0.5">
-        <h3 className="font-bold">{item.title}</h3>
-        <p className="text-sm text-gray-600">
-          {item.professorNickname} · {item.country}
-        </p>
-        <p className="text-sm mt-2 text-gray-700">
+
+      {/* 카드 텍스트 내용 */}
+      <div className="p-6 space-y-2 bg-white">
+        <p className="text-[11px] font-bold text-blue-600 uppercase tracking-widest">{item.professorNickname}</p>
+        <h3 className="text-xl font-black text-gray-900 leading-tight group-hover:text-blue-600 transition-colors line-clamp-1">
+          {item.title}
+        </h3>
+        <p className="text-[13px] text-gray-800 line-clamp-2 leading-relaxed pt-1">
           {item.description}
         </p>
       </div>
     </div>
-  )
+  );
 }

@@ -1,83 +1,127 @@
-// api.ts
 import axios from "axios";
 import { isTokenExpired } from "../utils/jwt";
-import { useNavigate } from "react-router-dom";
 
 export const api = axios.create({
-  baseURL: "/api",
-  withCredentials: true,
+    baseURL: "/api",
+    withCredentials: true,
 });
 
-// 요청 인터셉터
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    // 요청 전에 직접 만료 체크
-    if (isTokenExpired(token)) {
-      localStorage.removeItem("token");
-      console.log("Access token expired, attempting to refresh...");
-      axios.post("/api/auth/refresh", {}, { withCredentials: true })
-        .then((res) => {
-          const newToken = res.data.accessToken;
-          localStorage.setItem("token", newToken);
-          config.headers.Authorization = `Bearer ${newToken}`;
-          console.log("Token refreshed successfully!");
-          return config;
-        })
-        .catch(() => {
-          // 리프레시 실패 시 로그인 페이지로 이동
-          window.location.href = "/";
-          console.error("NO");
-        });
-      return Promise.reject("Token expired before request.");
-    }
+const clearClientAuth = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("name");
+    localStorage.removeItem("nickname");
+    delete api.defaults.headers.common.Authorization;
+};
 
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+api.interceptors.request.use(
+    async (config) => {
+        const token = localStorage.getItem("token");
 
-// 응답 인터셉터
+        if (!token) {
+            return config;
+        }
+
+        if (!isTokenExpired(token)) {
+            config.headers = config.headers ?? {};
+            config.headers.Authorization = `Bearer ${token}`;
+            return config;
+        }
+
+        try {
+            localStorage.removeItem("token");
+            delete api.defaults.headers.common.Authorization;
+
+            const res = await axios.post(
+                "/api/auth/refresh",
+                {},
+                { withCredentials: true }
+            );
+
+            const newToken = res.data.accessToken;
+            const refreshedName = res.data.name ?? res.data.userName;
+            const refreshedNickname = res.data.nickname ?? res.data.userNickname;
+
+            localStorage.setItem("token", newToken);
+            api.defaults.headers.common.Authorization = `Bearer ${newToken}`;
+
+            if (refreshedName) {
+                localStorage.setItem("name", refreshedName);
+            }
+
+            if (refreshedNickname) {
+                localStorage.setItem("nickname", refreshedNickname);
+            }
+
+            config.headers = config.headers ?? {};
+            config.headers.Authorization = `Bearer ${newToken}`;
+
+            return config;
+        } catch (error) {
+            clearClientAuth();
+            window.location.href = "/";
+            return Promise.reject(error);
+        }
+    },
+    (error) => Promise.reject(error)
+);
+
 api.interceptors.response.use(
-  (res) => res,
-  (error) => {
-    const navigate = useNavigate();
-    const status = error.response?.status;
+    (res) => res,
+    (error) => {
+        const status = error.response?.status;
+        const url = error.config?.url || "";
 
-    if (!status) {
-      return Promise.reject(error);
-    }
+        if (!status) {
+            return Promise.reject(error);
+        }
 
-    // 401 → 인증 만료/실패 → 로그인 페이지
-    if (status === 401 || !localStorage.getItem('token')) {
-      localStorage.removeItem("token");
-      navigate("/login");
-      return;
-    }
+        if (status === 400) {
+            return Promise.reject(error);
+        }
 
-    // 403 → 접근 권한 없음
-    if (status === 403) {
-      navigate("/error/403");
-      return;
-    }
+        if (status === 401) {
+            clearClientAuth();
+            window.location.href = "/";
+            return Promise.reject(error);
+        }
 
-    // 400 → 잘못된 요청
-    if (status === 400) {
-      navigate("/error/400");
-      return;
-    }
+        if (status === 403) {
+            if (
+                url.includes("/auth/me") ||
+                url.includes("/auth/signup") ||
+                url.includes("/auth/send-verification-code") ||
+                url.includes("/auth/verify-email-code") ||
+                url.includes("/auth/find-email") ||
+                url.includes("/auth/password-reset/send-code") ||
+                url.includes("/auth/password-reset/verify-code") ||
+                url.includes("/auth/password-reset/confirm")
+            ) {
+                return Promise.reject(error);
+            }
 
-    // 429 → 요청 과다
-    if (status === 429) {
-      navigate("/error/429");
-      return;
-    }
-    if(status === 500) {
-      navigate("/error/500");
-    }
-    // 기타 4XX/5XX
-    window.location.href = `/error/${status}`;
+            window.location.href = "/error/403";
+            return Promise.reject(error);
+        }
 
-    return Promise.reject(error);
-  }
+        if (status === 429) {
+            window.location.href = "/error/429";
+            return Promise.reject(error);
+        }
+
+        if (status === 500) {
+            if (
+                url.includes("/auth/find-email") ||
+                url.includes("/auth/password-reset/send-code") ||
+                url.includes("/auth/password-reset/verify-code") ||
+                url.includes("/auth/password-reset/confirm")
+            ) {
+                return Promise.reject(error);
+            }
+
+            window.location.href = "/error/500";
+            return Promise.reject(error);
+        }
+
+        return Promise.reject(error);
+    }
 );

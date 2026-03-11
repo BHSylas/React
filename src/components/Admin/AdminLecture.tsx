@@ -1,12 +1,21 @@
 import { useEffect, useState } from "react";
 // import { useNavigate } from "react-router-dom";
 // import { AuthContext } from "../../context/AuthContext";
-import { api } from "../../api/axiosInstance";
+// import { api } from "../../api/axiosInstance";
 import type { ClassItem } from "../../types/ClassItem";
+import axios from "axios";
+
+const COUNTRY_NAMES: Record<string, string> = {
+    USA: "미국",
+    JAPAN: "일본",
+    CHINA: "중국",
+    GERMANY: "독일",
+    ITALY: "이탈리아",
+};
 
 export default function AdminLecture() {
     // const role = useContext(AuthContext).role;
-    const [state, setState] = useState<"ALL" | "PENDING" | "APPROVED" | "REJECTED">("PENDING");
+    const [state, setState] = useState<"ALL" | "PENDING" | "APPROVED" | "REJECTED" | "INACTIVE">("PENDING");
     const [lectures, setLectures] = useState<ClassItem[]>([]);
     // const navigate = useNavigate();
 
@@ -14,31 +23,49 @@ export default function AdminLecture() {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
 
+    // 로컬 스토리지 키 확인
+    const token = localStorage.getItem("token");
+
+    const config = {
+        headers: { Authorization: `Bearer ${token}` }
+    };
+
     useEffect(() => {
-        api.get(`/admin/lectures?status=${state}`).then((res) => {
-            setLectures(res.data.content);
-        });
+        axios.get(`/api/admin/lectures/cards?status=${state}&size=1000`, config).then((res) => {
+            setLectures(res.data.content || []);
+            setCurrentPage(1); // 상태 변경 시 페이지 초기화
+        }).catch(err => console.error(err));
     }, [state]);
+
     const approveLecture = (lectureId: string) => {
-        api.patch(`/admin/lectures/${lectureId}/approval`).then(() => {
+        axios.patch(`/api/admin/lectures/${lectureId}/approval`, {}, config).then(() => {
             alert("승인되었습니다.");
-            setLectures(lectures.filter(lec => lec.lectureId !== lectureId));
-        });
+            setLectures(prev => prev.filter(lec => lec.lectureId !== lectureId));
+        }).catch(err => alert("승인 실패: " + err.response?.status));
     }
+
     const rejectLecture = (lectureId: string) => {
-        api.patch(`/admin/lectures/${lectureId}/rejection`, { reason: "거지같음" }).then(() => {
+        axios.patch(`/api/admin/lectures/${lectureId}/rejection`, { reason: "거절되었음" }, config).then(() => {
             alert("반려되었습니다.");
-            setLectures(lectures.filter(lec => lec.lectureId !== lectureId));
-        });
+            setLectures(prev => prev.filter(lec => lec.lectureId !== lectureId));
+        }).catch(err => alert("반려 실패: " + err.response?.status));
     }
-    // if (role === null) {
-    //     console.log("No role, probably waiting for auth...");
-    //     return <div>Loading...</div>;
-    // }
-    // else if (role !== '2') {
-    //     alert("No exception!");
-    //     navigate('/');
-    // }
+
+    const inactivateLecture = (lectureId: string) => {
+        axios.patch(`/api/admin/lectures/${lectureId}/inactivate`, {}, config).then(() => {
+            alert("강의가 비활성화 되었습니다.");
+            setLectures(prev => prev.filter(lec => lec.lectureId !== lectureId));
+        }).catch(err => alert("비활성화 실패: " + err.response?.status));
+    }
+
+    const reactivateLecture = (lectureId: string) => {
+        axios.patch(`/api/admin/lectures/${lectureId}/reactivate`, {}, config)
+            .then(() => {
+                alert("강의가 재활성화되었습니다.");
+                // 현재 리스트에서 제거하여 즉시 반영
+                setLectures(prev => prev.filter(lec => lec.lectureId !== lectureId));
+            }).catch(err => alert("재활성화 실패: " + err.response?.status));
+    }
 
     // 페이지네이션 계산 로직
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -51,7 +78,7 @@ export default function AdminLecture() {
             <div className="flex flex-col">
                 <h1 className="text-3xl font-bold text-center m-4">강의 관리</h1>
                 <StatusSelector currentStatus={state} setStatus={setState} />
-                <AdminClassList classList={currentLectures} approveLecture={approveLecture} rejectLecture={rejectLecture} />
+                <AdminClassList classList={currentLectures} approveLecture={approveLecture} rejectLecture={rejectLecture} inactivateLecture={inactivateLecture} reactivateLecture={reactivateLecture} />
                 {lectures.length > itemsPerPage && (
                     <div className="flex justify-center mt-5 border-t-2 py-5 gap-5">
                         <button onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
@@ -82,50 +109,69 @@ export default function AdminLecture() {
     );
 }
 
-function AdminClassList({ classList, approveLecture, rejectLecture }: { classList: ClassItem[], approveLecture: (lectureId: string) => void, rejectLecture: (lectureId: string) => void }) {
+function AdminClassList({ classList, approveLecture, rejectLecture, inactivateLecture, reactivateLecture }: { classList: ClassItem[], approveLecture: (lectureId: string) => void, rejectLecture: (lectureId: string) => void, inactivateLecture: (lectureId: string) => void, reactivateLecture: (lectureId: string) => void }) {
     if (classList.length === 0) {
         return <div className="text-center py-10">해당하는 강의가 없습니다.</div>;
     }
     return (
-        <div
-            className={`space-y-4 transition-opacity opacity-100`}
-        >
+        <div className={`space-y-4 transition-opacity opacity-100`}>
             {classList.map((item) => (
                 <div className="block" key={item.lectureId}>
-                    <ClassListItem key={item.lectureId} item={item} approveLecture={approveLecture} rejectLecture={rejectLecture} />
+                    <ClassListItem key={item.lectureId} item={item} approveLecture={approveLecture} rejectLecture={rejectLecture} inactivateLecture={inactivateLecture} reactivateLecture={reactivateLecture} />
                 </div>
             ))}
         </div>
     );
 }
 
-function ClassListItem({ item, approveLecture, rejectLecture }: { item: ClassItem, approveLecture: (lectureId: string) => void, rejectLecture: (lectureId: string) => void }) {
+function ClassListItem({ item, approveLecture, rejectLecture, inactivateLecture, reactivateLecture }: { item: ClassItem, approveLecture: (lectureId: string) => void, rejectLecture: (lectureId: string) => void, inactivateLecture: (lectureId: string) => void, reactivateLecture: (lectureId: string) => void }) {
     return (
-        <div className="flex gap-4 p-3 border rounded-lg cursor-pointer hover:shadow-lg transition-shadow">
-            <div className="w-40 h-24 bg-gray-300 rounded" />
+        <div className="flex gap-4 p-3 border border-gray-500 rounded-lg cursor-pointer hover:shadow-lg transition-shadow">
+            <div>
+                {item.thumbnailUrl ? (
+                    <img src={item.thumbnailUrl}
+                        alt={item.title}
+                        className="rounded w-40"
+                    ></img>
+                ) : (
+                    <div className="w-40 h-24 bg-gray-300 rounded" />
+                )}
+            </div>
             <div>
                 <h3 className="font-bold">{item.title}</h3>
-                <p className="text-sm text-gray-600">
-                    {item.professorNickname} · {item.country}
+                <p className="text-[15px]">
+                    {item.professorNickname} · {COUNTRY_NAMES[item.country]}
                 </p>
                 <p className="text-sm mt-2 text-gray-700">
                     {item.description}
                 </p>
             </div>
-            {item.status === "PENDING" && <div className="ml-auto">
+            {item.status === "PENDING" && (<div className="ml-auto">
                 <button className="text-green-500 hover:text-green-800 hover:scale-105 transition-all px-3 py-1 rounded mr-2" onClick={() => approveLecture(item.lectureId)}>승인</button>
                 <button className="text-red-500 hover:text-red-800 hover:scale-105 transition-all px-3 py-1 rounded" onClick={() => rejectLecture(item.lectureId)}>거절</button>
-            </div>}
-        </div>
+            </div>)}
+            {item.status === "APPROVED" && (
+                <div className="ml-auto">
+                    <button className="text-red-500 hover:text-red-800 hover:scale-105 transition-all px-3 py-1 rounded" onClick={() => inactivateLecture(item.lectureId)}>비활성화</button>
+                </div>
+            )}
+
+            {item.status === "INACTIVE" && (
+                <div className="ml-auto">
+                    <button className="text-green-500 hover:text-green-800 hover:scale-105 transition-all px-3 py-1 rounded mr-2" onClick={() => reactivateLecture(item.lectureId)}>재활성화</button>
+                </div>
+            )}
+        </div >
     );
 }
 
-function StatusSelector({ currentStatus, setStatus }: { currentStatus: "ALL" | "PENDING" | "APPROVED" | "REJECTED", setStatus: (status: "ALL" | "PENDING" | "APPROVED" | "REJECTED") => void }) {
-    const statuses: { label: string, value: "ALL" | "PENDING" | "APPROVED" | "REJECTED" }[] = [
+function StatusSelector({ currentStatus, setStatus }: { currentStatus: "ALL" | "PENDING" | "APPROVED" | "REJECTED" | "INACTIVE", setStatus: (status: "ALL" | "PENDING" | "APPROVED" | "REJECTED" | "INACTIVE") => void }) {
+    const statuses: { label: string, value: "ALL" | "PENDING" | "APPROVED" | "REJECTED" | "INACTIVE" }[] = [
         { label: "전체", value: "ALL" },
         { label: "승인 대기", value: "PENDING" },
         { label: "승인 완료", value: "APPROVED" },
         { label: "거절된 강의", value: "REJECTED" },
+        { label: "비활성화된 강의", value: "INACTIVE" },
     ];
     return (
         <div className="flex justify-center gap-4 my-4">

@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { AdminStatsView } from "../../components/Admin/AdminStatsView";
 import AdminLecture from "../../components/Admin/AdminLecture";
+import { AdminUserList } from "../../components/Admin/AdminUser";
 
-type AdminMenu = 'stats' | 'Lecture'
+type AdminMenu = 'stats' | 'Lecture' | 'user'
 
 export default function AdminMainPage() {
     const role = useContext(AuthContext).role;
@@ -17,7 +18,7 @@ export default function AdminMainPage() {
         console.log("No role, probably waiting for auth...");
         return <div>Loading...</div>;
     }
-    else if (role !== '2') {
+    else if (role !== '2' && role !== "ADMIN" && role !== "ROLE_ADMIN") {
         alert("No exception!");
         navigate('/');
     }
@@ -28,6 +29,8 @@ export default function AdminMainPage() {
                 return <AdminStatsView />
             case 'Lecture':
                 return <AdminLecture />
+                case 'user':
+                    return <AdminUserList />
             default:
                 return <AdminStatsView />;
         }
@@ -57,6 +60,16 @@ export default function AdminMainPage() {
                                 }`}
                         >
                             강의 관리
+                        </button>
+
+                        <button
+                            onClick={() => setActiveMenu('user')}
+                            className={`py-4 px-1 font-bold text-sm transition-all border-b-2 
+                                ${activeMenu ==='user' ? 'border-blue-600 text-blue-600'
+                                : 'border-transparent text-gray-400 hover:text-gray-600'
+                                }`}
+                        >
+                            유저 관리
                         </button>
                     </div>
                 </div>
