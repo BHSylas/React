@@ -21,7 +21,7 @@ export default function AnswerBox({ conversation }: { conversation: Conversation
             setExplanation(data.explanation);
             setAttemptsLeft(Math.max(0, 3 - data.attempts));
             setIsCorrect(data.correct);
-            setCorrectAnswer(data.correctAnswer);
+            setCorrectAnswer(data.correctAnswer ? Array.isArray(data.correctAnswer) ? data.correctAnswer : [data.correctAnswer] : null);
         }).catch(err => {
             console.error("Failed to fetch conversation details:", err);
         });
@@ -42,12 +42,25 @@ export default function AnswerBox({ conversation }: { conversation: Conversation
             if (res.data.correct) {
                 alert("정답!");
                 setIsCorrect(true);
-                setCorrectAnswer(res.data.correctAnswer || [answer]);
+                setCorrectAnswer(
+                    res.data.correctAnswer
+                        ? Array.isArray(res.data.correctAnswer)
+                            ? res.data.correctAnswer
+                            : [res.data.correctAnswer]
+                        : null
+                );
             }
             else if (res.data.locked) {
                 setExplanation(res.data.explanation);
                 setIsCorrect(false);
                 setAttemptsLeft(0);
+                setCorrectAnswer(
+                    res.data.correctAnswer
+                        ? Array.isArray(res.data.correctAnswer)
+                            ? res.data.correctAnswer
+                            : [res.data.correctAnswer]
+                        : null
+                );
                 alert("기회를 모두 소모하였습니다.");
             }
             else {
