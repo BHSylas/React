@@ -11,8 +11,9 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import MetaList from "../prof/MetaList";
 import { api } from "../../api/axiosInstance";
+import ProfMetaStats from "../../components/my/ProfMetaStuats";
 
-type MyPagePick = "Class" | "QnA" | "Post" | "Comment" | "Metaverse" | "Quiz";
+type MyPagePick = "Class" | "QnA" | "Post" | "Comment" | "Metaverse" | "MetaStats" | "Quiz";
 
 interface TokenPayload {
     sub: string;
@@ -162,6 +163,7 @@ export default function MyPage() {
                             (Number(role) === 1 || role === "ROLE_PROFESSOR" || role === "PROFESSOR") ? <ProfClassList /> : <EnrollmentRenderer classes={classes} />
                         )}
                         {picked === "Metaverse" && <MetaList />}
+                        {picked === "MetaStats" && <ProfMetaStats />}
                         {picked !== "Class" && picked !== "Metaverse" && picked !== "Quiz" && (
                             <MyActivityRenderer type={picked} data={contentList} />
                         )}
@@ -183,6 +185,7 @@ function Picker({ picked, onPick, role }: { picked: string; onPick: (item: any) 
 
     if (userRole === 1 || role === "ROLE_PROFESSOR" || role === "PROFESSOR") {
         items.push("Metaverse");
+        items.push("MetaStats");
     }
     else if (userRole === 0 || role === "ROLE_USER" || role === "USER") {
         items.push("Quiz"); // 퀴즈 탭 추가: 교수는 퀴즈 못 푸니까 안 보이게
