@@ -125,6 +125,7 @@ export default function PlayerShell({ init }: { init: LecturePlaybackInit }) {
           ref={playerRef}
           videoId={init.source.videoId}
           startAtSec={init.lastWatchedTimeSec}
+          isAdmin={userRole === '1' || userRole === "ROLE_PROFESSOR" || userRole === "PROFESSOR" || userRole === '2' || userRole === "USER_ADMIN" || userRole === "ADMIN"}
         />
       )}
 

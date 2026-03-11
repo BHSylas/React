@@ -18,12 +18,13 @@ declare global {
 type Props = {
   videoId: string;
   startAtSec: number;
+  isAdmin?: boolean;
 };
 
 const JUMP_THRESHOLD = 1.2;
 
 const YoutubePlayer = forwardRef<PlayerHandle, Props>(
-  ({ videoId, startAtSec }, ref) => {
+  ({ videoId, startAtSec, isAdmin }, ref) => {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const playerRef = useRef<any>(null);
 
@@ -108,7 +109,7 @@ const YoutubePlayer = forwardRef<PlayerHandle, Props>(
 
         const diff = t - lastTimeRef.current;
 
-        if (diff > JUMP_THRESHOLD) {
+        if (!isAdmin && diff > JUMP_THRESHOLD) {
           if (t > maxWatchedRef.current) {
             p.seekTo(maxWatchedRef.current, true);
             return;
@@ -145,11 +146,13 @@ const YoutubePlayer = forwardRef<PlayerHandle, Props>(
         if (!p) return;
 
         const allowed = Math.min(maxWatchedRef.current, durationSec);
-        const next = clamp(sec, 0, allowed);
+        const next = isAdmin
+            ? clamp(sec, 0, durationSec) : clamp(sec, 0, allowed) ;
 
         p.seekTo(next, true);
         lastTimeRef.current = next;
       },
+
       setRate(rate: number) {
         playerRef.current?.setPlaybackRate?.(rate);
         setPlaybackRate(rate);
