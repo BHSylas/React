@@ -83,7 +83,7 @@ export default function CommentElement({ comment }: { comment: Comment }) {
         return null;
     }
     return (
-        <div className="group relative flex flex-col py-4 border-b border-gray-100 last:border-0 transition-all">
+        <div className="group relative flex flex-col py-4 border-b border-gray-400 last:border-0 transition-all">
 
             <div className="flex-1 min-w-0">
                 {edit ? (
@@ -106,7 +106,7 @@ export default function CommentElement({ comment }: { comment: Comment }) {
                                 className="px-6 py-2 text-xs font-black bg-blue-600 text-white rounded-xl hover:bg-blue-700 shadow-sm transition-all active:scale-95"
                                 onClick={update}
                             >
-                                업데이트 저장
+                                저장
                             </button>
                         </div>
                     </div>
@@ -137,7 +137,7 @@ export default function CommentElement({ comment }: { comment: Comment }) {
                             <span className="text-gray-100 text-[8px]">|</span>
                             {canDelete && (
                                 <button
-                                    className="px-2 py-1 text-[10px] font-black text-gray-400 hover:text-red-500 transition-all uppercase tracking-widest"
+                                    className="px-2 py-1 text-[10px] font-black text-gray-500 hover:text-red-500 transition-all uppercase tracking-widest"
                                     onClick={remove}
                                 >
                                     Delete
